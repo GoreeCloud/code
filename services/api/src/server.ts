@@ -33,8 +33,8 @@ export function createCodeServer(provider: ForgeProvider, options: CodeServerOpt
       const match = url.pathname.match(/^\/api\/v1\/repositories\/([^/]+)\/([^/]+)(?:\/(branches|commits|issues|pull-requests))?$/);
       if (match) {
         const id: RepositoryId = {
-          owner: decodeURIComponent(match[1]),
-          name: decodeURIComponent(match[2]),
+          owner: decodeURIComponent(match[1]!),
+          name: decodeURIComponent(match[2]!),
         };
         const resource = match[3];
 

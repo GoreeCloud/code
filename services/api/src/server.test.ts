@@ -36,7 +36,7 @@ test("exposes provider-neutral health and repository routes", async () => {
   assert.equal(health.provider.provider, "mock");
 
   const repositories = await (await fetch(`${baseUrl}/api/v1/repositories`)).json() as any;
-  assert.equal(repositories.repositories[0].name, "code");
+  assert.equal(repositories.repositories[0]?.name, "code");
 });
 
 test("routes repository subresources without provider-specific URLs", async () => {
@@ -44,10 +44,10 @@ test("routes repository subresources without provider-specific URLs", async () =
   const commits = await (await fetch(`${baseUrl}/api/v1/repositories/goreecloud/code/commits?ref=main`)).json() as any;
   const issues = await (await fetch(`${baseUrl}/api/v1/repositories/goreecloud/code/issues`)).json() as any;
   const changes = await (await fetch(`${baseUrl}/api/v1/repositories/goreecloud/code/pull-requests`)).json() as any;
-  assert.equal(branches.branches[0].name, "main");
-  assert.equal(commits.commits[0].sha, "abc");
-  assert.equal(issues.issues[0].number, 1);
-  assert.equal(changes.pullRequests[0].number, 2);
+  assert.equal(branches.branches[0]?.name, "main");
+  assert.equal(commits.commits[0]?.sha, "abc");
+  assert.equal(issues.issues[0]?.number, 1);
+  assert.equal(changes.pullRequests[0]?.number, 2);
 });
 
 test("rejects unsupported methods and unknown routes", async () => {
