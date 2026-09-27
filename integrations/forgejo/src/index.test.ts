@@ -37,9 +37,8 @@ test("maps repositories and branches into provider-neutral contracts", async () 
   const provider = new ForgejoProvider({ baseUrl, token: "test-token" });
   const [repository] = await provider.repositories();
   assert.deepEqual(repository, {
-    id: "7", owner: "goreecloud", name: "code", description: undefined,
+    id: "7", owner: "goreecloud", name: "code",
     defaultBranch: "main", private: true, webUrl: "https://forge.test/goreecloud/code",
-    cloneUrl: undefined, sshUrl: undefined, updatedAt: undefined,
   });
   assert.deepEqual(await provider.branches({ owner: "goreecloud", name: "code" }), [{ name: "main", sha: "abc123", protected: true }]);
 });
