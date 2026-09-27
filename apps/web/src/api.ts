@@ -69,7 +69,7 @@ export class GoreeCloudCodeApi {
 
     const data = (await response.json().catch(() => null)) as T | { message?: string } | null;
     if (!response.ok) {
-      const message = data && "message" in data && data.message ? data.message : `Request failed with ${response.status}`;
+      const message = data && typeof data === "object" && "message" in data && typeof data.message === "string" && data.message ? data.message : `Request failed with ${response.status}`;
       throw new Error(message);
     }
 

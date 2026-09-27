@@ -18,8 +18,8 @@ export interface ForgejoProviderOptions {
 
 export class ForgejoProvider implements ForgeProvider {
   private readonly baseUrl: string;
-  private readonly token?: string;
-  private readonly username?: string;
+  private readonly token: string | undefined;
+  private readonly username: string | undefined;
   private readonly timeoutMs: number;
 
   constructor(options: ForgejoProviderOptions) {
@@ -115,7 +115,7 @@ export class ForgejoProvider implements ForgeProvider {
       sha: String(row.sha),
       message: String(row.commit?.message ?? ""),
       authoredAt: String(row.commit?.author?.date ?? ""),
-      authorName: row.commit?.author?.name ? String(row.commit.author.name) : undefined,
+      ...(row.commit?.author?.name ? { authorName: String(row.commit.author.name) } : {}),
       webUrl: String(row.html_url ?? ""),
     }));
   }
@@ -126,8 +126,8 @@ export class ForgejoProvider implements ForgeProvider {
       number: Number(row.number),
       title: String(row.title),
       state: row.state === "closed" ? "closed" : "open",
-      author: row.user?.login ? String(row.user.login) : undefined,
-      updatedAt: row.updated_at ? String(row.updated_at) : undefined,
+      ...(row.user?.login ? { author: String(row.user.login) } : {}),
+      ...(row.updated_at ? { updatedAt: String(row.updated_at) } : {}),
       webUrl: String(row.html_url ?? ""),
     }));
   }
@@ -140,8 +140,8 @@ export class ForgejoProvider implements ForgeProvider {
       state: row.merged ? "merged" : row.state === "closed" ? "closed" : "open",
       base: String(row.base?.ref ?? ""),
       head: String(row.head?.ref ?? ""),
-      author: row.user?.login ? String(row.user.login) : undefined,
-      updatedAt: row.updated_at ? String(row.updated_at) : undefined,
+      ...(row.user?.login ? { author: String(row.user.login) } : {}),
+      ...(row.updated_at ? { updatedAt: String(row.updated_at) } : {}),
       webUrl: String(row.html_url ?? ""),
     }));
   }
@@ -152,12 +152,12 @@ function mapRepository(row: Record<string, any>): Repository {
     id: String(row.id),
     owner: String(row.owner?.login ?? row.owner?.username ?? ""),
     name: String(row.name),
-    description: row.description ? String(row.description) : undefined,
+    ...(row.description ? { description: String(row.description) } : {}),
     defaultBranch: String(row.default_branch ?? "main"),
     private: Boolean(row.private),
     webUrl: String(row.html_url ?? ""),
-    cloneUrl: row.clone_url ? String(row.clone_url) : undefined,
-    sshUrl: row.ssh_url ? String(row.ssh_url) : undefined,
-    updatedAt: row.updated_at ? String(row.updated_at) : undefined,
+    ...(row.clone_url ? { cloneUrl: String(row.clone_url) } : {}),
+    ...(row.ssh_url ? { sshUrl: String(row.ssh_url) } : {}),
+    ...(row.updated_at ? { updatedAt: String(row.updated_at) } : {}),
   };
 }

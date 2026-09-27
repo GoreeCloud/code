@@ -15,10 +15,12 @@ server.listen(port, host, () => {
 
 function createProvider(): ForgeProvider {
   const baseUrl = requiredEnv("FORGEJO_BASE_URL");
+  const token = process.env.FORGEJO_TOKEN;
+  const username = process.env.FORGEJO_USERNAME;
   return new ForgejoProvider({
     baseUrl,
-    token: process.env.FORGEJO_TOKEN,
-    username: process.env.FORGEJO_USERNAME,
+    ...(token ? { token } : {}),
+    ...(username ? { username } : {}),
     timeoutMs: numberEnv("FORGEJO_TIMEOUT_MS", 10_000),
   });
 }
