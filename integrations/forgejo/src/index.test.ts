@@ -48,7 +48,7 @@ test("filters pull requests from issue results", async () => {
   const provider = new ForgejoProvider({ baseUrl, token: "test-token" });
   const issues = await provider.issues({ owner: "goreecloud", name: "code" });
   assert.equal(issues.length, 1);
-  assert.equal(issues[0].number, 1);
+  assert.equal(issues[0]?.number, 1);
 });
 
 test("requires an explicit discovery identity", async () => {

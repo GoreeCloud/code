@@ -11,15 +11,15 @@ import type {
 
 export interface ForgejoProviderOptions {
   baseUrl: string;
-  token?: string;
-  username?: string;
+  token?: string | undefined;
+  username?: string | undefined;
   timeoutMs?: number;
 }
 
 export class ForgejoProvider implements ForgeProvider {
   private readonly baseUrl: string;
-  private readonly token?: string;
-  private readonly username?: string;
+  private readonly token: string | undefined;
+  private readonly username: string | undefined;
   private readonly timeoutMs: number;
 
   constructor(options: ForgejoProviderOptions) {

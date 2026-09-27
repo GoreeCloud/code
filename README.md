@@ -43,6 +43,17 @@ Glaze UI / GoreeCloud clients
 
 The browser must not receive Forgejo credentials or depend directly on Forgejo-specific APIs.
 
+
+## Repository visibility model
+
+GoreeCloud Code is intended to be a public-facing source-control service while supporting both public and access-controlled private repositories. Service visibility and repository visibility are separate boundaries: making GoreeCloud Code publicly reachable must not make every hosted repository public.
+
+Repository visibility must follow the information and collaboration boundary of each project. Public repositories remain appropriate for intentionally published source, documentation, and ecosystem collaboration. Private repositories must remain access-controlled and must not expose source, metadata, artifacts, issues, pull requests, CI evidence, or repository inventory to unauthenticated users.
+
+Wardveil Security and GoreeCloud Privacy Shield are planned to be **private repositories in GoreeCloud Code**. Their current GitHub visibility during the transition does not define their eventual GoreeCloud Code visibility.
+
+The migration path must preserve Git history and exact revision identity while explicitly recreating repository visibility, access control, branch protection, review requirements, secrets separation, CI/CD boundaries, recovery, and any metadata outside Git before authority is transferred.
+
 ## Local connectivity
 
 Configure the GoreeCloud Code API using `.env.example`. At minimum, provide `FORGEJO_BASE_URL`. Private repository discovery requires a narrowly scoped `FORGEJO_TOKEN`; anonymous public discovery can use `FORGEJO_USERNAME` when supported by the instance.

@@ -6,8 +6,9 @@ import {
   type RepositoryDetails,
 } from "./api";
 
-const app = document.querySelector<HTMLDivElement>("#app");
-if (!app) throw new Error("GoreeCloud Code root element is missing");
+const appElement = document.querySelector<HTMLDivElement>("#app");
+if (!appElement) throw new Error("GoreeCloud Code root element is missing");
+const app: HTMLDivElement = appElement;
 
 let repositories: Repository[] = [];
 let provider: ProviderHealth | null = null;
