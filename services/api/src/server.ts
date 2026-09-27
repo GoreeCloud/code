@@ -32,9 +32,12 @@ export function createCodeServer(provider: ForgeProvider, options: CodeServerOpt
 
       const match = url.pathname.match(/^\/api\/v1\/repositories\/([^/]+)\/([^/]+)(?:\/(branches|commits|issues|pull-requests))?$/);
       if (match) {
+        const ownerPart = match[1];
+        const namePart = match[2];
+        if (!ownerPart || !namePart) return send(response, 404, { error: "not_found" }, options);
         const id: RepositoryId = {
-          owner: decodeURIComponent(match[1]),
-          name: decodeURIComponent(match[2]),
+          owner: decodeURIComponent(ownerPart),
+          name: decodeURIComponent(namePart),
         };
         const resource = match[3];
 
