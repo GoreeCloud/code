@@ -12,6 +12,16 @@ Milestone 0 established the product boundary, provider abstraction, Forgejo adap
 
 Current M1 capabilities include provider health/version reporting, repository discovery and detail retrieval, branches, commits, issues, and pull-request reads. A real-instance validation run is still required before M1 is complete.
 
+## Project authority
+
+- [PROJECT-SPECIFICATIONS.md](./PROJECT-SPECIFICATIONS.md) — canonical project requirements, architecture, security/privacy, governed-write, migration, and acceptance boundaries.
+- [PROJECT-RECORD.md](./PROJECT-RECORD.md) — significant project history, candidate-state evidence, authority transitions, and accepted milestones.
+- [IMPLEMENTED-FEATURES.md](./IMPLEMENTED-FEATURES.md) — verified implemented-feature state.
+- [PLANNED-FEATURES.md](./PLANNED-FEATURES.md) — planned feature state.
+- [CHANGELOGS.md](./CHANGELOGS.md) — release and repository change history.
+
+The GitHub repository is the authoritative project-specification and project-record location after migration acceptance. Unmerged pull requests remain candidate evidence only.
+
 ## Architecture
 
 ```text
