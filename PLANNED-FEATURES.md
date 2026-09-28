@@ -2,12 +2,12 @@
 
 **Status:** Active roadmap control  
 **As of:** 2026-09-08  
-**Authoritative project record:** Project Specification — Code  
-**Canonical repository:** GoreeCloud/goreecloud-code
+**Authoritative project specification:** `PROJECT-SPECIFICATIONS.md`  
+**Canonical repository:** GoreeCloud/code
 
 ## Purpose
 
-This file is the repository-side feature roadmap control for GoreeCloud Code. It records current planned and recommended feature work without replacing the authoritative project record, implementation evidence, release gates, or GoreeCloud Tasks Management.
+This file is the repository-native planned-feature authority for GoreeCloud Code. It records planned and recommended feature work without replacing PROJECT-SPECIFICATIONS.md, PROJECT-RECORD.md, implementation evidence, release gates, or GoreeCloud Tasks Management.
 
 ## Roadmap
 
