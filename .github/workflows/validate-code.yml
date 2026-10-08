@@ -25,7 +25,10 @@ jobs:
         run: |
           node --check services/api/server.mjs
           node --check services/api/server.test.mjs
-          node --test services/api/server.test.mjs
+          node --check services/api/access-policy.mjs
+          node --check services/api/provider-projections.mjs
+          node --check services/api/access-policy.test.mjs
+          node --test services/api/*.test.mjs
           bash -n scripts/import-forgejo.sh
       - name: Verify imported Forgejo tracked-source snapshot
         run: node scripts/verify-forgejo-snapshot.mjs
