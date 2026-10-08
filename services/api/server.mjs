@@ -90,7 +90,9 @@ export function createCodeHandler({
         return reply(res, 200, { service: 'goreecloud-code-api', state: 'development' });
       }
       if (req.method !== 'GET') return reply(res, 405, { error: 'read_only' });
-      const match = url.search ? null : url.pathname.match(ROUTE);
+      const collection = ['branches','issues','pulls'].find(k => url.pathname.endsWith('/' + k)) || null;
+      const repoPath = collection ? url.pathname.slice(0, -(collection.length + 1)) : url.pathname;
+      const match = url.search ? null : repoPath.match(ROUTE);
       if (!match || match[1] === '..' || match[2] === '..') return reply(res, 404, { error: 'not_found' });
       if (!env.GOREECLOUD_CODE_ACCESS_TOKEN_FILE ||
           !env.GOREECLOUD_CODE_FORGEJO_TOKEN_FILE ||
