@@ -8,6 +8,7 @@ import { readRepositoryAllowlist, repositoryAuthorized } from './access-policy.m
 import { projectRepository, projectCollection } from './provider-projections.mjs';
 
 const ROUTE = /^\/api\/v1\/repositories\/([A-Za-z0-9][A-Za-z0-9_.-]{0,79})\/([A-Za-z0-9][A-Za-z0-9_.-]{0,99})$/;
+// Fail-closed development-only API boundary.
 const HEADERS = {
   'content-type': 'application/json; charset=utf-8',
   'cache-control': 'no-store',
