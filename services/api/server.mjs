@@ -94,6 +94,7 @@ export function createCodeHandler({
       if (!match || match[1] === '..' || match[2] === '..') return reply(res, 404, { error: 'not_found' });
       if (!env.GOREECLOUD_CODE_ACCESS_TOKEN_FILE ||
           !env.GOREECLOUD_CODE_FORGEJO_TOKEN_FILE ||
+          !env.GOREECLOUD_CODE_ALLOWED_REPOSITORIES_FILE ||
           !env.GOREECLOUD_CODE_FORGEJO_URL) {
         return reply(res, 503, { error: 'not_configured' });
       }
