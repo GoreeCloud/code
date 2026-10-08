@@ -9,6 +9,7 @@ const ENV = {
   GOREECLOUD_CODE_ACCESS_TOKEN_FILE: '/test/access',
   GOREECLOUD_CODE_FORGEJO_TOKEN_FILE: '/test/provider',
   GOREECLOUD_CODE_FORGEJO_URL: 'https://forgejo.example',
+  GOREECLOUD_CODE_ALLOWED_REPOSITORIES_FILE: '/test/allowed.json',
 };
 
 async function withServer(handler, fn) {
@@ -26,6 +27,7 @@ function handler(options = {}) {
   return createCodeHandler({
     env: ENV,
     readSecret: async path => path.endsWith('/access') ? APPLICATION_SECRET : 'test-only-forgejo-provider-secret',
+    readAllowlist: async () => new Set(['goreecloud/example']),
     fetchImpl: async () => new Response(JSON.stringify({
       full_name: 'GoreeCloud/example', description: 'Example', private: true,
       archived: false, default_branch: 'main', internal_secret: 'MUST-NOT-LEAK',
