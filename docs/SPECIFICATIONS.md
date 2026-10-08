@@ -15,7 +15,7 @@ The platform will provide Git hosting, repository administration, branches, comm
 
 ## Initial implementation
 
-An opt-in, loopback-bound read-only Code API and static design preview establish isolated testable foundations. A branch-scoped workflow will attempt a pinned upstream source import. Neither a prepared workflow nor a passing unit test establishes live Forgejo interoperability or complete implementation.
+An opt-in, loopback-bound read-only Code API and static design preview establish isolated testable foundations. A branch-scoped workflow has imported a pinned Forgejo v15.0.9 tracked-source snapshot to `vendor/forgejo`. Its presence was verified by GitHub readback; upstream build, provenance signature and security acceptance remain pending. Neither a prepared workflow nor a passing unit test establishes live Forgejo interoperability or complete implementation.
 
 ## Roadmap and decision
 
