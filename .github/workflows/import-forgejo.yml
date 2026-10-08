@@ -1,0 +1,31 @@
+name: Import verified-target Forgejo source
+
+on:
+  push:
+    branches:
+      - feat/forgejo-bootstrap
+    paths:
+      - '.github/workflows/import-forgejo.yml'
+      - 'scripts/import-forgejo.sh'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: goreecloud-code-forgejo-import
+  cancel-in-progress: false
+
+jobs:
+  import:
+    if: github.repository == 'GoreeCloud/code' && github.ref == 'refs/heads/feat/forgejo-bootstrap'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Checkout exact bootstrap branch
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          ref: feat/forgejo-bootstrap
+          persist-credentials: true
+          fetch-depth: 1
+      - name: Import tracked official Forgejo source (no upstream code execution)
+        run: bash scripts/import-forgejo.sh
