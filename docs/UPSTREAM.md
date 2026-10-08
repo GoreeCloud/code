@@ -1,11 +1,13 @@
 # Forgejo source provenance and license
 
-Source authority: https://codeberg.org/forgejo/forgejo
+**Upstream:** https://codeberg.org/forgejo/forgejo.git  
+**Tracked release:** `v15.0.9` LTS (released 17 September 2026; supported until 15 July 2027).  
+**Upstream commit:** `19b9b9d216bbfb501c18514bd1a8c980246ca3f7`.  
+**GoreeCloud import commit:** `77be991b24ec80a498c086b67a6975bb12fb38fd`.  
+**Source:** `vendor/forgejo`, including `LICENSE` and `UPSTREAM-SNAPSHOT.md`.
 
-**Initial target:** `v15.0.9` LTS, released 17 September 2026 and supported through 15 July 2027. A v16.0.5 stable candidate exists but its support window ends 29 October 2026. Re-evaluate the pin against current security notices before deploying.
+Source was imported on the authorized bootstrap branch by https://github.com/GoreeCloud/code/actions/runs/37716860233. This is a tracked-source snapshot, not a full upstream commit-history mirror. The import preserves upstream file-level source and included notices; independent provenance/signature, license completeness and full build audit remain pending.
 
-Forgejo is licensed GPL-3.0-or-later. Upstream attribution and all embedded license/notice files must remain intact. If GoreeCloud distributes modified Forgejo binaries, it must comply with relevant copyleft and corresponding-source obligations. Do not remove origin credits or assert authorship of upstream code.
+Forgejo uses GPL-3.0-or-later. Preserve upstream attribution, license and notices and comply with corresponding-source obligations if distributing modified Forgejo binaries. Do not assert independent authorship of upstream code.
 
-The importer produces a tracked **source snapshot** with a machine-readable commit manifest; it does not copy upstream Git commit history, build upstream code, certify dependencies, or establish Stable readiness. Security reviews, build acceptance, migration tests and rollback validation remain separate obligations.
-
-Upstream changes must be reviewed and intentionally backported rather than silently auto-synchronized. Retain the upstream commit hash for reproducibility and migration traceability.
+For stability, LTS is the chosen development base. Before deploying, re-evaluate relevant security updates against the current upstream state. Patches must be deliberately reviewed and ported; no hidden upstream synchronization or automatic overwriting of the imported code.
