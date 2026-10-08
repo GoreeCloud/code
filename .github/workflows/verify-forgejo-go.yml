@@ -6,10 +6,10 @@ on:
     paths:
       - 'vendor/forgejo/**'
       - '.github/workflows/verify-forgejo-go.yml'
-  push:
-    branches: [feat/forgejo-bootstrap]
-    paths:
-      - '.github/workflows/verify-forgejo-go.yml'
+
+concurrency:
+  group: forgejo-source-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
