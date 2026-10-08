@@ -78,6 +78,7 @@ async function boundedJson(response) {
 export function createCodeHandler({
   env = process.env,
   readSecret = readProtectedSecret,
+  readAllowlist = readRepositoryAllowlist,
   fetchImpl = fetch,
 } = {}) {
   return async function handle(req, res) {
