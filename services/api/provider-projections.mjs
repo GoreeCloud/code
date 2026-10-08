@@ -5,5 +5,22 @@ export function projectRepository(data, owner, name) {
 
 export function projectCollection(kind, data) {
   if (!Array.isArray(data)) throw Error('provider collection invalid');
-  return { items: data.slice(0,20).map(item => ({name: typeof item?.name === 'string' ? item.name.slice(0,255) : ''})) };
+  const items = data.slice(0, 20).map(item => {
+    if (!item || typeof item !== 'object') throw Error('invalid provider item');
+    if (kind === 'branches') {
+      if (typeof item.name !== 'string' || !item.name) throw Error('invalid branch');
+      return { name: item.name.slice(0,255), protected: item.protected === true,
+        commitId: typeof item.commit?.id === 'string' ? item.commit.id.slice(0,64) : null };
+    }
+    if (kind === 'issues' || kind === 'pulls') {
+      if (!Number.isSafeInteger(item.number) || item.number < 1 ||
+          typeof item.title !== 'string') throw Error('invalid work item');
+      return { number: item.number, title: item.title.slice(0,500),
+        state: item.state === 'open' || item.state === 'closed' ? item.state : 'unknown',
+        author: typeof item.user?.login === 'string' ? item.user.login.slice(0,100) : null,
+        ...(kind === 'pulls' ? { draft: item.draft === true, merged: item.merged === true } : {}) };
+    }
+    throw Error('unsupported provider collection');
+  });
+  return { items, count: items.length };
 }
