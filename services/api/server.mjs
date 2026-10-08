@@ -102,6 +102,8 @@ export function createCodeHandler({
       if (!authorization.startsWith('Bearer ') || !safeEqual(authorization.slice(7), appToken)) {
         return reply(res, 401, { error: 'unauthorized' });
       }
+      const allowed = await readAllowlist(env.GOREECLOUD_CODE_ALLOWED_REPOSITORIES_FILE);
+      if (!repositoryAuthorized(allowed, match[1], match[2])) return reply(res, 403, {error: 'forbidden'});
       const origin = forgejoOrigin(env.GOREECLOUD_CODE_FORGEJO_URL);
       const providerToken = await readSecret(env.GOREECLOUD_CODE_FORGEJO_TOKEN_FILE);
       const urlPath = '/api/v1/repos/' + encodeURIComponent(match[1]) + '/' + encodeURIComponent(match[2]);
