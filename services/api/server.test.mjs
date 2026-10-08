@@ -109,3 +109,28 @@ test('provider origin cannot be downgraded or redirected by configuration', () =
     assert.throws(() => forgejoOrigin(url));
   }
 });
+
+test('listed repository restriction blocks provider access entirely', async () => {
+  let called = false;
+  await withServer(handler({
+    readAllowlist: async () => new Set(['goreecloud/approved']),
+    fetchImpl: async () => { called = true; },
+  }), async base => {
+    const response = await fetch(base + '/api/v1/repositories/GoreeCloud/example', {
+      headers: { authorization: 'Bearer ' + APPLICATION_SECRET },
+    });
+    assert.equal(response.status, 403);
+    assert.equal(called, false);
+  });
+});
+
+test('provider repository identity must match requested authorized repository', async () => {
+  await withServer(handler({ fetchImpl: async () =>
+    new Response(JSON.stringify({ full_name: 'OtherOrg/secret', private: true })) }), async base => {
+    const response = await fetch(base + '/api/v1/repositories/GoreeCloud/example', {
+      headers: { authorization: 'Bearer ' + APPLICATION_SECRET },
+    });
+    assert.equal(response.status, 502);
+    assert.deepEqual(await response.json(), { error: 'provider_invalid_response' });
+  });
+});
