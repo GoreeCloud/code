@@ -9,7 +9,7 @@ Every row is **not yet verified as completed**, unless separately reflected in I
 | P0 | Identity, authorization, Policy and Wardveil | Real scope-denial tests, actor attribution, pre-execution durable audit |
 | P0 | Restore and operational recovery (Everkeep) | Repository and metadata restore to representative target |
 | P1 | Glaze exact-Stable migration | Consumer acceptance, keyboard/screen-reader, contrast, reduced motion |
-| P1 | Repository, branches, issues, PRs, review, releases | Contract and live-provider compatibility tests |
+| P1 | Complete repository, issue, branch, PR, review and release parity | Read-only summary source exists; full workflow, live-provider and governed write acceptance remains pending |
 | P1 | Governed mutations and idempotency | Replay and uncertain-outcome reconciliation tests |
 | P1 | Containers-isolated pipelines and packages | Runner sandbox, supply-chain attestations and quota enforcement |
 | P1 | GoreeCloud AI coding and review | Explicit approval and least-privilege capability broker |
