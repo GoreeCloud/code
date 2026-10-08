@@ -24,6 +24,9 @@ api:
   endpoints:
     - GET /healthz
     - GET /api/v1/repositories/{owner}/{name}
+    - GET /api/v1/repositories/{owner}/{name}/branches
+    - GET /api/v1/repositories/{owner}/{name}/issues
+    - GET /api/v1/repositories/{owner}/{name}/pulls
 
 platform_systems:
   manager:
