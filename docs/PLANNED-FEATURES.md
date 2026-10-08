@@ -4,7 +4,7 @@ Every row is **not yet verified as completed**, unless separately reflected in I
 
 | Priority | Workstream | Required acceptance evidence |
 | --- | --- | --- |
-| P0 | Official Forgejo v15.0.9 LTS tracked source import | Verified SHA, full tracked tree, license and notices in `vendor/forgejo` |
+| P0 | Complete imported-source acceptance | Tracked source and SHA are present; independent upstream provenance, license audit, reproducible build and security acceptance still pending |
 | P0 | Secure build, SBOM and dependency vulnerability scan | Reproducible build/test output, provenance attestations, scoped CI identity |
 | P0 | Identity, authorization, Policy and Wardveil | Real scope-denial tests, actor attribution, pre-execution durable audit |
 | P0 | Restore and operational recovery (Everkeep) | Repository and metadata restore to representative target |
