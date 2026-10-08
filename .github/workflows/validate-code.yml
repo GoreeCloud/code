@@ -1,0 +1,29 @@
+name: GoreeCloud Code source checks
+
+on:
+  push:
+    branches: [main, feat/forgejo-bootstrap]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  api-test:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out tested revision
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up Node 22
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '22'
+      - name: Static and unit validation
+        run: |
+          node --check services/api/server.mjs
+          node --check services/api/server.test.mjs
+          node --test services/api/server.test.mjs
+          bash -n scripts/import-forgejo.sh
