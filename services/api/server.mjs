@@ -110,7 +110,7 @@ export function createCodeHandler({
       const origin = forgejoOrigin(env.GOREECLOUD_CODE_FORGEJO_URL);
       const providerToken = await readSecret(env.GOREECLOUD_CODE_FORGEJO_TOKEN_FILE);
       const urlPath = '/api/v1/repos/' + encodeURIComponent(match[1]) + '/' + encodeURIComponent(match[2]) +
-        (collection ? '/' + collection + '?limit=20&page=1&state=open' : '');
+        (collection ? '/' + collection + '?limit=20&page=1' + (collection === 'branches' ? '' : '&state=open') : '');
       let upstream;
       try {
         upstream = await fetchImpl(origin + urlPath, {
