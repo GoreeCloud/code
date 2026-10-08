@@ -1,0 +1,8 @@
+-
+  id: 1001
+  type: 6 # OAuth2
+  name: OAuth2 authentication source
+  is_active: true
+  cfg: '{"Provider":"invalid","ClientID":"invalid","ClientSecret":"invalid","AllowUsernameChange":true}'
+  created_unix: 1753740851
+  updated_unix: 1753740851

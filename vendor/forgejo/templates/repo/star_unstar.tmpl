@@ -1,0 +1,16 @@
+<form hx-boost="true" hx-target="this" method="post" action="{{$.RepoLink}}/action/{{if $.IsStaringRepo}}un{{end}}star" hx-on::after-settle="this.querySelector('button').focus()">
+	<div class="ui labeled button" {{if not $.IsSigned}}data-tooltip-content="{{ctx.Locale.Tr "repo.star_guest_user"}}"{{end}}>
+		<button type="submit" class="ui compact small basic button"{{if not $.IsSigned}} disabled{{end}} aria-label="{{if $.IsStaringRepo}}{{ctx.Locale.Tr "repo.unstar"}}{{else}}{{ctx.Locale.Tr "repo.star"}}{{end}}">
+			{{if $.IsStaringRepo}}
+				{{svg "octicon-star-fill"}}<span class="text not-mobile">{{ctx.Locale.Tr "repo.unstar"}}</span>
+			{{else}}
+				{{svg "octicon-star"}}<span class="text not-mobile">{{ctx.Locale.Tr "repo.star"}}</span>
+			{{end}}
+		</button>
+		<a hx-boost="false" class="ui basic label" href="{{$.RepoLink}}/stars"
+			aria-label="{{ctx.Locale.TrPluralString .Repository.NumStars "stars.n_stars" (printf "%d" .Repository.NumStars)}}"
+			>
+			{{CountFmt .Repository.NumStars}}
+		</a>
+	</div>
+</form>

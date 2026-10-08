@@ -1,0 +1,6 @@
+# Supporting data for Case 610
+-
+  id: 100
+  task_id: 100
+  output_key: some-output
+  output_value: 'abcdefghijklmnopqrstuvwxyz'

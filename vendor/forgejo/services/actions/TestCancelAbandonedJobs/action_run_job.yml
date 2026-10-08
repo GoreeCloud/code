@@ -1,0 +1,34 @@
+# Case 600 -- status waiting, too long, ready to be abandoned
+-
+  id: 600
+  run_id: 900
+  status: 5 # waiting
+  updated: 981228409
+
+# Case 601 -- status blocked, too long, ready to be abandoned
+-
+  id: 601
+  run_id: 900
+  status: 7 # blocked
+  updated: 981228409
+
+# Case 602 -- status blocked, *not* too long, not to be abandoned
+-
+  id: 602
+  run_id: 900
+  status: 7 # blocked
+  updated: 4105366009 # set to 2100-02-03 -- sorry to whoever fixes this 75 years from now
+
+# Case 603 -- status running, not to be abandoned
+-
+  id: 603
+  run_id: 900
+  status: 6 # running
+  updated: 981228409
+
+# Case 604 -- run needs approval (in action_run.yml), not to be abandoned
+-
+  id: 604
+  run_id: 901
+  status: 5 # waiting
+  updated: 981228409

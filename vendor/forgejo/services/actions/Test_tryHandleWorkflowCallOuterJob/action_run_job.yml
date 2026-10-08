@@ -1,0 +1,90 @@
+# Case 600 -- workflow that is not a workflow call outer job
+-
+  id: 600
+  attempt: 1
+  status: 1 # success
+  started: 1683636528
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+
+# Case w/ action_run_job.id = 601 -- workflow call outer job exercising every available context in the `outputs`.  Note
+# that jobparser translates `on.workflow_call.outputs` into the outer job's `job.<job_id>.outputs`, so the available
+# contexts should be considered as those in `on.workflow_call.outputs`.
+-
+  id: 601
+  attempt: 1
+  run_id: 900
+  status: 1 # success
+  started: 1683636528
+  needs: ["outer-job.inner-job"]
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      outer-job:
+        name: outer-job
+        if: false
+        uses: ./.forgjeo/workflows/reusable.yml
+        outputs:
+          from_inner_job: ${{ needs['outer-job.inner-job'].outputs.my_output }}
+          from_inner_job_result: ${{ needs['outer-job.inner-job'].result }}
+          from_forgejo_ctx: ${{ forgejo.ref }}
+          from_input_ctx: ${{ inputs.wc_input }}!
+          from_vars_repo: ${{ vars.repo_var }}
+          from_vars_org: ${{ vars.org_var }}
+          from_vars_global: ${{ vars.global_var }}
+    __metadata:
+      workflow_call_inputs:
+        wc_input: 'hello, world'
+      workflow_call_id: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+- # inner job of run 601
+  id: 602
+  attempt: 1
+  run_id: 900
+  status: 1 # success
+  job_id: outer-job.inner-job
+  task_id: 100
+
+# Case w/ action_run_job.id = 603 -- functionality of this is a duplicate of case 601 but it has already been executed
+# (attempt = 1) and we're testing that the updated outputs from the rerun are stored.
+-
+  id: 603
+  run_id: 901
+  attempt: 2
+  status: 1 # success
+  started: 1683636528
+  needs: ["outer-job.inner-job"]
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      outer-job:
+        name: outer-job
+        if: false
+        uses: ./.forgjeo/workflows/reusable.yml
+        outputs:
+          from_inner_job: ${{ needs['outer-job.inner-job'].outputs.my_output }}
+          from_inner_job_result: ${{ needs['outer-job.inner-job'].result }}
+          from_forgejo_ctx: ${{ forgejo.ref }}
+          from_input_ctx: ${{ inputs.wc_input }}!
+          from_vars_repo: ${{ vars.repo_var }}
+          from_vars_org: ${{ vars.org_var }}
+          from_vars_global: ${{ vars.global_var }}
+    __metadata:
+      workflow_call_inputs:
+        wc_input: 'hello, world'
+      workflow_call_id: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+- # inner job of run 603
+  id: 604
+  run_id: 901
+  attempt: 2
+  status: 1 # success
+  job_id: outer-job.inner-job
+  task_id: 101

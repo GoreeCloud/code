@@ -1,0 +1,297 @@
+// Copyright 2024 The Forgejo Authors. All rights reserved.
+// Copyright 2018 The Gitea Authors. All rights reserved.
+// Copyright 2014 The Gogs Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package templates
+
+import (
+	"bytes"
+	"context"
+	"fmt"
+	"html"
+	"html/template"
+	"net/url"
+	"slices"
+	"strings"
+	"time"
+
+	user_model "forgejo.org/models/user"
+	"forgejo.org/modules/base"
+	"forgejo.org/modules/markup"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/svg"
+	"forgejo.org/modules/templates/eval"
+	"forgejo.org/modules/util"
+	"forgejo.org/services/gitdiff"
+)
+
+// NewFuncMap returns functions for injecting to templates
+func NewFuncMap() template.FuncMap {
+	return map[string]any{
+		"ctx": func() any { return nil }, // template context function
+
+		"ExecuteTemplate": func(ctx context.Context, tmplName string, args any) template.HTML {
+			h := HTMLRenderer()
+			tmpl, err := h.TemplateLookup(tmplName, ctx)
+			if err != nil {
+				panic("Template not found: " + tmplName)
+			}
+
+			buf := bytes.Buffer{}
+			if err := tmpl.Execute(&buf, args); err != nil {
+				panic("Error while executing template")
+			}
+
+			// We can safely return this as `template.HTML` as html/template will
+			// already make sure it's sanitized.
+			return template.HTML(buf.String())
+		},
+
+		"DumpVar": dumpVar,
+
+		// -----------------------------------------------------------------
+		// html/template related functions
+		"dict":         dict, // it's lowercase because this name has been widely used. Our other functions should have uppercase names.
+		"Eval":         Eval,
+		"TrustHTML":    TrustHTML,
+		"HTMLFormat":   HTMLFormat,
+		"HTMLEscape":   HTMLEscape,
+		"QueryEscape":  QueryEscape,
+		"JSEscape":     JSEscapeSafe,
+		"SanitizeHTML": SanitizeHTML,
+		"URLJoin":      util.URLJoin,
+		"DotEscape":    DotEscape,
+
+		"PathEscape":         url.PathEscape,
+		"PathEscapeSegments": util.PathEscapeSegments,
+
+		// utils
+		"StringUtils": NewStringUtils,
+		"SliceUtils":  NewSliceUtils,
+		"JsonUtils":   NewJsonUtils,
+		"DateUtils":   NewDateUtils,
+
+		// -----------------------------------------------------------------
+		// svg / avatar / icon / color
+		"svg":           svg.RenderHTML,
+		"EntryIcon":     base.EntryIcon,
+		"MigrationIcon": MigrationIcon,
+		"ActionIcon":    ActionIcon,
+		"SortArrow":     SortArrow,
+		"ContrastColor": util.ContrastColor,
+
+		// -----------------------------------------------------------------
+		// time / number / format
+		"FileSize": FileSizePanic,
+		"CountFmt": base.FormatNumberSI,
+		"Sec2Time": util.SecToTime,
+		"LoadTimes": func(startTime time.Time) string {
+			return fmt.Sprint(time.Since(startTime).Nanoseconds()/1e6) + "ms"
+		},
+
+		// for backward compatibility only, do not use them anymore
+		"TimeSince":     timeSinceLegacy,
+		"TimeSinceUnix": timeSinceLegacy,
+		"DateTime":      dateTimeLegacy,
+
+		// -----------------------------------------------------------------
+		// setting
+		"AppName": func() string {
+			return setting.AppName
+		},
+		"AppSlogan": func() string {
+			return setting.AppSlogan
+		},
+		"AppDisplayName": func() string {
+			return setting.AppDisplayName
+		},
+		"AppSubUrl": func() string {
+			return setting.AppSubURL
+		},
+		"AssetUrlPrefix": func() string {
+			return setting.StaticURLPrefix + "/assets"
+		},
+		"AppUrl": func() string {
+			// The usage of AppUrl should be avoided as much as possible,
+			// because the AppURL(ROOT_URL) may not match user's visiting site and the ROOT_URL in app.ini may be incorrect.
+			// And it's difficult for Gitea to guess absolute URL correctly with zero configuration,
+			// because Gitea doesn't know whether the scheme is HTTP or HTTPS unless the reverse proxy could tell Gitea.
+			return setting.AppURL
+		},
+		"AppVer": func() string {
+			return setting.AppVer
+		},
+		"AppVerNoMetadata": func() string {
+			version, _, _ := strings.Cut(setting.AppVer, "+")
+			return version
+		},
+		"AppDomain": func() string { // documented in mail-templates.md
+			return setting.Domain
+		},
+		"RepoFlagsEnabled": func() bool {
+			return setting.Repository.EnableFlags
+		},
+		"AssetVersion": func() string {
+			return setting.AssetVersion
+		},
+		"DefaultShowFullName": func() bool {
+			return setting.UI.DefaultShowFullName
+		},
+		"ShowFooterTemplateLoadTime": func() bool {
+			return setting.Other.ShowFooterTemplateLoadTime
+		},
+		"ShowFooterPoweredBy": func() bool {
+			return setting.Other.ShowFooterPoweredBy
+		},
+		"AllowedReactions": func() []string {
+			return setting.UI.Reactions
+		},
+		"CustomEmojis": func() []string {
+			return setting.UI.CustomEmojis
+		},
+		"MetaAuthor": func() string {
+			return setting.UI.Meta.Author
+		},
+		"MetaDescription": func() string {
+			return setting.UI.Meta.Description
+		},
+		"MetaKeywords": func() string {
+			return setting.UI.Meta.Keywords
+		},
+		"EnableTimetracking": func() bool {
+			return setting.Service.EnableTimetracking
+		},
+		"DisableGitHooks": func() bool {
+			return setting.DisableGitHooks
+		},
+		"DisableWebhooks": func() bool {
+			return setting.DisableWebhooks
+		},
+		"DisableImportLocal": func() bool {
+			return !setting.ImportLocalPaths
+		},
+		"ThemeName": func(user *user_model.User) string {
+			if user == nil || user.Theme == "" {
+				return setting.UI.DefaultTheme
+			}
+			return user.Theme
+		},
+		"NotificationSettings": func() map[string]any {
+			return map[string]any{
+				"MinTimeout":            int(setting.UI.Notification.MinTimeout / time.Millisecond),
+				"TimeoutStep":           int(setting.UI.Notification.TimeoutStep / time.Millisecond),
+				"MaxTimeout":            int(setting.UI.Notification.MaxTimeout / time.Millisecond),
+				"EventSourceUpdateTime": int(setting.UI.Notification.EventSourceUpdateTime / time.Millisecond),
+			}
+		},
+		"MermaidMaxSourceCharacters": func() int {
+			return setting.MermaidMaxSourceCharacters
+		},
+		"FederationEnabled": func() bool {
+			return setting.Federation.Enabled
+		},
+
+		// -----------------------------------------------------------------
+		// render
+		"RenderCommitMessage":            RenderCommitMessage,
+		"RenderCommitMessageLinkSubject": RenderCommitMessageLinkSubject,
+
+		"RenderCommitBody":    RenderCommitBody,
+		"RenderCodeBlock":     RenderCodeBlock,
+		"RenderIssueTitle":    RenderIssueTitle,
+		"RenderRefIssueTitle": RenderRefIssueTitle,
+		"RenderEmoji":         RenderEmoji,
+		"ReactionToEmoji":     ReactionToEmoji,
+
+		"RenderMarkdownToHtml": RenderMarkdownToHtml,
+		"RenderLabel":          RenderLabel,
+		"RenderLabels":         RenderLabels,
+		"RenderUser":           RenderUser,
+		"RenderReviewRequest":  RenderReviewRequest,
+
+		// -----------------------------------------------------------------
+		// misc
+		"ShortSha":                 base.ShortSha,
+		"ActionContent2Commits":    ActionContent2Commits,
+		"IsMultilineCommitMessage": IsMultilineCommitMessage,
+		"CommentMustAsDiff":        gitdiff.CommentMustAsDiff,
+		"MirrorRemoteAddress":      mirrorRemoteAddress,
+
+		"FilenameIsImage": FilenameIsImage,
+		"TabSizeClass":    TabSizeClass,
+	}
+}
+
+func HTMLFormat(s string, rawArgs ...any) template.HTML {
+	args := slices.Clone(rawArgs)
+	for i, v := range args {
+		switch v := v.(type) {
+		case nil, bool, int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64, float32, float64, template.HTML:
+			// for most basic types (including template.HTML which is safe), just do nothing and use it
+			break
+		case string:
+			args[i] = template.HTMLEscapeString(v)
+		case fmt.Stringer:
+			args[i] = template.HTMLEscapeString(v.String())
+		default:
+			args[i] = template.HTMLEscapeString(fmt.Sprint(v))
+		}
+	}
+	return template.HTML(fmt.Sprintf(s, args...))
+}
+
+// TrustHTML render raw as HTML
+func TrustHTML(s any) template.HTML {
+	switch v := s.(type) {
+	case string:
+		return template.HTML(v)
+	case template.HTML:
+		return v
+	}
+	panic(fmt.Sprintf("unexpected type %T", s))
+}
+
+// SanitizeHTML sanitizes the input by pre-defined markdown rules
+func SanitizeHTML(s string) template.HTML {
+	return template.HTML(markup.Sanitize(s))
+}
+
+func HTMLEscape(s any) template.HTML {
+	switch v := s.(type) {
+	case string:
+		return template.HTML(html.EscapeString(v))
+	case template.HTML:
+		return v
+	}
+	panic(fmt.Sprintf("unexpected type %T", s))
+}
+
+func JSEscapeSafe(s string) template.HTML {
+	return template.HTML(template.JSEscapeString(s))
+}
+
+func QueryEscape(s string) template.URL {
+	return template.URL(url.QueryEscape(s))
+}
+
+// DotEscape wraps a dots in names with ZWJ [U+200D] in order to prevent autolinkers from detecting these as urls
+func DotEscape(raw string) string {
+	return strings.ReplaceAll(raw, ".", "\u200d.\u200d")
+}
+
+// Eval the expression and return the result, see the comment of eval.Expr for details.
+// To use this helper function in templates, pass each token as a separate parameter.
+//
+//	{{ $int64 := Eval $var "+" 1 }}
+//	{{ $float64 := Eval $var "+" 1.0 }}
+//
+// Golang's template supports comparable int types, so the int64 result can be used in later statements like {{if lt $int64 10}}
+func Eval(tokens ...any) (any, error) {
+	n, err := eval.Expr(tokens...)
+	return n.Value, err
+}
+
+func FileSizePanic(s int64) string {
+	panic("Usage of FileSize in templates is deprecated in Forgejo. Locale.TrSize should be used instead.")
+}

@@ -1,0 +1,170 @@
+.user.profile .ui.card .header {
+  display: block;
+  font-weight: var(--font-weight-semibold);
+  font-size: 1.3rem;
+  margin-top: -0.2rem;
+  line-height: 1.3rem;
+}
+
+.user.profile .ui.card .profile-avatar-name {
+  border-top: none;
+  text-align: center;
+}
+
+.user.profile .ui.card .extra.content {
+  padding: 0;
+}
+
+.user.profile .ui.card .extra.content > ul {
+  margin: 0;
+  padding: 0;
+}
+
+.user.profile .ui.card .extra.content > ul > li {
+  display: flex;
+  padding: 0.75rem;
+  gap: 0.5rem;
+  list-style: none;
+  align-items: center;
+}
+
+.user.profile .ui.card .extra.content > ul > li:not(:last-child) {
+  border-bottom: 1px solid var(--color-secondary);
+}
+
+.user.profile .ui.card .actions {
+  padding: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.user.profile .ui.card .primary-action .ui.button {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.user.profile .ui.card #profile-avatar {
+  padding: 1rem 1rem 0.25rem;
+  justify-content: center;
+}
+
+.user.profile .ui.card #profile-avatar img {
+  max-width: 100%;
+  height: auto;
+}
+
+@media (max-width: 767.98px) {
+  .user.profile .ui.card #profile-avatar img {
+    width: 30vw;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .user.profile .ui.card {
+    width: 100%;
+  }
+}
+
+.user.link-account:not(.icon) {
+  padding-top: 15px;
+  padding-bottom: 5px;
+}
+
+.user.settings .iconFloat {
+  float: left;
+}
+
+.user-orgs {
+  display: flex;
+  flex-flow: row wrap;
+  padding: 0;
+  margin: -3px !important;
+}
+
+.user-orgs > li {
+  display: flex;
+  border-bottom: 0 !important;
+  padding: 3px !important;
+  max-width: 60px;
+}
+
+.user-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 64px);
+  gap: 2px;
+}
+
+.user-badges img {
+  object-fit: contain;
+}
+
+#readme_profile {
+  padding: 1.5em;
+  background: var(--color-box-body);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--border-radius);
+}
+
+#profile-avatar-card {
+  background: var(--color-box-body);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--border-radius);
+}
+
+#notification_table {
+  background: var(--color-box-body);
+  border: 1px solid var(--color-secondary);
+  border-radius: var(--border-radius);
+}
+
+.notifications-item:hover {
+  background: var(--color-hover);
+}
+
+.notifications-buttons {
+  display: none;
+  min-width: 74px;
+}
+
+.notifications-updated {
+  display: flex;
+}
+
+.notifications-item:hover .notifications-buttons {
+  display: flex;
+}
+
+.notifications-item:hover .notifications-updated {
+  display: none;
+}
+
+/* user's access token edit page; /user/settings/applications/tokens/new; custom CSS for repo selector visibility */
+
+/* #repo-selector-wrapper hides and shows the repository selection based upon the radio-button value, with an animation
+to hint the connection between the two to the user. */
+#repo-selector-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+body:has(input[name="resource"][value="repo-specific"]:checked) #repo-selector-wrapper {
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s ease-in;
+}
+
+/* Accessibility -- remove from the visibility tree when hidden so that it doesn't appear for screenreaders. Downside of
+this is that the contents of the selector disappear during the ease-in animation, but it's barely noticable.  The
+expansion animation is the important one anyway, as it associates the selector box with the selection just made for the
+user. */
+#repo-selector {
+  overflow: hidden; /* needed so that the grid-template-rows=0fr clips the selector out */
+  visibility: hidden;
+}
+
+body:has(input[name="resource"][value="repo-specific"]:checked) #repo-selector {
+  visibility: visible;
+}

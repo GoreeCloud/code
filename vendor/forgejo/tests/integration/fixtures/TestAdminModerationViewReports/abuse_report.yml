@@ -1,0 +1,155 @@
+-
+  id: 1
+  status: 1         # Open
+  reporter_id: 1004 # @reporter1
+  content_type: 1   # User (users or organizations)
+  content_id: 1003  # @SPAM-services
+  category: 4       # IllegalContent
+  remarks: This organization was created for spamming.
+  shadow_copy_id: null
+  created_unix: 1121423460 # 2005-07-15 10:31:00
+
+-
+  id: 2
+  status: 1
+  reporter_id: 1004 # @reporter1
+  content_type: 2   # Repository
+  content_id: 1002  # SPAM-services/spammer-tools
+  category: 4       # IllegalContent
+  remarks: This repository was created for building spamming tools.
+  shadow_copy_id: null
+  created_unix: 1121423520 # 2005-07-15 10:32:00
+
+-
+  id: 3
+  status: 1
+  reporter_id: 1004 # @reporter1
+  content_type: 3   # Issue (issues or pull requests)
+  content_id: 1002  # SPAM-services/spammer-tools#1
+  category: 2       # Spam
+  remarks: This issue advertises spam services.
+  shadow_copy_id: null
+  created_unix: 1121423580 # 2005-07-15 10:33:00
+
+-
+  id: 4
+  status: 1
+  reporter_id: 1004 # @reporter1
+  content_type: 1   # User (users or organizations)
+  content_id: 1002  # @spammer01
+  category: 2       # Spam
+  remarks: |
+    This profile advertises spam services and the user already created spam content.
+    I have reported some of them.
+  shadow_copy_id: null
+  created_unix: 1121423640 # 2005-07-15 10:34:00
+
+-
+  id: 5
+  status: 1
+  reporter_id: 1004 # @reporter1
+  content_type: 4   # Comment
+  content_id: 1001  # contributor/first/issues/1#issuecomment-1001
+  category: 3       # Malware
+  remarks: This comment references a spammy issue from a spammy repository of a spammy organization created by a spammer.
+  shadow_copy_id: null
+  created_unix: 1121423700 # 2005-07-15 10:35:00
+
+-
+  id: 6
+  status: 1
+  reporter_id: 1001 # @contributor
+  content_type: 4   # Comment
+  content_id: 1001  # contributor/first/issues/1#issuecomment-1001
+  category: 2       # Spam
+  remarks: I should delete this, since I can; but first I want to test the reporting functionality.
+  shadow_copy_id: null
+  created_unix: 1121423730 # 2005-07-15 10:35:30
+
+-
+  id: 7
+  status: 1
+  reporter_id: 1001 # @contributor
+  content_type: 1   # User (users or organizations)
+  content_id: 1002  # @spammer01
+  category: 1       # Other
+  remarks: Should investigate the origin of this abuser.
+  shadow_copy_id: null
+  created_unix: 1121423760 # 2005-07-15 10:36:00
+
+-
+  id: 8
+  status: 1
+  reporter_id: 1002 # @spammer01
+  content_type: 3   # Issue (issues or pull requests)
+  content_id: 1001  # contributor/first#1
+  category: 1       # Other
+  remarks: Just because you are the administrator of this Forgejo instance this doesn't mean that you should be more privileged compared to the rest of average users. I believe it is my right to post links to external websites where users can find more about myself and my own work, even if they are professional services. I strongly believe you should reconsider your totalitarian behaviour. The users of this instance deserve better, more inclusive rules that should prevent abuses from administrators or mod.
+  shadow_copy_id: null
+  created_unix: 1121424000 # 2005-07-15 10:40:00
+
+-
+  id: 9
+  status: 1
+  reporter_id: 1005 # @reporter2
+  content_type: 1   # User (users or organizations)
+  content_id: 1002  # @spammer01
+  category: 2       # Spam
+  remarks: This user is just spamming wherever they can.
+  shadow_copy_id: null
+  created_unix: 1121424030 # 2005-07-15 10:40:30
+
+-
+  id: 10
+  status: 1
+  reporter_id: 1005 # @reporter2
+  content_type: 1   # User (users or organizations)
+  content_id: 9999  # Ghost user
+  category: 1       # Other
+  remarks: Check this spammer as soon as possible, before they delete their account.
+  shadow_copy_id: null
+  created_unix: 1121424150 # 2005-07-15 10:42:30
+
+-
+  id: 11
+  status: 1
+  reporter_id: 1001 # @contributor
+  content_type: 4   # Comment
+  content_id: 1003  # contributor/first/issues/1#issuecomment-1003
+  category: 2       # Spam
+  remarks: This user just posted a spammy comment on my issue.
+  shadow_copy_id: null
+  created_unix: 1752697820 # 2025-07-16 20:30:20
+
+- # Report of a comment that was afterwards deleted (and a shadow copy was created) but the poster still exists.
+  id: 12
+  status: 1
+  reporter_id: 1001 # @contributor
+  content_type: 4   # Comment
+  content_id: 9991  # deleted comment
+  category: 1       # Other
+  remarks: Accuses me of being a frog.
+  shadow_copy_id: 1201
+  created_unix: 1752748200 # 2005-07-17 10:30:00
+
+- # Report of a comment that was afterwards deleted (and a shadow copy was created) and the poster was also deleted.
+  id: 13
+  status: 1
+  reporter_id: 1004 # @reporter1
+  content_type: 4   # Comment
+  content_id: 9992  # deleted comment
+  category: 2       # Spam
+  remarks: This comment advertises a product.
+  shadow_copy_id: 1301
+  created_unix: 1752751260 # 2005-07-17 11:21:00
+
+- # Report of an issue that was afterwards deleted (and a shadow copy was created) but the poster still exists.
+  id: 14
+  status: 1
+  reporter_id: 1004 # @reporter1
+  content_type: 3   # Issue (issues or pull requests)
+  content_id: 9991  # deleted issue
+  category: 2       # Spam
+  remarks: This issue was created for advertising a business.
+  shadow_copy_id: 1401
+  created_unix: 1752751320 # 2005-07-17 11:22:00

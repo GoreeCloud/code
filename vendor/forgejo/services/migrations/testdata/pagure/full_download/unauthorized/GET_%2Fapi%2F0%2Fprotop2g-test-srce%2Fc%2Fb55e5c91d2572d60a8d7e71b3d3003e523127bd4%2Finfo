@@ -1,0 +1,22 @@
+X-Content-Type-Options: nosniff
+Content-Length: 454
+Set-Cookie: pagure=eyJfcGVybWFuZW50Ijp0cnVlLCJjc3JmX3Rva2VuIjoiZGYyYjkwMjU1YWI2MTU1MGMzN2IwNDk5NDMyNmQ5MDhjOTQwNDM1MCJ9.G4-gtg.lauXHyPuU-GpljnUX7l5muhxnQ4; Expires=Fri, 26-Sep-2025 19:47:02 GMT; Secure; HttpOnly; Path=/
+Content-Type: application/json
+X-Xss-Protection: 1; mode=block
+Referrer-Policy: same-origin
+X-Frame-Options: ALLOW-FROM https://pagure.io/
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Content-Security-Policy: default-src 'self';script-src 'self' 'nonce-gTkLO2hyzMbZ7VoCsariFBw5p'; style-src 'self' 'nonce-gTkLO2hyzMbZ7VoCsariFBw5p'; object-src 'none';base-uri 'self';img-src 'self' https:;connect-src 'self' https://pagure.io:8088;frame-src https://docs.pagure.org;frame-ancestors https://pagure.io;
+
+{
+  "author": "Akashdeep Dhar", 
+  "commit_time": 1697169185, 
+  "commit_time_offset": 330, 
+  "committer": "Akashdeep Dhar", 
+  "hash": "b55e5c91d2572d60a8d7e71b3d3003e523127bd4", 
+  "message": "Change the branch identity to `test-aaaa` in the README.md file\n\nSigned-off-by: Akashdeep Dhar <akashdeep.dhar@gmail.com>\n", 
+  "parent_ids": [
+    "3f12d300f62f1c5b8a1d3265bd85d61cf6d924d7"
+  ], 
+  "tree_id": "e7911825d29e73f260de95d5070898ccbe6340a6"
+}

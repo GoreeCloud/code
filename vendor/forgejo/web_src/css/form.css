@@ -1,0 +1,587 @@
+fieldset {
+  margin: 0.2em 0 0.3em;
+  padding: 0;
+}
+
+fieldset legend {
+  font-weight: var(--font-weight-medium);
+  margin-bottom: 0.75em;
+}
+
+fieldset + fieldset > legend {
+  width: 100%;
+  padding-top: 1em;
+  border-top: 1px solid var(--color-secondary);
+}
+
+fieldset label {
+  display: block;
+  margin-bottom: 0.6em;
+}
+
+fieldset label:has(input[type="text"]),
+fieldset label:has(input[type="number"]) {
+  font-weight: var(--font-weight-medium);
+}
+
+/* override inline style on custom input elements */
+fieldset label .ui.dropdown {
+  width: 100% !important;
+}
+
+fieldset .help {
+  font-weight: var(--font-weight-normal);
+}
+
+.form fieldset .help { /* overrides other .form .help rules in this file, remove when obsolete */
+  display: block !important;
+  padding-block: 0.125rem 0;
+}
+
+fieldset label > input,
+fieldset label > textarea,
+fieldset label > .ui.dropdown,
+fieldset label + .ui.dropdown {
+  margin-top: 0.28rem !important;
+}
+
+fieldset label > input[type="checkbox"],
+fieldset label > input[type="radio"] {
+  margin-right: 0.75em;
+  margin-top: 0 !important;
+  vertical-align: initial !important; /* overrides a semantic.css rule, remove when obsolete */
+}
+
+@media (min-width: 768px) {
+  .optionmatrix input[type="radio"] {
+    margin: 0;
+  }
+
+  /* center columns except first */
+  .optionmatrix td + td, .optionmatrix th + th {
+    min-width: 10em;
+    text-align: center !important; /* overrides table.css "inherit" rule */
+  }
+}
+
+/* if an element with class "hide-unless-checked" follows a label
+ * that has no checked input, it will be hidden.*/
+label:not(:has(input:checked)) + .hide-unless-checked {
+  display: none;
+}
+
+.ui.input textarea,
+.ui.form textarea,
+.ui.form input:not([type]),
+.ui.form input[type="date"],
+.ui.form input[type="datetime-local"],
+.ui.form input[type="email"],
+.ui.form input[type="number"],
+.ui.form input[type="password"],
+.ui.form input[type="search"],
+.ui.form input[type="tel"],
+.ui.form input[type="time"],
+.ui.form input[type="text"],
+.ui.form input[type="file"],
+.ui.form input[type="url"] {
+  transition: none;
+}
+
+input,
+textarea,
+.ui.input > input,
+.ui.form input:not([type]),
+.ui.form select,
+.ui.form textarea,
+.ui.form input[type="date"],
+.ui.form input[type="datetime-local"],
+.ui.form input[type="email"],
+.ui.form input[type="file"],
+.ui.form input[type="number"],
+.ui.form input[type="password"],
+.ui.form input[type="search"],
+.ui.form input[type="tel"],
+.ui.form input[type="text"],
+.ui.form input[type="time"],
+.ui.form input[type="url"],
+.ui.selection.dropdown {
+  background: var(--color-input-background);
+  border-color: var(--color-input-border);
+  color: var(--color-input-text);
+}
+
+/* fix fomantic small dropdown having inconsistent padding with input */
+.ui.small.selection.dropdown {
+  padding: .67857143em 1.6em .67857143em 1em;
+}
+
+input:hover,
+textarea:hover,
+.ui.input input:hover,
+.ui.form input:not([type]):hover,
+.ui.form select:hover,
+.ui.form textarea:hover,
+.ui.form input[type="date"]:hover,
+.ui.form input[type="datetime-local"]:hover,
+.ui.form input[type="email"]:hover,
+.ui.form input[type="file"]:hover,
+.ui.form input[type="number"]:hover,
+.ui.form input[type="password"]:hover,
+.ui.form input[type="search"]:hover,
+.ui.form input[type="tel"]:hover,
+.ui.form input[type="text"]:hover,
+.ui.form input[type="time"]:hover,
+.ui.form input[type="url"]:hover,
+.ui.selection.dropdown:hover {
+  background: var(--color-input-background);
+  border-color: var(--color-input-border-hover);
+  color: var(--color-input-text);
+}
+
+input:focus,
+textarea:focus,
+.ui.input input:focus,
+.ui.form input:not([type]):focus,
+.ui.form select:focus,
+.ui.form textarea:focus,
+.ui.form input[type="date"]:focus,
+.ui.form input[type="datetime-local"]:focus,
+.ui.form input[type="email"]:focus,
+.ui.form input[type="file"]:focus,
+.ui.form input[type="number"]:focus,
+.ui.form input[type="password"]:focus,
+.ui.form input[type="search"]:focus,
+.ui.form input[type="tel"]:focus,
+.ui.form input[type="text"]:focus,
+.ui.form input[type="time"]:focus,
+.ui.form input[type="url"]:focus,
+.ui.selection.dropdown:focus {
+  background: var(--color-input-background);
+  border-color: var(--color-primary);
+  color: var(--color-input-text);
+}
+
+/* error messages */
+fieldset label.error textarea,
+fieldset label.error select,
+fieldset label.error input,
+.ui.form .fields.error .field textarea,
+.ui.form .fields.error .field select,
+.ui.form .fields.error .field input:not([type]),
+.ui.form .fields.error .field input[type="date"],
+.ui.form .fields.error .field input[type="datetime-local"],
+.ui.form .fields.error .field input[type="email"],
+.ui.form .fields.error .field input[type="number"],
+.ui.form .fields.error .field input[type="password"],
+.ui.form .fields.error .field input[type="search"],
+.ui.form .fields.error .field input[type="tel"],
+.ui.form .fields.error .field input[type="time"],
+.ui.form .fields.error .field input[type="text"],
+.ui.form .fields.error .field input[type="file"],
+.ui.form .fields.error .field input[type="url"],
+.ui.form .fields.error .field .ui.dropdown,
+.ui.form .fields.error .field .ui.dropdown .item,
+.ui.form .field.error .ui.dropdown,
+.ui.form .field.error .ui.dropdown .text,
+.ui.form .field.error .ui.dropdown .item,
+.ui.form .field.error textarea,
+.ui.form .field.error select,
+.ui.form .field.error input:not([type]),
+.ui.form .field.error input[type="date"],
+.ui.form .field.error input[type="datetime-local"],
+.ui.form .field.error input[type="email"],
+.ui.form .field.error input[type="number"],
+.ui.form .field.error input[type="password"],
+.ui.form .field.error input[type="search"],
+.ui.form .field.error input[type="tel"],
+.ui.form .field.error input[type="time"],
+.ui.form .field.error input[type="text"],
+.ui.form .field.error input[type="file"],
+.ui.form .field.error input[type="url"],
+.ui.form .field.error select:focus,
+.ui.form .field.error input:not([type]):focus,
+.ui.form .field.error input[type="date"]:focus,
+.ui.form .field.error input[type="datetime-local"]:focus,
+.ui.form .field.error input[type="email"]:focus,
+.ui.form .field.error input[type="number"]:focus,
+.ui.form .field.error input[type="password"]:focus,
+.ui.form .field.error input[type="search"]:focus,
+.ui.form .field.error input[type="tel"]:focus,
+.ui.form .field.error input[type="time"]:focus,
+.ui.form .field.error input[type="text"]:focus,
+.ui.form .field.error input[type="file"]:focus,
+.ui.form .field.error input[type="url"]:focus {
+  background-color: var(--color-error-bg);
+  border-color: var(--color-error-border);
+  color: var(--color-error-text);
+}
+
+.ui.form .fields.error .field .ui.dropdown,
+.ui.form .field.error .ui.dropdown,
+.ui.form .fields.error .field .ui.dropdown:hover,
+.ui.form .field.error .ui.dropdown:hover {
+  border-color: var(--color-error-border) !important;
+}
+
+.ui.form .fields.error .field .ui.dropdown .menu .item:hover,
+.ui.form .field.error .ui.dropdown .menu .item:hover {
+  background-color: var(--color-error-bg-hover);
+}
+
+.ui.form .fields.error .field .ui.dropdown .menu .active.item,
+.ui.form .field.error .ui.dropdown .menu .active.item {
+  background-color: var(--color-error-bg-active) !important;
+}
+
+.ui.form .fields.error .dropdown .menu,
+.ui.form .field.error .dropdown .menu {
+  border-color: var(--color-error-border) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active,
+.ui.form .field.field input:-webkit-autofill,
+.ui.form .field.field input:-webkit-autofill:focus,
+.ui.form .field.field input:-webkit-autofill:hover,
+.ui.form .field.field input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: var(--color-text);
+  box-shadow: 0 0 0 100px var(--color-primary-light-6) inset !important;
+  border-color: var(--color-primary-light-4) !important;
+}
+
+.ui.form .field.muted {
+  opacity: var(--opacity-disabled);
+}
+
+.ui.form .field > label,
+.ui.form .inline.fields > label,
+.ui.form .inline.fields .field > label,
+.ui.form .inline.fields .field > p,
+.ui.form .inline.field > label,
+.ui.form .inline.field > p {
+  color: var(--color-text);
+}
+
+.ui.form .required.fields > .field > label::after,
+.ui.form .required.field > label::after,
+.ui.form label.required::after {
+  color: var(--color-thin-red, var(--color-red));
+}
+
+.ui.input {
+  color: var(--color-input-text);
+}
+
+/* match <select> padding to <input> */
+.ui.form select {
+  padding: 0.67857143em 1em;
+}
+
+.form .help {
+  color: var(--color-secondary-dark-8);
+  padding-bottom: 0.6em;
+  display: inline-block;
+}
+
+.m-captcha-style {
+  width: 100%;
+  height: 5em;
+  vertical-align: middle;
+  display: inline-block;
+}
+
+@media (min-width: 768px) {
+  .g-recaptcha-style,
+  .h-captcha-style {
+    margin: 0 auto !important;
+    width: 304px;
+    padding-left: 30px;
+  }
+  .g-recaptcha-style iframe,
+  .h-captcha-style iframe {
+    border-radius: var(--border-radius) !important;
+    width: 302px !important;
+    height: 76px !important;
+  }
+  .m-captcha-style {
+    width: 50%;
+  }
+}
+
+@media (max-height: 575px) {
+  #rc-imageselect,
+  .g-recaptcha-style,
+  .h-captcha-style {
+    transform: scale(0.77);
+    transform-origin: 0 0;
+  }
+}
+
+.user.forgot.password form,
+.user.reset.password form,
+.user.signup form {
+  margin: auto;
+  width: 700px !important;
+}
+
+.user.activate form .ui.message,
+.user.forgot.password form .ui.message,
+.user.reset.password form .ui.message,
+.user.link-account form .ui.message,
+.user.signin form .ui.message,
+.user.signup form .ui.message {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .user.activate form,
+  .user.forgot.password form,
+  .user.reset.password form,
+  .user.link-account form,
+  .user.signin form,
+  .user.signup form {
+    width: 800px !important;
+  }
+  .user.activate form .header,
+  .user.forgot.password form .header,
+  .user.reset.password form .header,
+  .user.link-account form .header,
+  .user.signin form .header,
+  .user.signup form .header {
+    padding-left: 280px !important;
+  }
+  .user.activate form .inline.field > label {
+    text-align: right;
+    width: 250px !important;
+    word-wrap: break-word;
+  }
+  .user.activate form .help,
+  .user.forgot.password form .help,
+  .user.reset.password form .help,
+  .user.link-account form .help,
+  .user.signin form .help,
+  .user.signup form .help {
+    margin-left: 265px !important;
+  }
+  .user.activate form .optional .title,
+  .user.forgot.password form .optional .title,
+  .user.reset.password form .optional .title,
+  .user.link-account form .optional .title,
+  .user.signin form .optional .title,
+  .user.signup form .optional .title {
+    margin-left: 250px !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .user.activate form .optional .title,
+  .user.forgot.password form .optional .title,
+  .user.reset.password form .optional .title,
+  .user.link-account form .optional .title,
+  .user.signin form .optional .title,
+  .user.signup form .optional .title {
+    margin-left: 15px;
+  }
+  .user.activate form .inline.field > label,
+  .user.forgot.password form .inline.field > label,
+  .user.reset.password form .inline.field > label,
+  .user.link-account form .inline.field > label,
+  .user.signin form .inline.field > label,
+  .user.signup form .inline.field > label {
+    display: block;
+  }
+}
+
+.user.activate form .header,
+.user.forgot.password form .header,
+.user.reset.password form .header,
+.user.link-account form .header,
+.user.signin form .header,
+.user.signup form .header {
+  padding-left: 0 !important;
+  text-align: center;
+}
+
+.user.activate form .inline.field > label,
+.user.forgot.password form .inline.field > label,
+.user.reset.password form .inline.field > label,
+.user.link-account form .inline.field > label,
+.user.signin form .inline.field > label,
+.user.signup form .inline.field > label {
+  width: 200px;
+}
+
+@media (max-width: 767.98px) {
+  .user.activate form .inline.field > label,
+  .user.forgot.password form .inline.field > label,
+  .user.reset.password form .inline.field > label,
+  .user.link-account form .inline.field > label,
+  .user.signin form .inline.field > label,
+  .user.signup form .inline.field > label {
+    width: 100% !important;
+  }
+}
+
+.user.activate form input[type="number"],
+.user.forgot.password form input[type="number"],
+.user.reset.password form input[type="number"],
+.user.link-account form input[type="number"],
+.user.signin form input[type="number"],
+.user.signup form input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.user.activate form input::-webkit-outer-spin-button,
+.user.forgot.password form input::-webkit-outer-spin-button,
+.user.reset.password form input::-webkit-outer-spin-button,
+.user.link-account form input::-webkit-outer-spin-button,
+.user.signin form input::-webkit-outer-spin-button,
+.user.signup form input::-webkit-outer-spin-button,
+.user.activate form input::-webkit-inner-spin-button,
+.user.forgot.password form input::-webkit-inner-spin-button,
+.user.reset.password form input::-webkit-inner-spin-button,
+.user.link-account form input::-webkit-inner-spin-button,
+.user.signin form input::-webkit-inner-spin-button,
+.user.signup form input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.moderation.new-report form,
+.repository.new.repo form,
+.repository.new.migrate form,
+.repository.new.fork form {
+  margin: auto;
+}
+
+.repository.new.repo form .ui.message,
+.repository.new.migrate form .ui.message,
+.repository.new.fork form .ui.message {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .moderation.new-report form,
+  .repository.new.repo form,
+  .repository.new.migrate form,
+  .repository.new.fork form {
+    width: 800px !important;
+  }
+  .moderation.new-report form .header,
+  .repository.new.repo form .header,
+  .repository.new.migrate form .header,
+  .repository.new.fork form .header {
+    padding-left: 280px !important;
+  }
+  .repository.new.migrate form .inline.field > label,
+  .repository.new.fork form .inline.field > label {
+    text-align: right;
+    width: 250px !important;
+    word-wrap: break-word;
+  }
+  .repository.new.migrate form .help,
+  .repository.new.fork form .help {
+    margin-left: 265px !important;
+  }
+  .repository.new.repo form .optional .title,
+  .repository.new.migrate form .optional .title,
+  .repository.new.fork form .optional .title {
+    margin-left: 250px !important;
+  }
+  .repository.new.migrate form .inline.field > input,
+  .repository.new.fork form .inline.field > input,
+  .repository.new.migrate form .inline.field > textarea,
+  .repository.new.fork form .inline.field > textarea {
+    width: 50%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .repository.new.repo form .optional .title,
+  .repository.new.migrate form .optional .title,
+  .repository.new.fork form .optional .title {
+    margin-left: 15px;
+  }
+  .repository.new.repo form .inline.field > label,
+  .repository.new.migrate form .inline.field > label,
+  .repository.new.fork form .inline.field > label {
+    display: block;
+  }
+}
+
+.repository.new.migrate form .dropdown .text,
+.repository.new.fork form .dropdown .text {
+  margin-right: 0 !important;
+}
+
+.moderation.new-report form .header,
+.repository.new.repo form .header,
+.repository.new.migrate form .header,
+.repository.new.fork form .header {
+  padding-left: 0 !important;
+  text-align: center;
+}
+
+.repository.new.migrate form .selection.dropdown,
+.repository.new.fork form .selection.dropdown,
+.repository.new.fork form .field a {
+  vertical-align: middle;
+  width: 50% !important;
+}
+
+@media (max-width: 767.98px) {
+  .repository.new.repo form label,
+  .repository.new.migrate form label,
+  .repository.new.fork form label,
+  .repository.new.repo form .inline.field > input,
+  .repository.new.migrate form .inline.field > input,
+  .repository.new.fork form .inline.field > input,
+  .repository.new.fork form .field a,
+  .repository.new.repo form .selection.dropdown,
+  .repository.new.migrate form .selection.dropdown,
+  .repository.new.fork form .selection.dropdown {
+    width: 100% !important;
+  }
+  .repository.new.repo form .field button,
+  .repository.new.migrate form .field button,
+  .repository.new.fork form .field button,
+  .repository.new.repo form .field a,
+  .repository.new.migrate form .field a {
+    margin-bottom: 1em;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) {
+  .repository.new.repo .ui.form #auto-init {
+    margin-left: 265px !important;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .repository.new.repo .ui.form .selection.dropdown:not(.owner) {
+    width: 100% !important;
+  }
+}
+
+.ui.form .field > .selection.dropdown {
+  min-width: 14em; /* matches the default min width */
+}
+
+.githook textarea {
+  font-family: var(--fonts-monospace);
+}
+
+@media (max-width: 767.98px) {
+  .new.org .ui.form .field button,
+  .new.org .ui.form .field a {
+    margin-bottom: 1em;
+    width: 100%;
+  }
+  .new.org .ui.form .field input:not([type="checkbox"], [type="radio"]) {
+    width: 100% !important;
+  }
+}

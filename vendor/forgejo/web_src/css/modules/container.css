@@ -1,0 +1,66 @@
+/* based on Fomantic UI container module, with just the parts extracted that we use. If you find any
+   unused rules here after refactoring, please remove them. */
+
+.ui.container {
+  display: block;
+  --container-width: 100%;
+  max-width: var(--container-width);
+}
+
+@media (max-width: 767.98px) {
+  .ui.ui.ui.container:not(.fluid) {
+    --container-width: auto;
+    width: var(--container-width);
+    margin-left: 1em;
+    margin-right: 1em;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .ui.ui.ui.container:not(.fluid) {
+    --container-width: 723px;
+    width: var(--container-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+  .ui.ui.ui.container:not(.fluid) {
+    --container-width: 933px;
+    width: var(--container-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media (min-width: 1200px) {
+  .ui.ui.ui.container:not(.fluid) {
+    --container-width: 1127px;
+    width: var(--container-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.ui.fluid.container {
+  --container-width: 100%;
+  width: var(--container-width);
+}
+
+.ui[class*="center aligned"].container {
+  text-align: center;
+}
+
+/* overwrite width of containers inside the main page content div (div with class "page-content") */
+.page-content .ui.ui.ui.container:not(.fluid) {
+  --container-width: 1280px;
+  width: var(--container-width);
+  max-width: calc(100% - calc(2 * var(--page-margin-x)));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ui.container.fluid.padded {
+  padding: 0 var(--page-margin-x);
+}

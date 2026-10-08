@@ -1,0 +1,12 @@
+-
+  id: 1001
+  lower_name: user1001
+  name: user1001
+  full_name: User That loves Upper Cases
+  email: AnotherTestUserWithUpperCaseEmail@otto.splvs.net
+  passwd: ZogKvWdyEx:password
+  passwd_hash_algo: dummy
+  avatar: ''
+  avatar_email: anothertestuserwithuppercaseemail@otto.splvs.net
+  login_name: user1
+  created_unix: 1672578000

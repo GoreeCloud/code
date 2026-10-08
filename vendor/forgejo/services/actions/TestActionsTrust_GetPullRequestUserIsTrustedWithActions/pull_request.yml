@@ -1,0 +1,64 @@
+-
+  id: 1000
+  type: 0 # pull request
+  status: 2 # mergeable
+  issue_id: 81000
+  index: 1000
+  head_repo_id: 11
+  base_repo_id: 10
+  head_branch: branch2000
+  base_branch: master
+  merge_base: 0abcb056019adb83
+  has_merged: false
+
+-
+  id: 2000
+  type: 0 # pull request
+  status: 2 # mergeable
+  issue_id: 82000
+  index: 2000
+  head_repo_id: 11
+  base_repo_id: 11
+  head_branch: branch2000
+  base_branch: master
+  merge_base: 0abcb056019adb83
+  has_merged: false
+
+-
+  id: 3000
+  type: 0 # pull request
+  status: 2 # mergeable
+  issue_id: 83000
+  index: 3000
+  head_repo_id: 11 # different from base_repo
+  base_repo_id: 10
+  head_branch: branch3000
+  base_branch: master
+  merge_base: 0abcb056019adb83
+  has_merged: false
+
+-
+  id: 4000
+  type: 0 # pull request
+  status: 2 # mergeable
+  issue_id: 84000
+  index: 4000
+  head_repo_id: 11 # different from base_repo
+  base_repo_id: 10
+  head_branch: branch4000
+  base_branch: master
+  merge_base: 0abcb056019adb83
+  has_merged: false
+
+-
+  id: 5000
+  type: 0 # pull request
+  status: 2 # mergeable
+  issue_id: 85000
+  index: 5000
+  head_repo_id: 11 # different from base_repo
+  base_repo_id: 10
+  head_branch: branch5000
+  base_branch: master
+  merge_base: 0abcb056019adb83
+  has_merged: false

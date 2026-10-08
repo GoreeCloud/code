@@ -1,0 +1,55 @@
+<div class="runner-container">
+	<h4 class="ui top attached header">
+		{{ctx.Locale.Tr "actions.runners.runner_setup.title" .Runner.Name}}
+		<div class="ui right">
+			<a class="ui basic tiny button" href="{{.RunnersListLink}}" tabindex="0">
+				{{ctx.Locale.Tr "actions.runners.runner_setup.list_of_runners_link"}}
+			</a>
+		</div>
+	</h4>
+	<div class="ui attached segment">
+		<p>{{ctx.Locale.Tr "actions.runners.runner_setup.last_chance_copying_token"}}</p>
+		<dl>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.uuid"}}</dt>
+				<dd>
+					{{.Runner.UUID}}
+					<button class="ui basic label button"
+							aria-label="{{ctx.Locale.Tr "actions.runners.runner_setup.button_copy_uuid_aria"}}"
+							data-clipboard-text="{{.Runner.UUID}}">
+						{{svg "octicon-copy" 14}}
+					</button>
+				</dd>
+			</div>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.token"}}</dt>
+				<dd>
+					{{.Runner.Token}}
+					<button class="ui basic label button"
+							aria-label="{{ctx.Locale.Tr "actions.runners.runner_setup.button_copy_token_aria"}}"
+							data-clipboard-text="{{.Runner.Token}}">
+						{{svg "octicon-copy" 14}}
+					</button>
+				</dd>
+			</div>
+		</dl>
+		<h5>{{ctx.Locale.Tr "actions.runners.runner_setup.heading_using_configuration"}}</h5>
+		<pre><code aria-label="{{ctx.Locale.Tr "actions.runners.runner_setup.configuration_snippet_aria"}}">server:
+&nbsp;&nbsp;connections:
+&nbsp;&nbsp;&nbsp;&nbsp;forgejo:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;url: {{.AppURL}}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;uuid: {{.Runner.UUID}}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;token: {{.Runner.Token}}
+</code></pre>
+		<p>{{ctx.Locale.Tr "actions.runners.runner_setup.instruction_replace_connection_name"}}</p>
+		<h5>{{ctx.Locale.Tr "actions.runners.runner_setup.heading_using_options"}}</h5>
+		<pre><code aria-label="{{ctx.Locale.Tr "actions.runners.runner_setup.program_options_snippet_aria"}}">$ echo -n &quot;{{.Runner.Token}}&quot; > /path/to/runner-token
+$ forgejo-runner daemon \
+	--url {{.AppURL}} \
+	--uuid {{.Runner.UUID}} \
+	--token-url file:///path/to/runner-token \
+	--label docker:docker://node:lts
+</code></pre>
+		<p>{{ctx.Locale.Tr "actions.runners.runner_setup.instruction_advanced_configurations" "https://forgejo.org/docs/latest/admin/actions/"}}</p>
+	</div>
+</div>

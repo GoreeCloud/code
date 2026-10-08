@@ -1,0 +1,23 @@
+{{template "org/settings/layout_head" (dict "ctxData" . "pageClass" "organization settings blocked-users")}}
+<div class="org-setting-content">
+	<h4 class="ui top attached header">
+		{{ctx.Locale.Tr "settings.blocked_users"}}
+	</h4>
+	<div class="ui attached segment">
+		<form class="ui form ignore-dirty tw-flex tw-flex-wrap tw-gap-2" action="{{$.Link}}/block" method="post">
+			<input type="hidden" name="uid" value="">
+			<div class="ui left">
+				<div id="search-user-box" class="ui search">
+					<div class="ui input">
+						<input class="prompt" name="uname" placeholder="{{ctx.Locale.Tr "search.user_kind"}}" autocomplete="off" required>
+					</div>
+				</div>
+			</div>
+			<button type="submit" class="ui red button">{{ctx.Locale.Tr "user.block"}}</button>
+		</form>
+	</div>
+	<div class="ui attached segment">
+		{{template "shared/blocked_users_list" .}}
+	</div>
+</div>
+{{template "org/settings/layout_footer" .}}

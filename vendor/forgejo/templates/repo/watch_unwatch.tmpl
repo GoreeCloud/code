@@ -1,0 +1,16 @@
+<form hx-boost="true" hx-target="this" method="post" action="{{$.RepoLink}}/action/{{if $.IsWatchingRepo}}un{{end}}watch" hx-on::after-settle="this.querySelector('button').focus()">
+	<div class="ui labeled button" {{if not $.IsSigned}}data-tooltip-content="{{ctx.Locale.Tr "repo.watch_guest_user"}}"{{end}}>
+		<button type="submit" class="ui compact small basic button"{{if not $.IsSigned}} disabled{{end}} aria-label="{{if $.IsWatchingRepo}}{{ctx.Locale.Tr "repo.unwatch"}}{{else}}{{ctx.Locale.Tr "repo.watch"}}{{end}}">
+			{{if $.IsWatchingRepo}}
+				{{svg "octicon-eye-closed" 16}}<span class="text not-mobile">{{ctx.Locale.Tr "repo.unwatch"}}</span>
+			{{else}}
+				{{svg "octicon-eye"}}<span class="text not-mobile">{{ctx.Locale.Tr "repo.watch"}}</span>
+			{{end}}
+		</button>
+		<a hx-boost="false" class="ui basic label" href="{{.RepoLink}}/watchers"
+			aria-label="{{ctx.Locale.TrPluralString .Repository.NumWatches "watch.n_watchers" (printf "%d" .Repository.NumWatches)}}"
+			>
+			{{CountFmt .Repository.NumWatches}}
+		</a>
+	</div>
+</form>

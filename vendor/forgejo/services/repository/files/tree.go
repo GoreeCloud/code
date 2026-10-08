@@ -1,0 +1,97 @@
+// Copyright 2019 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package files
+
+import (
+	"context"
+	"fmt"
+	"net/url"
+
+	"forgejo.org/models"
+	repo_model "forgejo.org/models/repo"
+	"forgejo.org/modules/git"
+	"forgejo.org/modules/setting"
+	api "forgejo.org/modules/structs"
+)
+
+// GetTreeBySHA get the GitTreeResponse of a repository using a sha hash.
+func GetTreeBySHA(ctx context.Context, repo *repo_model.Repository, gitRepo *git.Repository, sha string, page, perPage int, recursive bool) (*api.GitTreeResponse, error) {
+	gitTree, err := gitRepo.GetTree(sha)
+	if err != nil || gitTree == nil {
+		return nil, models.ErrSHANotFound{
+			SHA: sha,
+		}
+	}
+	tree := new(api.GitTreeResponse)
+	tree.SHA = gitTree.ResolvedID.String()
+	tree.URL = repo.APIURL() + "/git/trees/" + url.PathEscape(tree.SHA)
+	var entries git.Entries
+	if recursive {
+		entries, err = gitTree.ListEntriesRecursiveWithSize()
+	} else {
+		entries, err = gitTree.ListEntries()
+	}
+	if err != nil {
+		return nil, err
+	}
+	apiURL := repo.APIURL()
+	apiURLLen := len(apiURL)
+	objectFormat := git.ObjectFormatFromName(repo.ObjectFormatName)
+	hashLen := objectFormat.FullLength()
+
+	const gitBlobsPath = "/git/blobs/"
+	blobURL := make([]byte, apiURLLen+hashLen+len(gitBlobsPath))
+	copy(blobURL, apiURL)
+	copy(blobURL[apiURLLen:], []byte(gitBlobsPath))
+
+	const gitTreePath = "/git/trees/"
+	treeURL := make([]byte, apiURLLen+hashLen+len(gitTreePath))
+	copy(treeURL, apiURL)
+	copy(treeURL[apiURLLen:], []byte(gitTreePath))
+
+	// copyPos is at the start of the hash
+	copyPos := len(treeURL) - hashLen
+
+	if perPage <= 0 || perPage > setting.API.DefaultGitTreesPerPage {
+		perPage = setting.API.DefaultGitTreesPerPage
+	}
+	if page <= 0 {
+		page = 1
+	}
+	tree.Page = page
+	tree.TotalCount = len(entries)
+	rangeStart := perPage * (page - 1)
+	if rangeStart >= len(entries) {
+		return tree, nil
+	}
+	var rangeEnd int
+	if len(entries) > perPage {
+		tree.Truncated = true
+	}
+	rangeEnd = min(rangeStart+perPage, len(entries))
+	tree.Entries = make([]api.GitEntry, rangeEnd-rangeStart)
+	for e := rangeStart; e < rangeEnd; e++ {
+		i := e - rangeStart
+
+		tree.Entries[i].Path = entries[e].Name()
+		tree.Entries[i].Mode = fmt.Sprintf("%06o", entries[e].Mode())
+		tree.Entries[i].Type = entries[e].Type()
+		tree.Entries[i].Size = entries[e].Size()
+		tree.Entries[i].SHA = entries[e].ID.String()
+
+		if entries[e].IsDir() {
+			copy(treeURL[copyPos:], entries[e].ID.String())
+			tree.Entries[i].URL = string(treeURL)
+		} else if entries[e].IsSubmodule() {
+			// In Github Rest API Version=2022-11-28, if a tree entry is a submodule,
+			// its url will be returned as an empty string.
+			// So the URL will be set to "" here.
+			tree.Entries[i].URL = ""
+		} else {
+			copy(blobURL[copyPos:], entries[e].ID.String())
+			tree.Entries[i].URL = string(blobURL)
+		}
+	}
+	return tree, nil
+}

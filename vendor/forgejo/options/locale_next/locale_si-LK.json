@@ -1,0 +1,36 @@
+{
+	"actions.runners.name": "නම",
+	"actions.runners.owner_type": "වර්ගය",
+	"actions.runners.description": "සවිස්තරය",
+	"actions.runners.task_list.run": "ධාවනය",
+	"actions.runners.task_list.repository": "කෝෂ්ඨය",
+	"actions.runners.task_list.commit": "කැප",
+	"actions.runners.status.active": "ක්රියාකාරී",
+	"notification.notifications": "දැනුම්දීම්",
+	"notification.unread": "නොකියවූ",
+	"notification.read": "කියවූ",
+	"notification.no_unread": "නොකියවූ දැනුම්දීම් නැත.",
+	"notification.no_read": "කියවූ දැනුම්දීම් නැත.",
+	"dropzone.default_message": "ගොනු දමන්න හෝ උඩුගත කිරීමට මෙතැන ඔබන්න.",
+	"dropzone.remove_file": "ගොනුව ඉවත් කරන්න",
+	"packages.filter.type": "වර්ගය",
+	"packages.alpine.repository.branches": "ශාඛා",
+	"packages.alpine.repository.repositories": "කෝෂ්ඨ",
+	"repo.pulls.merged_title_desc": "මර්ජ්%[1]d සිට <code>%[2]s</code> දක්වා <code>%[3]s</code> %[4]s",
+	"repo.pulls.title_desc": "%[1]d සිට <code>%[2]s</code> දක්වා <code id=\"%[4]s\">%[3]s</code>",
+	"migrate.git.description": "ඕනෑම Git සේවාවකින් පමණක් ගබඩාවක් සංක්රමණය කරන්න.",
+	"migrate.gitea.description": "Gitea.com හෝ වෙනත් Gitea අවස්ථා වලින් දත්ත සංක්රමණය කරන්න.",
+	"migrate.gitlab.description": "gitlab.com හෝ වෙනත් GitLab අවස්ථා වලින් දත්ත සංක්රමණය කරන්න.",
+	"migrate.gogs.description": "notabug.org හෝ වෙනත් Gogs අවස්ථා වලින් දත්ත සංක්රමණය කරන්න.",
+	"migrate.onedev.description": "code.onedev.io හෝ වෙනත් OnedeV අවස්ථා වලින් දත්ත සංක්රමණය කරන්න.",
+	"migrate.gitbucket.description": "GitBucket අවස්ථා වලින් දත්ත සංක්රමණය කරන්න.",
+	"pulse.n_active_issues": {
+		"one": "%s ක්රියාකාරී නිකුතුව",
+		"other": "%s ක්රියාකාරී ගැටළු"
+	},
+	"pulse.n_active_prs": {
+		"one": "%s ක්රියාකාරී අදින්න ඉල්ලීම",
+		"other": "%s ක්රියාකාරී අදින්න ඉල්ලීම්"
+	},
+	"meta.last_line": " "
+}

@@ -1,0 +1,27 @@
+Cache-Control: max-age=0, private, must-revalidate
+Cf-Cache-Status: MISS
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json
+Etag: W/"890cf8ae2716f07ebfd15e1c459084c7"
+Gitlab-Lb: haproxy-main-55-lb-gprd
+Gitlab-Sv: api-gke-us-east1-b
+Link: <https://gitlab.com/api/v4/projects/61363672/merge_requests?id=61363672&order_by=created_at&page=1&per_page=2&sort=desc&state=all&view=simple&with_labels_details=false&with_merge_status_recheck=false>; rel="first", <https://gitlab.com/api/v4/projects/61363672/merge_requests?id=61363672&order_by=created_at&page=1&per_page=2&sort=desc&state=all&view=simple&with_labels_details=false&with_merge_status_recheck=false>; rel="last"
+Ratelimit-Limit: 2000
+Ratelimit-Name: throttle_authenticated_api
+Ratelimit-Observed: 22
+Ratelimit-Remaining: 1978
+Ratelimit-Reset: 1771055640
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Next-Page: 
+X-Page: 1
+X-Per-Page: 2
+X-Prev-Page: 
+X-Runtime: 0.127936
+X-Total: 2
+X-Total-Pages: 1
+
+[{"id":435564587,"iid":2,"project_id":61363672,"title":"Test/parsing","description":"Simillar to !1 this solves an issue.","state":"opened","created_at":"2025-11-25T09:48:20.259Z","updated_at":"2025-11-25T09:48:21.627Z","web_url":"https://gitlab.com/forgejo/test_repo/-/merge_requests/2"},{"id":324657888,"iid":1,"project_id":61363672,"title":"Test branch","description":"do not merge this PR","state":"opened","created_at":"2024-09-03T07:57:19.866Z","updated_at":"2024-09-03T18:50:21.065Z","web_url":"https://gitlab.com/forgejo/test_repo/-/merge_requests/1"}]

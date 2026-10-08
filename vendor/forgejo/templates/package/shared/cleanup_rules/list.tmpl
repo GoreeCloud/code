@@ -1,0 +1,56 @@
+<h4 class="ui top attached header">
+	{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.title"}}
+	<div class="ui right">
+		<a class="ui primary tiny button" href="{{.Link}}/rules/add">{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.add"}}</a>
+	</div>
+</h4>
+<div class="ui attached segment">
+	<div class="flex-list">
+		{{range .CleanupRules}}
+			<div class="flex-item">
+				<div class="flex-item-leading">
+					{{svg .Type.SVGName 32}}
+				</div>
+				<div class="flex-item-main">
+					<div class="flex-item-title">
+						<a class="item" href="{{$.Link}}/rules/{{.ID}}">{{.Type.Name}}</a>
+					</div>
+					<div class="flex-item-body">
+						<p>{{if .Enabled}}{{ctx.Locale.Tr "enabled"}}{{else}}{{ctx.Locale.Tr "disabled"}}{{end}}</p>
+					</div>
+					{{if .KeepCount}}
+					<div class="flex-item-body">
+						<p>{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.keep.count"}}:</p> {{if eq .KeepCount 1}}{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.keep.count.1"}}{{else}}{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.keep.count.n" .KeepCount}}{{end}}
+					</div>
+					{{end}}
+					{{if .KeepPattern}}
+					<div class="flex-item-body">
+						<p>{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.keep.pattern"}}:</p> {{StringUtils.EllipsisString .KeepPattern 100}}
+					</div>
+					{{end}}
+					{{if .RemoveDays}}
+					<div class="flex-item-body">
+						<p>{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.remove.days"}}:</p> {{ctx.Locale.Tr "tool.days" .RemoveDays}}
+					</div>
+					{{end}}
+					{{if .RemovePattern}}
+					<div class="flex-item-body">
+						<p>{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.remove.pattern"}}:</p> {{StringUtils.EllipsisString .RemovePattern 100}}
+					</div>
+					{{end}}
+				</div>
+				<div class="flex-item-trailing">
+					<div class="ui dropdown tiny basic button">
+						{{svg "octicon-kebab-horizontal"}}
+						<div class="menu">
+							<a class="item" href="{{$.Link}}/rules/{{.ID}}">{{ctx.Locale.Tr "edit"}}</a>
+							<a class="item" href="{{$.Link}}/rules/{{.ID}}/preview">{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.preview"}}</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		{{else}}
+			<div class="item">{{ctx.Locale.Tr "packages.owner.settings.cleanuprules.none"}}</div>
+		{{end}}
+	</div>
+</div>

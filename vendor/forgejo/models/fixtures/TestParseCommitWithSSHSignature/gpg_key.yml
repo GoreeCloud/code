@@ -1,0 +1,24 @@
+-
+  id: 7
+  owner_id: 2
+  key_id: C21381CD63F609EE
+  primary_key_id:
+  content: xsBNBGjmzbQBCADPn1Cl1LibN3K7+9A+If/RjDdTfFVbGk7A8pEDpkgzkmbIcMsi+WvPypbnoTJWyc4E5rsj7MYU6NKK3HADFX4rI6h/732xLmK/R+ekeT8wv+XKO1ncTtm/YITC5qRl84xeYfg4DuGGikhCc8xj8ZKWrx5r1ekISidyvNDJrrcHFToqlqGX74w9mRSSQJm1RayX+5nDph7qOpV8ZCpZT2LS00BYkYO62OHl2Ecm+qWiLyyA4iDR4DVSR9qyLzlXdEI2qQXf28zLV4YPaHckNWdRnaqlr/Mlbd+rbZt/49IBDgXPc+EGo6OXYmZls7pyPSCyirz/ObIyM/9t0JIh8rFrABEBAAE=
+  verified: true
+  can_sign: true
+  can_encrypt_comms: true
+  can_encrypt_storage: true
+  can_certify: true
+  emails: "[{\"ID\":8,\"UID\":1,\"Email\":\"user2+signingkey@example.com\",\"LowerEmail\":\"user2+signingkey@example.com\",\"IsActivated\":true,\"IsPrimary\":false}]"
+
+-
+  id: 8
+  owner_id: 2
+  key_id: 9836974DF1195913
+  primary_key_id: C21381CD63F609EE
+  content: zsBNBGjmzbQBCADUa4mDg7owJwoBGi85flwoNw/QOvZew2LSZh7++dt+ClKcxryDpkAF4jmPsmKZEjhYfe4QE53E6jlYXRhprISONuR7gYPvvgCrvmEQKoh6o/tOlv0I4Ngix3SkE44u/CpFEVOrmFHBUvjgRHreOhwL3eyUao3PVte4kyAmvzZuGCmFFr7e0D48EGVbSLTGGj/GtHArnWPbs96S6qjXU/4qSvHsmNbGousgbovxXF/AxqIzyjvXheNEEQzUPjainDlOi3Z9BPJXr7T3ytt3slp48teKEXAC/uGVvFICwGN3WRCG8XsVwIQLUE23xclVdVqdzkO4Jr1D+Gtg95fYC2PvABEBAAE=
+  verified: false
+  can_sign: true
+  can_encrypt_comms: true
+  can_encrypt_storage: true
+  can_certify: true

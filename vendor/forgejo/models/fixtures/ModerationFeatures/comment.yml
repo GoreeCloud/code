@@ -1,0 +1,7 @@
+- # This is a spam comment (abusive content), created for testing moderation functionalities.
+  id: 18
+  type: 0 # Standard comment
+  poster_id: 1002 # @alexsmith
+  issue_id: 7 # user2/repo2#2
+  content: If anyone needs help for promoting their business online using SEO, just contact me (check my profile page).
+  created_unix: 1752697860 # 2025-07-16 20:31:00

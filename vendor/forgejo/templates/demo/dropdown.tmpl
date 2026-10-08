@@ -1,0 +1,74 @@
+{{template "base/head" .}}
+
+<div class="page-content ui container">
+	<h1>Dropdown</h1>
+	a.k.a. overflow menu, ellipsis menu
+
+	<div class="button-sequence">
+		<details class="dropdown" id="dropdown-1">
+			<summary class="Options">
+				Options {{svg "octicon-triangle-down" 14}}
+			</summary>
+			<div class="content">
+				<ul>
+					<li>
+						<a id="dd1_g1_i1" href="#noscroll">Item 1</a>
+					</li>
+					<li>
+						<a id="dd1_g1_i2" href="#noscroll">Item 2</a>
+					</li>
+					<li>
+						<a id="dd1_g1_i3" href="#noscroll">Item 3</a>
+					</li>
+				</ul>
+			</div>
+		</details>
+
+		<details class="dropdown" id="dropdown-2">
+			<summary class="Options">
+				Options {{svg "octicon-triangle-down" 14}}
+			</summary>
+			<div class="content">
+				<ul>
+					<li>
+						<a id="dd2_g1_i1" href="#noscroll">Item 1</a>
+					</li>
+					<li>
+						<a id="dd2_g1_i2" href="#noscroll">Item 2</a>
+					</li>
+					<li>
+						<a id="dd2_g1_i3" href="#noscroll">Item 3</a>
+					</li>
+				</ul>
+				<hr>
+				<ul>
+					<li>
+						<a id="dd2_g2_i1" href="#noscroll">Item 4</a>
+					</li>
+					<li>
+						<a id="dd2_g2_i2" href="#noscroll">Item 5</a>
+					</li>
+					<li>
+						<a id="dd2_g2_i3" href="#noscroll">Item 6</a>
+					</li>
+				</ul>
+			</div>
+		</details>
+
+		<details class="dropdown" id="dropdown-3">
+			<summary class="Options">
+				Options {{svg "octicon-triangle-down" 14}}
+			</summary>
+			<div class="content">
+				<ul>
+					<li>
+						<a id="dd3_g1_i1" href="#noscroll">Only item</a>
+					</li>
+				</ul>
+			</div>
+		</details>
+	</div>
+
+</div>
+
+{{template "base/footer" .}}

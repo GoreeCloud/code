@@ -1,0 +1,34 @@
+-
+  id: 1000
+  index: 1
+  repo_id: 58
+  state: "pending"
+  sha: "1978192d98bb1b65e11c2cf37da854fbf94bffd6"
+  target_url: https://example.com/builds/
+  description: My awesome CI-service
+  context: ci/awesomeness
+  context_hash: c65f4d64a3b14a3eced0c9b36799e66e1bd5ced7
+  creator_id: 2
+-
+  id: 1001
+  index: 1
+  repo_id: 58
+  state: "success"
+  sha: "9b93963cf6de4dc33f915bb67f192d099c301f43"
+  target_url: https://example.com/builds/
+  description: My awesome CI-service
+  context: ci/awesomeness
+  context_hash: c65f4d64a3b14a3eced0c9b36799e66e1bd5ced7
+  creator_id: 2
+
+-
+  id: 1002
+  index: 1
+  repo_id: 58
+  state: "success"
+  sha: "ffffffffffffffffffffffffffffffffffffffff"
+  target_url: https://example.com/builds/
+  description: My awesome CI-service
+  context: ci/awesomeness
+  context_hash: c65f4d64a3b14a3eced0c9b36799e66e1bd5ced7
+  creator_id: 2

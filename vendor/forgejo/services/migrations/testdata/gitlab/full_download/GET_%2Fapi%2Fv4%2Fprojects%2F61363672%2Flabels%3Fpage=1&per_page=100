@@ -1,0 +1,27 @@
+Cache-Control: max-age=0, private, must-revalidate
+Cf-Cache-Status: MISS
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json
+Etag: W/"977ad54e33d2b62b959abfb2a9b801f3"
+Gitlab-Lb: haproxy-main-57-lb-gprd
+Gitlab-Sv: api-gke-us-east1-d
+Link: <https://gitlab.com/api/v4/projects/61363672/labels?id=61363672&include_ancestor_groups=true&page=1&per_page=100&with_counts=false>; rel="first", <https://gitlab.com/api/v4/projects/61363672/labels?id=61363672&include_ancestor_groups=true&page=1&per_page=100&with_counts=false>; rel="last"
+Ratelimit-Limit: 2000
+Ratelimit-Name: throttle_authenticated_api
+Ratelimit-Observed: 6
+Ratelimit-Remaining: 1994
+Ratelimit-Reset: 1771055640
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Next-Page: 
+X-Page: 1
+X-Per-Page: 100
+X-Prev-Page: 
+X-Runtime: 0.162398
+X-Total: 11
+X-Total-Pages: 1
+
+[{"id":36554072,"name":"bug","description":null,"description_html":"","text_color":"#FFFFFF","color":"#d9534f","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554074,"name":"confirmed","description":null,"description_html":"","text_color":"#FFFFFF","color":"#d9534f","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554073,"name":"critical","description":null,"description_html":"","text_color":"#FFFFFF","color":"#d9534f","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554077,"name":"discussion","description":null,"description_html":"","text_color":"#FFFFFF","color":"#428bca","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554075,"name":"documentation","description":null,"description_html":"","text_color":"#1F1E24","color":"#f0ad4e","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36556606,"name":"duplicate","description":"","description_html":"","text_color":"#FFFFFF","color":"#7F8C8D","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554079,"name":"enhancement","description":null,"description_html":"","text_color":"#FFFFFF","color":"#5cb85c","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554078,"name":"suggestion","description":null,"description_html":"","text_color":"#FFFFFF","color":"#428bca","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554076,"name":"support","description":null,"description_html":"","text_color":"#1F1E24","color":"#f0ad4e","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554080,"name":"test-scope::label0","description":"scoped label","description_html":"scoped label","text_color":"#FFFFFF","color":"#6699cc","archived":false,"subscribed":false,"priority":null,"is_project_label":true},{"id":36554094,"name":"test-scope::label1","description":"","description_html":"","text_color":"#FFFFFF","color":"#dc143c","archived":false,"subscribed":false,"priority":null,"is_project_label":true}]

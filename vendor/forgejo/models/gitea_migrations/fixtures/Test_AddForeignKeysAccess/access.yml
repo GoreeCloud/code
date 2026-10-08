@@ -1,0 +1,28 @@
+-
+  id: 1
+  repo_id: 1
+  user_id: 1
+
+# Expected to be deleted due to invalid repository foreign key
+-
+  id: 2
+  repo_id: 100
+  user_id: 1
+
+# Expected to be deleted due to null repository foreign key
+-
+  id: 3
+  repo_id: null
+  user_id: 1
+
+# Expected to be deleted due to invalid user foreign key
+-
+  id: 4
+  repo_id: 1
+  user_id: 100
+
+# Expected to be deleted due to null user foreign key
+-
+  id: 5
+  repo_id: 1
+  user_id: null

@@ -1,0 +1,31 @@
+<a class="ui icon tw-px-4 tw-py-2 show-modal" data-modal="#search-syntax-modal">{{svg "octicon-question"}}</a>
+<dialog id="search-syntax-modal">
+	<article>
+		<header>{{ctx.Locale.Tr "search.syntax"}}</header>
+		<div class="content">
+			<table class="tw-table-auto">
+				<tbody>
+					{{range $filter, $tr :=
+						dict
+							"is:open" (ctx.Locale.TrString "repo.issues.open_title")
+							"is:closed" (ctx.Locale.TrString "repo.issues.closed_title")
+							"is:all" (ctx.Locale.TrString "repo.issues.all_title")
+							"author:<username>" (ctx.Locale.TrString "repo.issues.filter_poster.hint")
+							"assignee:<username>" (ctx.Locale.TrString "repo.issues.filter_assignee.hint")
+							"review:<username>" (ctx.Locale.TrString "repo.issues.filter_reviewers.hint")
+							"mentions:<username>" (ctx.Locale.TrString "repo.issues.filter_mention.hint")
+							"sort:<by>:[asc|desc]" (ctx.Locale.Tr "repo.issues.filter_sort.hint_with_placeholder" (HTMLFormat "<code>created|comments|updated|deadline</code>"))
+							"modified:[>|<]<date>" (ctx.Locale.TrString "repo.issues.filter_modified.hint")}}
+						<tr>
+							<th class="tw-p-2"><code>{{$filter}}</code></th>
+							<td class="tw-p-2">{{$tr}}</td>
+						</tr>
+					{{end}}
+				</tbody>
+			</table>
+		</div>
+		<footer class="actions">
+			<button class="secondary button cancel">{{ctx.Locale.Tr "settings.cancel"}}</button>
+		</footer>
+	</article>
+</dialog>

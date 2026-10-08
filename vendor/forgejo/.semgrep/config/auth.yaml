@@ -1,0 +1,110 @@
+rules:
+  - id: forgejo-api-use-resource-SearchRepoOptions
+    patterns:
+      - pattern: |
+          repo_model.SearchRepoOptions{...}
+      - pattern-not: |
+          repo_model.SearchRepoOptions{
+            ...,
+            AuthorizationReducer: ctx.Reducer(),
+            ...
+          }
+    languages:
+      - go
+    message: >
+      SearchRepoOptions does not take into account fine-grained access token limitations.  Include the
+      AuthorizationReducer field.
+    severity: ERROR
+    paths:
+      include:
+        - "/routers/api/**/*.go"
+
+  - id: forgejo-api-use-resource-SearchTeamRepoOptions
+    patterns:
+      - pattern: |
+          organization.SearchTeamRepoOptions{...}
+      - pattern-not: |
+          organization.SearchTeamRepoOptions{
+            ...,
+            AuthorizationReducer: ctx.Reducer(),
+            ...
+          }
+    languages:
+      - go
+    message: >
+      SearchTeamRepoOptions does not take into account fine-grained access token limitations.  Include the
+      AuthorizationReducer field.
+    severity: ERROR
+    paths:
+      include:
+        - "/routers/api/**/*.go"
+
+  - id: forgejo-api-use-resource-GetUserRepoPermission
+    patterns:
+      - pattern: |
+          $X.GetUserRepoPermission($CTX, $REPO, $DOER)
+      - metavariable-type:
+          metavariable: $CTX
+          types:
+            - "*context.APIContext"
+    languages:
+      - go
+    message: >
+      GetUserRepoPermission does not take into account fine-grained access token limitations.  Use
+      GetUserRepoPermissionWithReducer.
+    fix: |
+      $X.GetUserRepoPermissionWithReducer($CTX, $REPO, $DOER, $CTX.Reducer)
+    severity: ERROR
+
+  - id: forgejo-api-suspicious-GetUserRepoPermission
+    patterns:
+      - pattern: $X.GetUserRepoPermission($CTX, $REPO, $DOER)
+      - pattern-not: # don't match if identical to forgejo-api-use-resource-GetUserRepoPermission
+          patterns:
+          - pattern: |
+              $X.GetUserRepoPermission($CTX, $REPO, $DOER)
+          - metavariable-type:
+              metavariable: $CTX
+              types:
+                - "*context.APIContext"
+    languages:
+      - go
+    message: >
+      API code is accessing GetUserRepoPermission which does not take into account fine-grained access token
+      limitations.  Should this use GetUserRepoPermissionWithReducer?
+    severity: ERROR
+    paths:
+      include:
+        - "/routers/api/**/*.go"
+
+  - id: forgejo-api-direct-IsAdmin-check
+    patterns:
+      - pattern: |
+          ctx.Doer.IsAdmin
+    languages:
+      - go
+    message: |
+      ctx.Doer.IsAdmin does not take into account limited API access tokens.  Use ctx.IsUserSiteAdmin() instead.
+    fix: |
+      ctx.IsUserSiteAdmin()
+    severity: ERROR
+    paths:
+      include:
+        - "/routers/api/**/*.go"
+
+  - id: forgejo-api-direct-repo-Admin-check
+    patterns:
+      - pattern: |
+          ctx.Repo.IsAdmin()
+      - pattern: |
+          ctx.Repo.IsOwner()
+    languages:
+      - go
+    message: |
+      ctx.Repo.IsAdmin/IsOwner() does not take into account limited API access tokens.  Use ctx.IsUserRepoAdmin() instead.
+    fix: |
+      ctx.IsUserRepoAdmin()
+    severity: ERROR
+    paths:
+      include:
+        - "/routers/api/**/*.go"

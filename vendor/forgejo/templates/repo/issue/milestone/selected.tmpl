@@ -1,0 +1,11 @@
+<div hx-swap-oob="true" id="selected-milestone" class="ui select-milestone list">
+		<span class="no-select item {{if .Issue.Milestone}}tw-hidden{{end}}">{{ctx.Locale.Tr "repo.issues.new.no_milestone"}}</span>
+		<div class="selected">
+			{{if .Issue.Milestone}}
+				<a class="item muted sidebar-item-link" href="{{.RepoLink}}/milestone/{{.Issue.Milestone.ID}}">
+					{{svg "octicon-milestone" 18 "tw-mr-2"}}
+					{{.Issue.Milestone.Name}}
+				</a>
+			{{end}}
+		</div>
+</div>

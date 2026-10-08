@@ -1,0 +1,551 @@
+/* this contains override styles for buttons and related elements */
+
+/* these styles changed the Fomantic UI's rules, Fomantic UI expects only "basic" buttons have borders */
+.ui.button {
+  background: var(--color-button);
+  border: 1px solid var(--color-light-border);
+  color: var(--color-text);
+}
+
+.ui.button:hover,
+.ui.button:focus {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.page-content .ui.button {
+  box-shadow: none !important;
+}
+
+.ui.active.button,
+.ui.button:active,
+.ui.active.button:active,
+.ui.active.button:hover,
+.ui.active.button:focus {
+  background: var(--color-active);
+  color: var(--color-text);
+}
+
+.delete-button,
+.delete-button:hover,
+.delete-button:focus {
+  color: var(--color-red);
+}
+
+/* btn is a plain button without any opinionated styling, it only uses flex for vertical alignment like ".ui.button" in base.css */
+
+.btn {
+  background: transparent;
+  border-radius: var(--border-radius);
+  border: none;
+  color: inherit;
+  margin: 0;
+  padding: 0;
+}
+
+.btn:hover,
+.btn:active,
+.btn:focus {
+  background: none;
+  border: none;
+}
+
+a.btn,
+a.btn:hover {
+  color: inherit;
+}
+
+/* By default, Fomantic UI doesn't support "bordered" buttons group, but Gitea would like to use it.
+And the default buttons always have borders now (not the same as Fomantic UI's default buttons, see above).
+It needs some tricks to tweak the left/right borders with active state */
+
+.ui.buttons .button {
+  border-right: none;
+}
+
+.ui.buttons .button:hover {
+  border-color: var(--color-secondary-dark-2);
+}
+
+.ui.buttons .button:hover + .button {
+  border-left: 1px solid var(--color-secondary-dark-2);
+}
+
+/* TODO: these "tw-hidden" selectors are only used by "blame.tmpl" buttons: Raw/Normal View/History/Unescape, need to be refactored to a clear solution later */
+.ui.buttons .button:first-child,
+.ui.buttons .button.tw-hidden:first-child + .button {
+  border-left: 1px solid var(--color-light-border);
+}
+
+.ui.buttons .button:last-child,
+.ui.buttons .button:nth-last-child(2):has(+ .button.tw-hidden) {
+  border-right: 1px solid var(--color-light-border);
+}
+
+.ui.buttons .button.active {
+  border-left: 1px solid var(--color-light-border);
+  border-right: 1px solid var(--color-light-border);
+}
+
+.ui.buttons .button.active + .button {
+  border-left: none;
+}
+
+.ui.basic.buttons .button,
+.ui.basic.button,
+.ui.basic.buttons .button:hover,
+.ui.basic.button:hover {
+  box-shadow: none;
+}
+
+/* apply the vertical padding of .compact to non-compact buttons when they contain a svg as they
+   would otherwise appear too large. Seen on "RSS Feed" button on repo releases tab. */
+.ui.small.button:not(.compact):has(.svg) {
+  padding-top: 0.58928571em;
+  padding-bottom: 0.58928571em;
+}
+
+.ui.labeled.button.disabled > .button,
+.ui.basic.buttons .button,
+.ui.basic.button {
+  color: var(--color-text-light);
+  background: var(--color-button);
+}
+
+.ui.basic.buttons .button:hover,
+.ui.basic.button:hover,
+.ui.basic.buttons .button:focus,
+.ui.basic.button:focus {
+  color: var(--color-text);
+  background: var(--color-hover);
+  border-color: var(--color-secondary-dark-2);
+}
+
+.ui.basic.buttons .button:active,
+.ui.basic.button:active,
+.ui.basic.buttons .active.button,
+.ui.basic.active.button,
+.ui.basic.buttons .active.button:hover,
+.ui.basic.active.button:hover,
+.ui.basic.buttons .active.button:focus,
+.ui.basic.active.button:focus {
+  color: var(--color-text);
+  background: var(--color-active);
+}
+
+.ui.labeled.button > .label {
+  border-color: var(--color-light-border);
+}
+
+.ui.labeled.icon.buttons > .button > .icon,
+.ui.labeled.icon.button > .icon {
+  background: var(--color-hover);
+}
+
+/* primary */
+
+.ui.primary.labels .label,
+.ui.ui.ui.primary.label,
+.ui.primary.button,
+.ui.primary.buttons .button {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+}
+
+.ui.primary.button:hover,
+.ui.primary.buttons .button:hover,
+.ui.primary.button:focus,
+.ui.primary.buttons .button:focus {
+  background: var(--color-primary-hover);
+  color: var(--color-primary-contrast);
+}
+
+.ui.primary.button:active,
+.ui.primary.buttons .button:active {
+  background: var(--color-primary-active);
+}
+
+.ui.basic.primary.buttons .button,
+.ui.basic.primary.button {
+  color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.ui.basic.primary.buttons .button:hover,
+.ui.basic.primary.button:hover,
+.ui.basic.primary.buttons .button:focus,
+.ui.basic.primary.button:focus {
+  color: var(--color-primary-hover);
+  border-color: var(--color-primary-hover);
+}
+
+.ui.basic.primary.buttons .button:active,
+.ui.basic.primary.button:active {
+  color: var(--color-primary-active);
+  border-color: var(--color-primary-active);
+}
+
+/* red */
+
+.ui.red.labels .label,
+.ui.ui.ui.red.label,
+.ui.red.button,
+.ui.red.buttons .button {
+  background: var(--color-red);
+}
+
+.ui.red.button:hover,
+.ui.red.buttons .button:hover,
+.ui.red.button:focus,
+.ui.red.buttons .button:focus {
+  background: var(--color-red-dark-1);
+}
+
+.ui.red.button:active,
+.ui.red.buttons .button:active {
+  background: var(--color-red-dark-2);
+}
+
+.ui.basic.red.buttons .button,
+.ui.basic.red.button {
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.ui.basic.red.buttons .button:hover,
+.ui.basic.red.button:hover,
+.ui.basic.red.buttons .button:focus,
+.ui.basic.red.button:focus {
+  color: var(--color-red-dark-1);
+  border-color: var(--color-red-dark-1);
+}
+
+.ui.basic.red.buttons .button:active,
+.ui.basic.red.button:active {
+  color: var(--color-red-dark-2);
+  border-color: var(--color-red-dark-2);
+}
+
+/* orange */
+
+.ui.orange.labels .label,
+.ui.ui.ui.orange.label,
+.ui.orange.button,
+.ui.orange.buttons .button,
+.ui.orange.button:focus,
+.ui.orange.buttons .button:focus {
+  background: var(--color-orange);
+}
+
+.ui.orange.button:hover,
+.ui.orange.buttons .button:hover {
+  background: var(--color-orange-dark-1);
+}
+
+.ui.orange.button:active,
+.ui.orange.buttons .button:active {
+  background: var(--color-orange-dark-2);
+}
+
+.ui.basic.orange.buttons .button,
+.ui.basic.orange.button,
+.ui.basic.orange.buttons .button:focus,
+.ui.basic.orange.button:focus {
+  color: var(--color-orange);
+  border-color: var(--color-orange);
+}
+
+.ui.basic.orange.buttons .button:hover,
+.ui.basic.orange.button:hover {
+  color: var(--color-orange-dark-1);
+  border-color: var(--color-orange-dark-1);
+}
+
+.ui.basic.orange.buttons .button:active,
+.ui.basic.orange.button:active {
+  color: var(--color-orange-dark-2);
+  border-color: var(--color-orange-dark-2);
+}
+
+/* yellow */
+
+.ui.yellow.labels .label,
+.ui.ui.ui.yellow.label,
+.ui.yellow.button,
+.ui.yellow.buttons .button,
+.ui.yellow.button:focus,
+.ui.yellow.buttons .button:focus {
+  background: var(--color-yellow);
+}
+
+.ui.yellow.button:hover,
+.ui.yellow.buttons .button:hover {
+  background: var(--color-yellow-dark-1);
+}
+
+.ui.yellow.button:active,
+.ui.yellow.buttons .button:active {
+  background: var(--color-yellow-dark-2);
+}
+
+.ui.basic.yellow.buttons .button,
+.ui.basic.yellow.button,
+.ui.basic.yellow.buttons .button:focus,
+.ui.basic.yellow.button:focus {
+  color: var(--color-yellow);
+  border-color: var(--color-yellow);
+}
+
+.ui.basic.yellow.buttons .button:hover,
+.ui.basic.yellow.button:hover {
+  color: var(--color-yellow-dark-1);
+  border-color: var(--color-yellow-dark-1);
+}
+
+.ui.basic.yellow.buttons .button:active,
+.ui.basic.yellow.button:active {
+  color: var(--color-yellow-dark-2);
+  border-color: var(--color-yellow-dark-2);
+}
+
+/* green */
+
+.ui.green.labels .label,
+.ui.ui.ui.green.label,
+.ui.green.button,
+.ui.green.buttons .button,
+.ui.green.button:focus,
+.ui.green.buttons .button:focus {
+  background: var(--color-green);
+}
+
+.ui.green.button:hover,
+.ui.green.buttons .button:hover {
+  background: var(--color-green-dark-1);
+}
+
+.ui.green.button:active,
+.ui.green.buttons .button:active {
+  background: var(--color-green-dark-2);
+}
+
+.ui.basic.green.buttons .button,
+.ui.basic.green.button,
+.ui.basic.green.buttons .button:focus,
+.ui.basic.green.button:focus {
+  color: var(--color-green);
+  border-color: var(--color-green);
+}
+
+.ui.basic.green.buttons .button:hover,
+.ui.basic.green.button:hover {
+  color: var(--color-green-dark-1);
+  border-color: var(--color-green-dark-1);
+}
+
+.ui.basic.green.buttons .button:active,
+.ui.basic.green.button:active {
+  color: var(--color-green-dark-2);
+  border-color: var(--color-green-dark-2);
+}
+
+/* teal */
+
+.ui.teal.labels .label,
+.ui.ui.ui.teal.label,
+.ui.teal.button,
+.ui.teal.buttons .button,
+.ui.teal.button:focus,
+.ui.teal.buttons .button:focus {
+  background: var(--color-teal);
+}
+
+.ui.teal.button:hover,
+.ui.teal.buttons .button:hover {
+  background: var(--color-teal-dark-1);
+}
+
+.ui.teal.button:active,
+.ui.teal.buttons .button:active {
+  background: var(--color-teal-dark-2);
+}
+
+.ui.basic.teal.buttons .button,
+.ui.basic.teal.button,
+.ui.basic.teal.buttons .button:focus,
+.ui.basic.teal.button:focus {
+  color: var(--color-teal);
+  border-color: var(--color-teal);
+}
+
+.ui.basic.teal.buttons .button:hover,
+.ui.basic.teal.button:hover {
+  color: var(--color-teal-dark-1);
+  border-color: var(--color-teal-dark-1);
+}
+
+.ui.basic.teal.buttons .button:active,
+.ui.basic.teal.button:active {
+  color: var(--color-teal-dark-2);
+  border-color: var(--color-teal-dark-2);
+}
+
+/* purple */
+
+.ui.purple.labels .label,
+.ui.ui.ui.purple.label,
+.ui.purple.button,
+.ui.purple.buttons .button,
+.ui.purple.button:focus,
+.ui.purple.buttons .button:focus {
+  background: var(--color-purple);
+}
+
+.ui.purple.button:hover,
+.ui.purple.buttons .button:hover {
+  background: var(--color-purple-dark-1);
+}
+
+.ui.purple.button:active,
+.ui.purple.buttons .button:active {
+  background: var(--color-purple-dark-2);
+}
+
+.ui.basic.purple.buttons .button,
+.ui.basic.purple.button,
+.ui.basic.purple.buttons .button:focus,
+.ui.basic.purple.button:focus {
+  color: var(--color-purple);
+  border-color: var(--color-purple);
+}
+
+.ui.basic.purple.buttons .button:hover,
+.ui.basic.purple.button:hover {
+  color: var(--color-purple-dark-1);
+  border-color: var(--color-purple-dark-1);
+}
+
+.ui.basic.purple.buttons .button:active,
+.ui.basic.purple.button:active {
+  color: var(--color-purple-dark-2);
+  border-color: var(--color-purple-dark-2);
+}
+
+/* brown */
+
+.ui.brown.labels .label,
+.ui.ui.ui.brown.label,
+.ui.brown.button,
+.ui.brown.buttons .button,
+.ui.brown.button:focus,
+.ui.brown.buttons .button:focus {
+  background: var(--color-brown);
+}
+
+.ui.brown.button:hover,
+.ui.brown.buttons .button:hover {
+  background: var(--color-brown-dark-1);
+}
+
+.ui.brown.button:active,
+.ui.brown.buttons .button:active {
+  background: var(--color-brown-dark-2);
+}
+
+.ui.basic.brown.buttons .button,
+.ui.basic.brown.button,
+.ui.basic.brown.buttons .button:focus,
+.ui.basic.brown.button:focus {
+  color: var(--color-brown);
+  border-color: var(--color-brown);
+}
+
+.ui.basic.brown.buttons .button:hover,
+.ui.basic.brown.button:hover {
+  color: var(--color-brown-dark-1);
+  border-color: var(--color-brown-dark-1);
+}
+
+.ui.basic.brown.buttons .button:active,
+.ui.basic.brown.button:active {
+  color: var(--color-brown-dark-2);
+  border-color: var(--color-brown-dark-2);
+}
+
+/* negative */
+
+.ui.negative.buttons .button,
+.ui.negative.button,
+.ui.negative.buttons .button:focus,
+.ui.negative.button:focus {
+  background: var(--color-red);
+}
+
+.ui.negative.buttons .button:hover,
+.ui.negative.button:hover {
+  background: var(--color-red-dark-1);
+}
+
+.ui.negative.buttons .button:active,
+.ui.negative.button:active {
+  background: var(--color-red-dark-2);
+}
+
+.ui.basic.negative.buttons .button,
+.ui.basic.negative.button,
+.ui.basic.negative.buttons .button:focus,
+.ui.basic.negative.button:focus {
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.ui.basic.negative.buttons .button:hover,
+.ui.basic.negative.button:hover {
+  color: var(--color-red-dark-1);
+  border-color: var(--color-red-dark-1);
+}
+
+.ui.basic.negative.buttons .button:active,
+.ui.basic.negative.button:active {
+  color: var(--color-red-dark-2);
+  border-color: var(--color-red-dark-2);
+}
+
+/* positive */
+
+.ui.positive.buttons .button,
+.ui.positive.button,
+.ui.positive.buttons .button:focus,
+.ui.positive.button:focus {
+  background: var(--color-green);
+}
+
+.ui.positive.buttons .button:hover,
+.ui.positive.button:hover {
+  background: var(--color-green-dark-1);
+}
+
+.ui.positive.buttons .button:active,
+.ui.positive.button:active {
+  background: var(--color-green-dark-2);
+}
+
+.ui.basic.positive.buttons .button,
+.ui.basic.positive.button,
+.ui.basic.positive.buttons .button:focus,
+.ui.basic.positive.button:focus {
+  color: var(--color-green);
+  border-color: var(--color-green);
+}
+
+.ui.basic.positive.buttons .button:hover,
+.ui.basic.positive.button:hover {
+  color: var(--color-green-dark-1);
+  border-color: var(--color-green-dark-1);
+}
+
+.ui.basic.positive.buttons .button:active,
+.ui.basic.positive.button:active {
+  color: var(--color-green-dark-2);
+  border-color: var(--color-green-dark-2);
+}

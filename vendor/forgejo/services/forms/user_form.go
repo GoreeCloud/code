@@ -1,0 +1,469 @@
+// Copyright 2014 The Gogs Authors. All rights reserved.
+// Copyright 2018 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package forms
+
+import (
+	"mime/multipart"
+	"net/http"
+	"strings"
+
+	auth_model "forgejo.org/models/auth"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/structs"
+	"forgejo.org/modules/validation"
+	"forgejo.org/modules/web/middleware"
+	"forgejo.org/services/context"
+
+	"code.forgejo.org/go-chi/binding"
+)
+
+// InstallForm form for installation page
+type InstallForm struct {
+	DbType   string `binding:"Required"`
+	DbHost   string
+	DbUser   string
+	DbPasswd string
+	DbName   string
+	SSLMode  string
+	DbPath   string
+	DbSchema string
+
+	AppName      string `binding:"Required" locale:"install.app_name"`
+	AppSlogan    string
+	RepoRootPath string `binding:"Required"`
+	LFSRootPath  string
+	RunUser      string `binding:"Required"`
+	Domain       string `binding:"Required"`
+	SSHPort      int
+	HTTPPort     string `binding:"Required"`
+	AppURL       string `binding:"Required"`
+	LogRootPath  string `binding:"Required"`
+
+	SMTPAddr        string
+	SMTPPort        string
+	SMTPFrom        string
+	SMTPUser        string `binding:"OmitEmpty;MaxSize(254)" locale:"install.mailer_user"`
+	SMTPPasswd      string
+	RegisterConfirm bool
+	MailNotify      bool
+
+	OfflineMode                    bool
+	DisableGravatar                bool
+	EnableFederatedAvatar          bool
+	EnableOpenIDSignIn             bool
+	EnableOpenIDSignUp             bool
+	DisableRegistration            bool
+	AllowOnlyExternalRegistration  bool
+	EnableCaptcha                  bool
+	RequireSignInView              bool
+	DefaultKeepEmailPrivate        bool
+	DefaultAllowCreateOrganization bool
+	DefaultEnableTimetracking      bool
+	EnableUpdateChecker            bool
+	NoReplyAddress                 string
+
+	PasswordAlgorithm string
+
+	AdminName          string `binding:"OmitEmpty;Username;MaxSize(30)" locale:"install.admin_name"`
+	AdminPasswd        string `binding:"OmitEmpty;MaxSize(255)" locale:"install.admin_password"`
+	AdminConfirmPasswd string
+	AdminEmail         string `binding:"OmitEmpty;MinSize(3);MaxSize(254);Include(@)" locale:"install.admin_email"`
+
+	// ReinstallConfirmFirst we can not use 1/2/3 or A/B/C here, there is a framework bug, can not parse "reinstall_confirm_1" or "reinstall_confirm_a"
+	ReinstallConfirmFirst  bool
+	ReinstallConfirmSecond bool
+	ReinstallConfirmThird  bool
+}
+
+// Validate validates the fields
+func (f *InstallForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+//    _____   ____ _________________ ___
+//   /  _  \ |    |   \__    ___/   |   \
+//  /  /_\  \|    |   / |    | /    ~    \
+// /    |    \    |  /  |    | \    Y    /
+// \____|__  /______/   |____|  \___|_  /
+//         \/                         \/
+
+// RegisterForm form for registering
+type RegisterForm struct {
+	UserName string `binding:"Required;Username;MaxSize(40)"`
+	Email    string `binding:"Required;MaxSize(254)"`
+	Password string `binding:"MaxSize(255)"`
+	Retype   string
+}
+
+// Validate validates the fields
+func (f *RegisterForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// IsEmailDomainAllowed validates that the email address
+// provided by the user matches what has been configured .
+// The email is marked as allowed if it matches any of the
+// domains in the whitelist or if it doesn't match any of
+// domains in the blocklist, if any such list is not empty.
+func (f *RegisterForm) IsEmailDomainAllowed() (validEmail, ok bool) {
+	return validation.IsEmailDomainAllowed(f.Email)
+}
+
+// MustChangePasswordForm form for updating your password after account creation
+// by an admin
+type MustChangePasswordForm struct {
+	Password string `binding:"Required;MaxSize(255)"`
+	Retype   string
+}
+
+// Validate validates the fields
+func (f *MustChangePasswordForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// SignInForm form for signing in with user/password
+type SignInForm struct {
+	UserName string `binding:"Required;MaxSize(254)"`
+	// TODO remove required from password for SecondFactorAuthentication
+	Password string `binding:"Required;MaxSize(255)"`
+	Remember bool
+}
+
+// Validate validates the fields
+func (f *SignInForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// AuthorizationForm form for authorizing oauth2 clients
+type AuthorizationForm struct {
+	ResponseType string `binding:"Required;In(code)"`
+	ClientID     string `binding:"Required"`
+	RedirectURI  string
+	State        string
+	Scope        string
+	Nonce        string
+
+	// PKCE support
+	CodeChallengeMethod string // S256, plain
+	CodeChallenge       string
+}
+
+// Validate validates the fields
+func (f *AuthorizationForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// GrantApplicationForm form for authorizing oauth2 clients
+type GrantApplicationForm struct {
+	ClientID    string `binding:"Required"`
+	Granted     bool
+	RedirectURI string
+	State       string
+	Scope       string
+	Nonce       string
+}
+
+// Validate validates the fields
+func (f *GrantApplicationForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// AccessTokenForm for issuing access tokens from authorization codes or refresh tokens
+type AccessTokenForm struct {
+	GrantType    string `json:"grant_type"`
+	ClientID     string `json:"client_id"`
+	ClientSecret string `json:"client_secret"`
+	RedirectURI  string `json:"redirect_uri"`
+	Code         string `json:"code"`
+	RefreshToken string `json:"refresh_token"`
+
+	// PKCE support
+	CodeVerifier string `json:"code_verifier"`
+}
+
+// Validate validates the fields
+func (f *AccessTokenForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// IntrospectTokenForm for introspecting tokens
+type IntrospectTokenForm struct {
+	Token string `json:"token"`
+}
+
+// Validate validates the fields
+func (f *IntrospectTokenForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+//   __________________________________________.___ _______    ________  _________
+//  /   _____/\_   _____/\__    ___/\__    ___/|   |\      \  /  _____/ /   _____/
+//  \_____  \  |    __)_   |    |     |    |   |   |/   |   \/   \  ___ \_____  \
+//  /        \ |        \  |    |     |    |   |   /    |    \    \_\  \/        \
+// /_______  //_______  /  |____|     |____|   |___\____|__  /\______  /_______  /
+//         \/         \/                                   \/        \/        \/
+
+// UpdateProfileForm form for updating profile
+type UpdateProfileForm struct {
+	Name                string `binding:"Username;MaxSize(40)"`
+	FullName            string `binding:"MaxSize(100)"`
+	KeepEmailPrivate    bool
+	Website             string `binding:"ValidSiteUrl;MaxSize(255)"`
+	Location            string `binding:"MaxSize(50)"`
+	Pronouns            string `binding:"MaxSize(50)"`
+	Biography           string `binding:"MaxSize(255)"`
+	Visibility          structs.VisibleType
+	KeepActivityPrivate bool
+	KeepPronounsPrivate bool
+}
+
+// Validate validates the fields
+func (f *UpdateProfileForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// UpdateLanguageForm form for updating profile
+type UpdateLanguageForm struct {
+	Language string
+}
+
+// UpdateHintsForm form for updating user hint settings
+type UpdateHintsForm struct {
+	EnableRepoUnitHints bool
+}
+
+// Validate validates the fields
+func (f *UpdateLanguageForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// Avatar types
+const (
+	AvatarLocal  string = "local"
+	AvatarByMail string = "bymail"
+)
+
+// AvatarForm form for changing avatar
+type AvatarForm struct {
+	Source      string
+	Avatar      *multipart.FileHeader
+	Gravatar    string `binding:"OmitEmpty;EmailWithAllowedDomain;MaxSize(254)"`
+	Federavatar bool
+}
+
+// Validate validates the fields
+func (f *AvatarForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// AddEmailForm form for adding new email
+type AddEmailForm struct {
+	Email string `binding:"Required;EmailWithAllowedDomain;MaxSize(254)"`
+}
+
+// Validate validates the fields
+func (f *AddEmailForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// UpdateThemeForm form for updating a users' theme
+type UpdateThemeForm struct {
+	Theme string `binding:"Required;MaxSize(64)"`
+}
+
+// Validate validates the field
+func (f *UpdateThemeForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// IsThemeExists checks if the theme is available in the config.
+func (f UpdateThemeForm) IsThemeExists() bool {
+	var exists bool
+
+	for _, v := range setting.UI.Themes {
+		if strings.EqualFold(v, f.Theme) {
+			exists = true
+			break
+		}
+	}
+
+	return exists
+}
+
+// ChangePasswordForm form for changing password
+type ChangePasswordForm struct {
+	OldPassword string `form:"old_password" binding:"MaxSize(255)"`
+	Password    string `form:"password" binding:"Required;MaxSize(255)"`
+	Retype      string `form:"retype"`
+}
+
+// Validate validates the fields
+func (f *ChangePasswordForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// AddOpenIDForm is for changing openid uri
+type AddOpenIDForm struct {
+	Openid string `binding:"Required;MaxSize(256)"`
+}
+
+// Validate validates the fields
+func (f *AddOpenIDForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// AddKeyForm form for adding SSH/GPG key
+type AddKeyForm struct {
+	Type        string `binding:"OmitEmpty"`
+	Title       string `binding:"Required;MaxSize(50)"`
+	Content     string `binding:"Required"`
+	Signature   string `binding:"OmitEmpty"`
+	KeyID       string `binding:"OmitEmpty"`
+	Fingerprint string `binding:"OmitEmpty"`
+	IsWritable  bool
+}
+
+// Validate validates the fields
+func (f *AddKeyForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+type EditVariableForm struct {
+	Name string `binding:"Required;MaxSize(255)"`
+	Data string `binding:"Required;MaxSize(65535)"`
+}
+
+func (f *EditVariableForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// NewAccessTokenGetForm form for creating access token.  Similar to NewAccessTokenPostForm, but contains some data that
+// is only part of the GET requests as the SelectedRepo field is built up interactively, and, it also removes the
+// Required binding to allow this to be used on a formless GET request without displaying an initial error.
+type NewAccessTokenGetForm struct {
+	Name         string `binding:"MaxSize(255)" locale:"settings.token_name"`
+	Resource     string // all, public-only, repo-specific
+	Scope        []string
+	SelectedRepo []string // slice of ownername/reponame
+
+	// Transient form values, not part of the final data for the access token form
+	RepoSearch         string
+	AddSelectedRepo    string // add a repo to SelectedRepo
+	RemoveSelectedRepo string // remove a repo from SelectedRepo
+	Page               int    // repo search page
+	SetPage            int    // repo search buttons
+}
+
+// Validate validates the fields
+func (f *NewAccessTokenGetForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// NewAccessTokenPostForm form for creating access token
+type NewAccessTokenPostForm struct {
+	Name         string `binding:"Required;MaxSize(255)" locale:"settings.token_name"`
+	Resource     string `binding:"Required" locale:"settings.repo_and_org_access"` // all, public-only, repo-specific
+	Scope        []string
+	SelectedRepo []string // slice of ownername/reponame
+}
+
+// Validate validates the fields
+func (f *NewAccessTokenPostForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+func (f *NewAccessTokenPostForm) GetScope() (auth_model.AccessTokenScope, error) {
+	scope := strings.Join(f.Scope, ",")
+	s, err := auth_model.AccessTokenScope(scope).Normalize()
+	return s, err
+}
+
+// EditOAuth2ApplicationForm form for editing oauth2 applications
+type EditOAuth2ApplicationForm struct {
+	Name               string `binding:"Required;MaxSize(255)" form:"application_name"`
+	RedirectURIs       string `binding:"Required;ValidUrlList" form:"redirect_uris"`
+	ConfidentialClient bool   `form:"confidential_client"`
+}
+
+// Validate validates the fields
+func (f *EditOAuth2ApplicationForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// TwoFactorAuthForm for logging in with 2FA token.
+type TwoFactorAuthForm struct {
+	Passcode string `binding:"Required"`
+}
+
+// Validate validates the fields
+func (f *TwoFactorAuthForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// TwoFactorScratchAuthForm for logging in with 2FA scratch token.
+type TwoFactorScratchAuthForm struct {
+	Token string `binding:"Required"`
+}
+
+// Validate validates the fields
+func (f *TwoFactorScratchAuthForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// WebauthnRegistrationForm for reserving an WebAuthn name
+type WebauthnRegistrationForm struct {
+	Name string `binding:"Required"`
+}
+
+// Validate validates the fields
+func (f *WebauthnRegistrationForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// WebauthnDeleteForm for deleting WebAuthn keys
+type WebauthnDeleteForm struct {
+	ID int64 `binding:"Required"`
+}
+
+// Validate validates the fields
+func (f *WebauthnDeleteForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}
+
+// PackageSettingForm form for package settings
+type PackageSettingForm struct {
+	Action string
+	RepoID int64 `form:"repo_id"`
+}
+
+// Validate validates the fields
+func (f *PackageSettingForm) Validate(req *http.Request, errs binding.Errors) binding.Errors {
+	ctx := context.GetValidateContext(req)
+	return middleware.Validate(errs, ctx.Data, f, ctx.Locale)
+}

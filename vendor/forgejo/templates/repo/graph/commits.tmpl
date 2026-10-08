@@ -1,0 +1,62 @@
+<div id="rev-container">
+	<ul id="rev-list">
+		{{range $commitI, $commit := .Graph.Commits}}
+			<li {{if $commit.Rev}}id="commit-{{$commit.Rev}}"{{end}} data-flow="{{$commit.Flow}}">
+				{{if $commit.OnlyRelation}}
+					<span></span>
+				{{else}}
+					<span class="sha" id="{{$commit.ShortRev}}">
+						{{template "repo/shabox" (dict
+							"sha1" $commit.Commit.ID.String
+							"commitLink" (printf "%s/commit/%s" $.RepoLink ($commit.Rev|PathEscape))
+							"signature" $commit.Commit.Signature
+							"verification" $commit.Verification
+						)}}
+					</span>
+					<span class="message tw-inline-block gt-ellipsis tw-mr-2">
+						<span>{{RenderCommitMessage $.Context $commit.Subject ($.Repository.ComposeMetas ctx)}}</span>
+					</span>
+					<span class="commit-refs tw-flex tw-items-center tw-mr-1">
+						{{range $commit.Refs}}
+							{{$refGroup := .RefGroup}}
+							{{if eq $refGroup "pull"}}
+								{{if or (not $.HidePRRefs) (SliceUtils.Contains $.SelectedBranches .Name)}}
+									<!-- it's intended to use issues not pulls, if it's a pull you will get redirected -->
+									<a class="ui basic button" href="{{$.RepoLink}}/{{if $.Repository.UnitEnabled $.Context $.UnitTypePullRequests}}pulls{{else}}issues{{end}}/{{.ShortName|PathEscape}}">
+										{{svg "octicon-git-pull-request"}} #{{.ShortName}}
+									</a>
+								{{end}}
+							{{else if eq $refGroup "tags"}}
+								{{- template "repo/tag/name" dict "RepoLink" $.Repository.Link "TagName" .ShortName -}}
+							{{else if eq $refGroup "remotes"}}
+								<a class="ui basic button" href="{{$.RepoLink}}/src/commit/{{$commit.Rev|PathEscape}}">
+									{{svg "octicon-cross-reference"}} {{.ShortName}}
+								</a>
+							{{else if eq $refGroup "heads"}}
+								<a class="ui basic button" href="{{$.RepoLink}}/src/branch/{{.ShortName|PathEscape}}">
+									{{svg "octicon-git-branch"}} {{.ShortName}}
+								</a>
+							{{else}}
+								<!-- Unknown ref type .Name -->
+							{{end}}
+						{{end}}
+					</span>
+					<span class="author tw-flex tw-items-center tw-mr-2">
+						{{$userName := $commit.Commit.Author.Name}}
+						{{if $commit.User}}
+							{{if and $commit.User.FullName DefaultShowFullName}}
+								{{$userName = $commit.User.FullName}}
+							{{end}}
+							<span class="tw-mr-1">{{ctx.AvatarUtils.Avatar $commit.User}}</span>
+							<a href="{{$commit.User.HomeLink}}">{{$userName}}</a>
+						{{else}}
+							<span class="tw-mr-1">{{ctx.AvatarUtils.AvatarByEmail $commit.Commit.Author.Email $userName}}</span>
+							{{$userName}}
+						{{end}}
+					</span>
+					<span class="time tw-flex tw-items-center">{{DateUtils.FullTime $commit.Date}}</span>
+				{{end}}
+			</li>
+		{{end}}
+	</ul>
+</div>

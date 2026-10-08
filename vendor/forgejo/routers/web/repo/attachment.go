@@ -1,0 +1,211 @@
+// Copyright 2017 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package repo
+
+import (
+	"fmt"
+	"net/http"
+
+	"forgejo.org/models/auth"
+	access_model "forgejo.org/models/perm/access"
+	repo_model "forgejo.org/models/repo"
+	"forgejo.org/models/unit"
+	"forgejo.org/modules/httpcache"
+	"forgejo.org/modules/log"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/storage"
+	"forgejo.org/routers/common"
+	"forgejo.org/services/attachment"
+	"forgejo.org/services/context"
+	"forgejo.org/services/context/upload"
+	repo_service "forgejo.org/services/repository"
+)
+
+// UploadIssueAttachment response for Issue/PR attachments
+func UploadIssueAttachment(ctx *context.Context) {
+	uploadAttachment(ctx, ctx.Repo.Repository.ID, setting.Attachment.AllowedTypes)
+}
+
+// UploadReleaseAttachment response for uploading release attachments
+func UploadReleaseAttachment(ctx *context.Context) {
+	uploadAttachment(ctx, ctx.Repo.Repository.ID, setting.Repository.Release.AllowedTypes)
+}
+
+// UploadAttachment response for uploading attachments
+func uploadAttachment(ctx *context.Context, repoID int64, allowedTypes string) {
+	if !setting.Attachment.Enabled {
+		ctx.Error(http.StatusNotFound, "attachment is not enabled")
+		return
+	}
+
+	file, header, err := ctx.Req.FormFile("file")
+	if err != nil {
+		ctx.Error(http.StatusInternalServerError, fmt.Sprintf("FormFile: %v", err))
+		return
+	}
+	defer file.Close()
+
+	attach, err := attachment.UploadAttachment(ctx, file, allowedTypes, header.Size, &repo_model.Attachment{
+		Name:       header.Filename,
+		UploaderID: ctx.Doer.ID,
+		RepoID:     repoID,
+	})
+	if err != nil {
+		if upload.IsErrFileTypeForbidden(err) {
+			ctx.Error(http.StatusBadRequest, err.Error())
+			return
+		}
+		ctx.Error(http.StatusInternalServerError, fmt.Sprintf("NewAttachment: %v", err))
+		return
+	}
+
+	log.Trace("New attachment uploaded: %s", attach.UUID)
+	ctx.JSON(http.StatusOK, map[string]string{
+		"uuid": attach.UUID,
+	})
+}
+
+// DeleteAttachment response for deleting issue's attachment
+func DeleteAttachment(ctx *context.Context) {
+	file := ctx.FormString("file")
+	attach, err := repo_model.GetAttachmentByUUID(ctx, file)
+	if err != nil {
+		ctx.Error(http.StatusBadRequest, err.Error())
+		return
+	}
+	if !ctx.IsSigned || (ctx.Doer.ID != attach.UploaderID) {
+		ctx.Error(http.StatusForbidden)
+		return
+	}
+	err = repo_model.DeleteAttachment(ctx, attach, true)
+	if err != nil {
+		ctx.Error(http.StatusInternalServerError, fmt.Sprintf("DeleteAttachment: %v", err))
+		return
+	}
+	ctx.JSON(http.StatusOK, map[string]string{
+		"uuid": attach.UUID,
+	})
+}
+
+// GetAttachment serve attachments with the given UUID
+func ServeAttachment(ctx *context.Context, uuid string) {
+	attach, err := repo_model.GetAttachmentByUUID(ctx, uuid)
+	if err != nil {
+		if repo_model.IsErrAttachmentNotExist(err) {
+			ctx.Error(http.StatusNotFound)
+		} else {
+			ctx.ServerError("GetAttachmentByUUID", err)
+		}
+		return
+	}
+
+	// Some paths like `/attachment/{uuid}` can be accessed with API authentication mechanisms, which can have limited
+	// scopes (eg. user access tokens, OAuth grants).  There's no middleware on these routes that enforce API scopes
+	// because (a) they're not API endpoints, and (b) the scoped required is dependant on the attachment.
+	if hasScope, scope := ctx.Authentication.Scope().Get(); hasScope {
+		var requiredScope auth.AccessTokenScope
+		if attach.ReleaseID != 0 {
+			requiredScope = auth.AccessTokenScopeReadRepository
+		} else if attach.IssueID != 0 {
+			requiredScope = auth.AccessTokenScopeReadIssue
+		} else {
+			ctx.ServerError("UnidentifiedAttachmentResource", fmt.Errorf("unable to identify resource for attachment id=%d", attach.ID))
+			return
+		}
+		allow, err := scope.HasScope(requiredScope)
+		if err != nil {
+			ctx.ServerError("checking scope failed", err)
+			return
+		}
+		if !allow {
+			ctx.Error(http.StatusForbidden, "scopedAccessCheck", fmt.Sprintf("token does not have at least one of required scope(s): %v", requiredScope))
+			return
+		}
+	}
+
+	repository, unitType, err := repo_service.LinkedRepository(ctx, attach)
+	if err != nil {
+		ctx.ServerError("LinkedRepository", err)
+		return
+	}
+
+	if repository == nil { // If not linked
+		if !ctx.IsSigned || attach.UploaderID != ctx.Doer.ID { // We block if not the uploader
+			ctx.Error(http.StatusNotFound)
+			return
+		}
+	} else { // If we have the repository we check access
+		// Some paths like `/attachment/{uuid}` can be accessed with API authentication mechanisms, and therefore *may*
+		// have AuthorizationReducers that need to be enforced:
+		reducer := ctx.Authentication.Reducer()
+		var perm access_model.Permission
+		var err error
+		if reducer != nil {
+			perm, err = access_model.GetUserRepoPermissionWithReducer(ctx, repository, ctx.Doer, reducer)
+		} else {
+			perm, err = access_model.GetUserRepoPermission(ctx, repository, ctx.Doer)
+		}
+		if err != nil {
+			ctx.Error(http.StatusInternalServerError, "GetUserRepoPermission", err.Error())
+			return
+		}
+		if !perm.CanRead(unitType) {
+			ctx.Error(http.StatusNotFound)
+			return
+		}
+
+		// Attachments of draft releases must not be accessible without write
+		// permission on the releases unit, mirroring the release API.
+		if attach.ReleaseID != 0 {
+			rel, err := repo_model.GetReleaseByID(ctx, attach.ReleaseID)
+			if err != nil {
+				ctx.ServerError("GetReleaseByID", err)
+				return
+			}
+			if rel.IsDraft && !perm.CanWrite(unit.TypeReleases) {
+				ctx.Error(http.StatusNotFound)
+				return
+			}
+		}
+	}
+
+	if attach.ExternalURL != "" {
+		ctx.Redirect(attach.ExternalURL)
+		return
+	}
+
+	if err := attach.IncreaseDownloadCount(ctx); err != nil {
+		ctx.ServerError("IncreaseDownloadCount", err)
+		return
+	}
+
+	if setting.Attachment.Storage.MinioConfig.ServeDirect {
+		// If we have a signed url (S3, object storage), redirect to this directly.
+		u, err := storage.Attachments.URL(attach.RelativePath(), attach.Name, nil)
+
+		if u != nil && err == nil {
+			ctx.Redirect(u.String())
+			return
+		}
+	}
+
+	if httpcache.HandleGenericETagCache(ctx.Req, ctx.Resp, `"`+attach.UUID+`"`) {
+		return
+	}
+
+	// If we have matched and access to release or issue
+	fr, err := storage.Attachments.Open(attach.RelativePath())
+	if err != nil {
+		ctx.ServerError("Open", err)
+		return
+	}
+	defer fr.Close()
+
+	common.ServeContentByReadSeeker(ctx.Base, attach.Name, new(attach.CreatedUnix.AsTime()), fr)
+}
+
+// GetAttachment serve attachments
+func GetAttachment(ctx *context.Context) {
+	ServeAttachment(ctx, ctx.Params(":uuid"))
+}

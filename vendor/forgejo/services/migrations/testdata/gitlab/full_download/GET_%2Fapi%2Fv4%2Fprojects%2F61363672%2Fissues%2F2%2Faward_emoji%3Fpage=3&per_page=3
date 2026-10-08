@@ -1,0 +1,29 @@
+Accept-Ranges: bytes
+Cache-Control: max-age=0, private, must-revalidate
+Cf-Cache-Status: MISS
+Content-Length: 2
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json
+Etag: W/"4f53cda18c2baa0c0354bb5f9a3ecbe5"
+Gitlab-Lb: haproxy-main-32-lb-gprd
+Gitlab-Sv: api-gke-us-east1-c
+Link: <https://gitlab.com/api/v4/projects/61363672/issues/2/award_emoji?id=61363672&issue_iid=2&page=1&per_page=3>; rel="first", <https://gitlab.com/api/v4/projects/61363672/issues/2/award_emoji?id=61363672&issue_iid=2&page=2&per_page=3>; rel="last"
+Ratelimit-Limit: 2000
+Ratelimit-Name: throttle_authenticated_api
+Ratelimit-Observed: 13
+Ratelimit-Remaining: 1987
+Ratelimit-Reset: 1771055640
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Next-Page: 
+X-Page: 3
+X-Per-Page: 3
+X-Prev-Page: 
+X-Runtime: 0.069015
+X-Total: 6
+X-Total-Pages: 2
+
+[]

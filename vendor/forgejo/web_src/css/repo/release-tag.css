@@ -1,0 +1,212 @@
+#release-list {
+  margin-top: 10px; /* Overriding browser default for <ul>, same value as divider */
+  padding-left: 0; /* Unset browser default */
+}
+
+#release-list > li {
+  .meta {
+    display: flex;
+    gap: 1em;
+  }
+  .detail .desc {
+    margin-block-start: 1rem;
+  }
+}
+
+/* Column layout (desktop) */
+@media (min-width: 768px) {
+  #release-list > li {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    justify-content: end;
+
+    .meta {
+      grid-column: 1;
+      grid-row: 1 / span 2;
+      flex-direction: column;
+      text-align: right;
+
+      /* Align contents of meta column with release name */
+      padding-top: 11px;
+    }
+
+    .detail {
+      grid-column: 2;
+      grid-row: 2;
+      padding-block-end: 1.5rem;
+    }
+    :is(.detail, .release-title-wrap) {
+      /* Line separating columns on wide screen */
+      border-left: 1px solid var(--color-secondary);
+      padding-inline-start: 1rem;
+      margin-inline-start: 1rem;
+    }
+    .detail .download summary {
+      margin-block: 1rem;
+    }
+  }
+}
+
+/* Row layout (mobile) */
+@media (max-width: 767.98px) {
+  #release-list > li {
+    display: flex;
+    flex-direction: column;
+
+    .meta {
+      order: 1;
+      flex-direction: row;
+      align-items: center;
+      margin-block-end: 0.75rem;
+    }
+    .detail {
+      order: 2;
+    }
+    .detail .text {
+      /* Same as `summary` */
+      margin-block-end: 0.75rem;
+    }
+    .detail .download summary {
+      margin-block: 0.75rem;
+    }
+  }
+
+  .release-list-search {
+    order: 2 !important;
+  }
+  .release-list-buttons {
+    margin-left: auto;
+  }
+}
+
+#release-list .release-title-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  padding-block-end: 0.5rem;
+}
+
+#release-list .release-title-wrap h4 {
+  font-size: 2rem;
+  font-weight: var(--font-weight-normal);
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.repository.releases #release-list > li .detail .author img {
+  margin-bottom: 2px; /* the legacy trick to align the avatar vertically, no better solution at the moment */
+}
+
+/* List of downloads */
+#release-list > li .detail .download .list {
+  /* Override <ul> default */
+  padding-left: 0;
+  /* Compensate emptiness that opener provides when <details> is closed */
+  padding-block-end: 1rem;
+
+  hr {
+    height: 8px;
+    margin: 0;
+  }
+
+  li {
+    background: var(--color-light);
+    border: 1px solid var(--color-secondary);
+    border-top: none;
+    display: flex;
+    justify-content: space-between;
+    padding: 8px;
+  }
+
+  :is(li:first-child, .start-gap + hr + li) {
+    border-top: 1px solid var(--color-secondary);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+  }
+
+  :is(li:last-child, .start-gap) {
+    border-bottom: 1px solid var(--color-secondary);
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+  }
+}
+
+@media (max-width: 640px) {
+  #release-list > li .detail .download .list .attachment {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+.repository.tags #tags-table .tag {
+  padding: 8px 12px;
+}
+
+.repository.tags #tags-table .release-tag-name {
+  font-size: 18px;
+  font-weight: var(--font-weight-normal);
+}
+
+.repository.new.release .target {
+  min-width: 500px;
+}
+
+.repository.new.release .target .at {
+  margin-left: -5px;
+  margin-right: 5px;
+}
+
+.repository.new.release .target .selection.dropdown {
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.repository.new.release .field .attachment_edit {
+  max-width: 48em;
+}
+
+.repository.new.release .markup {
+  min-height: 240px;
+}
+
+.ui.ui.ui.tag-label {
+  margin-left: 0.25rem;
+  padding: 0.2rem 0.4rem;
+  gap: 0.3rem;
+}
+
+.ui.ui.ui.tag-label.IsRelease {
+  border-color: var(--color-primary);
+}
+.ui.ui.ui.tag-label.IsRelease:hover {
+  border-color: var(--color-primary-dark-1);
+}
+
+.repository .release-tag-name .ui.label.isSigned,
+.repository .release-title-wrap .ui.label.isSigned {
+  padding: 0 0.5em;
+  box-shadow: none;
+}
+
+.repository .release-tag-name .ui.label.isSigned .avatar,
+.repository .release-title-wrap .ui.label.isSigned .avatar {
+  margin-left: .5rem;
+}
+
+.repository .release-tag-name .ui.label.isSigned.isVerified,
+.repository .release-title-wrap .ui.label.isSigned.isVerified {
+  border: 1px solid var(--color-success-border);
+  background-color: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.repository .release-tag-name .ui.label.isSigned.isWarning,
+.repository .release-title-wrap .ui.label.isSigned.isWarning {
+  border: 1px solid var(--color-warning-border);
+  background-color: var(--color-warning-bg);
+  color: var(--color-warning-text);
+}

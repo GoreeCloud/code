@@ -1,0 +1,9 @@
+{{$repoIcon := "octicon-repo"}}
+{{if .IsFork}}
+	{{$repoIcon = "octicon-repo-forked"}}
+{{else if .IsMirror}}
+	{{$repoIcon = "octicon-mirror"}}
+{{else if .IsPrivate}}
+	{{$repoIcon = "octicon-lock"}}
+{{end}}
+{{svg $repoIcon 16 "repo-list-icon tw-mr-2"}}

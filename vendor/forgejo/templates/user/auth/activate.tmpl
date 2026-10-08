@@ -1,0 +1,60 @@
+{{template "base/head" .}}
+<div role="main" aria-label="{{.Title}}" class="page-content user activate">
+	<div class="ui middle very relaxed page grid">
+		<div class="column">
+			<form class="ui form ignore-dirty tw-max-w-2xl tw-m-auto" action="{{AppSubUrl}}/user/activate" method="post">
+				<h2 class="ui top attached header">
+					{{ctx.Locale.Tr "auth.active_your_account"}}
+				</h2>
+				<div class="ui attached segment">
+					{{template "base/alert" .}}
+					{{if .IsActivatePage}}
+						{{if .ServiceNotEnabled}}
+							<p class="center">{{ctx.Locale.Tr "auth.disable_register_mail"}}</p>
+						{{else if .ResendLimited}}
+							<p class="center">{{ctx.Locale.Tr "auth.resent_limit_prompt"}}</p>
+						{{else}}
+							<p>{{ctx.Locale.Tr "auth.confirmation_mail_sent_prompt" .SignedUser.Email .ActiveCodeLives}}</p>
+						{{end}}
+					{{else}}
+						{{if .NeedsPassword}}
+							<div class="required field">
+								<label for="password">{{ctx.Locale.Tr "password"}}</label>
+								<input id="password" name="password" type="password" autocomplete="off" required>
+							</div>
+							<div class="inline field">
+								<button class="ui primary button">{{ctx.Locale.Tr "install.confirm_password"}}</button>
+							</div>
+							<input id="code" name="code" type="hidden" value="{{.Code}}">
+						{{else if .IsSendRegisterMail}}
+							<p>{{ctx.Locale.Tr "auth.confirmation_mail_sent_prompt" .Email .ActiveCodeLives}}</p>
+						{{else if .IsCodeInvalid}}
+							<p>{{ctx.Locale.Tr "auth.invalid_code"}}</p>
+						{{else if .IsPasswordInvalid}}
+							<p>{{ctx.Locale.Tr "auth.invalid_password"}}</p>
+						{{else if .ManualActivationOnly}}
+							<p class="center">{{ctx.Locale.Tr "auth.manual_activation_only"}}</p>
+						{{else}}
+							<p>{{ctx.Locale.Tr "auth.has_unconfirmed_mail" .SignedUser.Name .SignedUser.Email}}</p>
+							<div class="divider"></div>
+							<details class="inline field">
+								<summary>{{ctx.Locale.Tr "auth.change_unconfirmed_email_summary"}}</summary>
+
+								<p>{{ctx.Locale.Tr "auth.change_unconfirmed_email"}}</p>
+								<div class="inline field">
+									<label for="email">{{ctx.Locale.Tr "email"}}</label>
+									<input id="email" name="email" type="email" autocomplete="on">
+								</div>
+							</details>
+
+							<div class="text">
+								<button class="ui primary button">{{ctx.Locale.Tr "auth.resend_mail"}}</button>
+							</div>
+						{{end}}
+					{{end}}
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+{{template "base/footer" .}}

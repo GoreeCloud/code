@@ -1,0 +1,73 @@
+// Copyright 2017 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package integration
+
+import (
+	"net/http"
+	"path"
+	"testing"
+
+	"forgejo.org/modules/test"
+	"forgejo.org/tests"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestViewTimetrackingControls(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+	session := loginUser(t, "user2")
+	testViewTimetrackingControls(t, session, "user2", "repo1", "1", true)
+	// user2/repo1
+}
+
+func TestNotViewTimetrackingControls(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+	session := loginUser(t, "user5")
+	testViewTimetrackingControls(t, session, "user2", "repo1", "1", false)
+	// user2/repo1
+}
+
+func TestViewTimetrackingControlsDisabled(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+	session := loginUser(t, "user2")
+	testViewTimetrackingControls(t, session, "org3", "repo3", "1", false)
+}
+
+func testViewTimetrackingControls(t *testing.T, session *TestSession, user, repo, issue string, canTrackTime bool) {
+	req := NewRequest(t, "GET", path.Join(user, repo, "issues", issue))
+	resp := session.MakeRequest(t, req, http.StatusOK)
+
+	htmlDoc := NewHTMLParser(t, resp.Body)
+
+	htmlDoc.AssertElement(t, ".timetrack .issue-start-time", canTrackTime)
+	htmlDoc.AssertElement(t, ".timetrack .issue-add-time", canTrackTime)
+
+	req = NewRequest(t, "POST", path.Join(user, repo, "issues", issue, "times", "stopwatch", "toggle"))
+	if canTrackTime {
+		resp = session.MakeRequest(t, req, http.StatusSeeOther)
+
+		req = NewRequest(t, "GET", test.RedirectURL(resp))
+		resp = session.MakeRequest(t, req, http.StatusOK)
+		htmlDoc = NewHTMLParser(t, resp.Body)
+
+		events := htmlDoc.doc.Find(".event > span.text")
+		assert.Contains(t, events.Last().Text(), "started working")
+
+		htmlDoc.AssertElement(t, ".timetrack .issue-stop-time", true)
+		htmlDoc.AssertElement(t, ".timetrack .issue-cancel-time", true)
+
+		req = NewRequest(t, "POST", path.Join(user, repo, "issues", issue, "times", "stopwatch", "toggle"))
+		resp = session.MakeRequest(t, req, http.StatusSeeOther)
+
+		req = NewRequest(t, "GET", test.RedirectURL(resp))
+		resp = session.MakeRequest(t, req, http.StatusOK)
+		htmlDoc = NewHTMLParser(t, resp.Body)
+
+		events = htmlDoc.doc.Find(".event > span.text")
+		assert.Contains(t, events.Last().Text(), "stopped working")
+		htmlDoc.AssertElement(t, ".event .detail .octicon-clock", true)
+	} else {
+		session.MakeRequest(t, req, http.StatusNotFound)
+	}
+}

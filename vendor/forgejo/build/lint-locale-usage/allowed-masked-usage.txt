@@ -1,0 +1,37 @@
+# translation tooling test keys
+meta.last_line
+translation_meta.test
+
+# models/admin/task.go: instances of $TranslatableMessage.Format
+# this also gets instantiated as a Messenger once
+repo.migrate.migrating_failed.error
+
+# models/system/notice.go: func (n *Notice) TrStr() string
+admin.notices.type_1
+admin.notices.type_2
+
+# modules/setting/ui.go
+themes.names.
+
+# services/context/context.go
+relativetime.
+
+# templates/repo/issue/view_content.tmpl: indirection via $closeTranslationKey
+repo.issues.close
+repo.pulls.close
+
+# templates/repo/issue/view_content/comments.tmpl: indirection via $refTr
+repo.issues.ref_closing_from
+repo.issues.ref_issue_from
+repo.issues.ref_pull_from
+repo.issues.ref_reopening_from
+
+# templates/repo/issue/view_content/comments.tmpl: ctx.Locale.Tr (printf "projects.type-%d.display_name" .OldProject.Type)
+projects.
+projects.type-1.display_name
+projects.type-2.display_name
+projects.type-3.display_name
+
+# templates/repo/settings/webhook/link_menu.tmpl, templates/webhook/new.tmpl: repo.settings.web_hook_name_
+# tests/integration/repo_archive_text_test.go
+repo.settings.

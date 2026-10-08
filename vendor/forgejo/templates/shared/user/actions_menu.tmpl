@@ -1,0 +1,54 @@
+<details class="dropdown dir-auto">
+	<summary class="border" data-tooltip-content="{{ctx.Locale.Tr "profile.actions.tooltip"}}">
+		{{svg "octicon-kebab-horizontal"}}
+	</summary>
+	<div class="content">
+		<ul>
+			{{if eq .SignedUserID .ContextUser.ID}}
+				<li>
+					<a href="{{AppSubUrl}}/user/settings">{{svg "octicon-pencil"}}{{ctx.Locale.Tr "profile.edit.link"}}</a>
+				</li>
+			{{end}}
+			{{if .IsAdmin}}
+				<li>
+					<a href="{{AppSubUrl}}/admin/users/{{.ContextUser.ID}}">{{svg "octicon-gear"}}{{ctx.Locale.Tr "admin.users.details"}}</a>
+				</li>
+			{{end}}
+			{{if and .EnableFeed (or .IsAdmin (eq .SignedUserID .ContextUser.ID) (not .ContextUser.KeepActivityPrivate))}}
+				<li>
+					<a href="{{.ContextUser.HomeLink}}.rss">{{svg "octicon-rss"}}{{ctx.Locale.Tr "rss_feed"}}</a>
+				</li>
+				<li>
+					<a href="{{.ContextUser.HomeLink}}.atom">{{svg "octicon-rss"}}{{ctx.Locale.Tr "feed.atom.link"}}</a>
+				</li>
+			{{end}}
+			<li>
+				<a href="{{.ContextUser.HomeLink}}.keys">{{svg "octicon-key"}}{{ctx.Locale.Tr "keys.ssh.link"}}</a>
+			</li>
+			<li>
+				<a href="{{.ContextUser.HomeLink}}.gpg">{{svg "octicon-key"}}{{ctx.Locale.Tr "keys.gpg.link"}}</a>
+			</li>
+		</ul>
+		{{if and .IsSigned (ne .SignedUserID .ContextUser.ID)}}
+			<hr>
+			<ul>
+				<li hx-target="#profile-avatar-card" hx-indicator="#profile-avatar-card" id="action-block">
+					{{if .IsBlocked}}
+						<button class="orange text" hx-post="{{.ContextUser.HomeLink}}?action=unblock">
+							{{svg "octicon-person"}} {{ctx.Locale.Tr "user.unblock"}}
+						</button>
+					{{else}}
+						<button class="orange text" data-modal-id="block-user" hx-post="{{.ContextUser.HomeLink}}?action=block" hx-confirm="-">
+							{{svg "octicon-blocked"}} {{ctx.Locale.Tr "user.block"}}
+						</button>
+					{{end}}
+				</li>
+				{{if .IsModerationEnabled}}
+					<li>
+						<a href="{{AppSubUrl}}/report_abuse?type=user&id={{.ContextUser.ID}}" class="orange text">{{svg "octicon-stop"}}{{ctx.Locale.Tr "moderation.report_abuse"}}</a>
+					</li>
+				{{end}}
+			</ul>
+		{{end}}
+	</div>
+</details>

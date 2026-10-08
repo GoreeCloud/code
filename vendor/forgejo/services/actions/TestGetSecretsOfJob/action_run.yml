@@ -1,0 +1,94 @@
+# Supporting data for Case 600
+-
+  id: 900
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 4
+  trigger_event: "push"
+  is_fork_pull_request: false
+
+# Supporting data for Case 601
+-
+  id: 901
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 5
+  trigger_event: "pull_request_target"
+  is_fork_pull_request: false
+
+# Supporting data for Case 602
+-
+  id: 902
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 6
+  trigger_event: "pull_request_target"
+  is_fork_pull_request: true
+
+# Supporting data for Case 603
+-
+  id: 903
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 7
+  trigger_event: "pull_request"
+  is_fork_pull_request: false
+
+# Supporting data for Case 604
+-
+  id: 904
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 8
+  trigger_event: "pull_request"
+  is_fork_pull_request: true
+
+# Supporting data for Case 605
+-
+  id: 905
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 9
+  trigger_event: "pull_request"
+  is_fork_pull_request: false
+
+# Supporting data for Case 607
+-
+  id: 906
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 10
+  trigger_event: "pull_request"
+  is_fork_pull_request: false
+
+# Supporting data for Case 610
+-
+  id: 907
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  ref: "refs/heads/main"
+  workflow_id: "running.yaml"
+  index: 11
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  event_payload: |
+    {
+      "inputs": {
+        "some_wd_input": "some_wd_input_value"
+      }
+    }

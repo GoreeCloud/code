@@ -1,0 +1,22 @@
+#
+# Install the minimal version of Git supported by Forgejo
+#
+runs:
+  using: "composite"
+  steps:
+    - name: install git and git-lfs
+      run: |
+        set -x
+
+        export DEBIAN_FRONTEND=noninteractive
+
+        apt-get update -qq
+        apt-get -q install -y -qq curl ca-certificates
+
+        curl -sS -o /tmp/git-man.deb https://archive.ubuntu.com/ubuntu/pool/main/g/git/git-man_2.34.1-1ubuntu1_all.deb
+        curl -sS -o /tmp/git.deb https://archive.ubuntu.com/ubuntu/pool/main/g/git/git_2.34.1-1ubuntu1_amd64.deb
+        curl -sS -o /tmp/git-lfs.deb https://archive.ubuntu.com/ubuntu/pool/universe/g/git-lfs/git-lfs_3.0.2-1_amd64.deb
+
+        apt-get -q install --allow-downgrades -y -qq /tmp/git-man.deb
+        apt-get -q install --allow-downgrades -y -qq /tmp/git.deb
+        apt-get -q install --allow-downgrades -y -qq /tmp/git-lfs.deb

@@ -1,0 +1,22 @@
+# Case w/ action_run_job.id = 601
+-
+  id: 1001
+  name: REPO_VAR
+  owner_id: 0
+  repo_id: 63
+  data: "this is a repo variable"
+  created_unix: 1737000000
+-
+  id: 1002
+  name: ORG_VAR
+  owner_id: 2
+  repo_id: 0
+  data: "this is an org variable"
+  created_unix: 1737000000
+-
+  id: 1003
+  name: GLOBAL_VAR
+  owner_id: 0
+  repo_id: 0
+  data: "this is a global variable"
+  created_unix: 1737000000

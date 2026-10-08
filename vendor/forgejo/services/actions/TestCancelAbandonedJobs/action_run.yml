@@ -1,0 +1,25 @@
+# Supporting data for Case 600 - 603
+-
+  id: 900
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 4
+  trigger_event: "push"
+  is_fork_pull_request: false
+  trigger_user_id: 2
+  need_approval: false
+
+# Supporting data for Case 604
+-
+  id: 901
+  title: "running"
+  owner_id: 2
+  repo_id: 63
+  workflow_id: "running.yaml"
+  index: 5
+  trigger_event: "push"
+  is_fork_pull_request: false
+  trigger_user_id: 2
+  need_approval: true

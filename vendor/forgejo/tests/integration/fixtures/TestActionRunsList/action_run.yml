@@ -1,0 +1,34 @@
+- id: 1000
+  title: "A scheduled workflow"
+  repo_id: 4
+  owner_id: 5
+  workflow_id: "scheduled.yaml"
+  index: 209
+  trigger_user_id: -2
+  ref: "refs/heads/main"
+  commit_sha: "64357baca84bfff631e7dfae5a3433b26d005646"
+  trigger_event: "schedule"
+  is_fork_pull_request: false
+  status: 6 # running
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+  approved_by: 0
+- id: 1001
+  title: "Running workflow_dispatch"
+  repo_id: 4
+  owner_id: 5
+  workflow_id: "dispatch.yaml"
+  index: 210
+  trigger_user_id: 29
+  ref: "refs/heads/main"
+  commit_sha: "dc67f0a1a0dc2417cd0b1a9f0b95e2e5d91876e9"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 6 # running
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+  approved_by: 0

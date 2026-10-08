@@ -1,0 +1,21 @@
+-
+  id: 500
+  index: 1
+  status: 5 # StatusWaiting
+  repo_id: 4
+  concurrency_group: abc123
+  concurrency_type: 1 # QueueBehind
+-
+  id: 501
+  index: 2
+  status: 5 # StatusWaiting
+  repo_id: 4
+  concurrency_group: abc123
+  concurrency_type: 1 # QueueBehind
+-
+  id: 502
+  index: 3
+  status: 5 # StatusWaiting
+  repo_id: 4
+  concurrency_group: abc123
+  concurrency_type: 1 # QueueBehind

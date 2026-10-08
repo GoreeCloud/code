@@ -1,0 +1,9 @@
+{{template "base/head" .}}
+<div role="main" aria-label="{{.Title}}" class="page-content repository diff">
+	{{template "repo/header" .}}
+	<div class="ui container fluid padded">
+		{{template "repo/commit_header" .}}
+		{{template "repo/diff/box" .}}
+	</div>
+</div>
+{{template "base/footer" .}}

@@ -1,0 +1,112 @@
+- id: 735
+  package_id: 7
+  creator_id: 1
+  version: _upload
+  lower_version: _upload
+  created_unix: 1764694509
+  is_internal: true
+  metadata_json: 'null'
+  download_count: 0
+- id: 736
+  package_id: 7
+  creator_id: 1
+  version: 'sha256:a972a01ff13b1cb6a9c49b3c34a283b67b75f441b8ff17ad4833a472f7b0fe08'
+  lower_version: 'sha256:a972a01ff13b1cb6a9c49b3c34a283b67b75f441b8ff17ad4833a472f7b0fe08'
+  created_unix: 1764694509
+  is_internal: false
+  metadata_json: >-
+    {"type":"oci","is_tagged":false,"platform":"linux/amd64","description":"A
+    runner for Forgejo
+    Actions.","authors":["Forgejo"],"license":"GPL-3.0-or-later","project_url":"https://forgejo.org","repository_url":"https://code.forgejo.org/forgejo/runner","documentation_url":"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner","labels":{"io.buildah.version":"1.42.0","maintainer":"contact@forgejo.org","org.opencontainers.image.authors":"Forgejo","org.opencontainers.image.description":"A
+    runner for Forgejo
+    Actions.","org.opencontainers.image.documentation":"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner","org.opencontainers.image.licenses":"GPL-3.0-or-later","org.opencontainers.image.source":"https://code.forgejo.org/forgejo/runner","org.opencontainers.image.title":"Forgejo
+    Runner","org.opencontainers.image.url":"https://forgejo.org","org.opencontainers.image.vendor":"Forgejo","org.opencontainers.image.version":"1"},"layer_creation":["ADD
+    alpine-minirootfs-3.22.2-x86_64.tar.gz / # buildkit","CMD
+    [\"/bin/sh\"]","ARG RELEASE_VERSION","|1 RELEASE_VERSION=1 /bin/sh -c apk
+    add --no-cache git bash","COPY
+    file:abe2aa9c7d7eee672ac5953937e3ae56536980f485e40b8a70d94476ce576d39 in
+    /bin/forgejo-runner","LABEL maintainer=\"contact@forgejo.org\"
+    org.opencontainers.image.authors=\"Forgejo\"
+    org.opencontainers.image.url=\"https://forgejo.org\"
+    org.opencontainers.image.documentation=\"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner\"
+    org.opencontainers.image.source=\"https://code.forgejo.org/forgejo/runner\"
+    org.opencontainers.image.version=\"${RELEASE_VERSION}\"
+    org.opencontainers.image.vendor=\"Forgejo\"
+    org.opencontainers.image.licenses=\"GPL-3.0-or-later\"
+    org.opencontainers.image.title=\"Forgejo Runner\"
+    org.opencontainers.image.description=\"A runner for Forgejo Actions.\"","ENV
+    HOME=/data","USER 1000:1000","WORKDIR /data","VOLUME [\"/data\"]","CMD
+    [\"/bin/forgejo-runner\"]"]}
+  download_count: 0
+- id: 737
+  package_id: 7
+  creator_id: 1
+  version: 'sha256:4759bcf56210784f3b2c2b7438a43a5771c5eda61a11825c80f7b32143ac9c12'
+  lower_version: 'sha256:4759bcf56210784f3b2c2b7438a43a5771c5eda61a11825c80f7b32143ac9c12'
+  created_unix: 1764694509
+  is_internal: false
+  metadata_json: >-
+    {"type":"oci","is_tagged":false,"platform":"linux/arm64/v8","description":"A
+    runner for Forgejo
+    Actions.","authors":["Forgejo"],"license":"GPL-3.0-or-later","project_url":"https://forgejo.org","repository_url":"https://code.forgejo.org/forgejo/runner","documentation_url":"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner","labels":{"io.buildah.version":"1.42.0","maintainer":"contact@forgejo.org","org.opencontainers.image.authors":"Forgejo","org.opencontainers.image.description":"A
+    runner for Forgejo
+    Actions.","org.opencontainers.image.documentation":"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner","org.opencontainers.image.licenses":"GPL-3.0-or-later","org.opencontainers.image.source":"https://code.forgejo.org/forgejo/runner","org.opencontainers.image.title":"Forgejo
+    Runner","org.opencontainers.image.url":"https://forgejo.org","org.opencontainers.image.vendor":"Forgejo","org.opencontainers.image.version":"1"},"layer_creation":["ADD
+    alpine-minirootfs-3.22.2-aarch64.tar.gz / # buildkit","CMD
+    [\"/bin/sh\"]","ARG RELEASE_VERSION","|1 RELEASE_VERSION=1 /bin/sh -c apk
+    add --no-cache git bash","COPY
+    file:26caa6ee49a60c7da3a00fe966069655c32d484f1659bb0389dc18fd9616b521 in
+    /bin/forgejo-runner","LABEL maintainer=\"contact@forgejo.org\"
+    org.opencontainers.image.authors=\"Forgejo\"
+    org.opencontainers.image.url=\"https://forgejo.org\"
+    org.opencontainers.image.documentation=\"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner\"
+    org.opencontainers.image.source=\"https://code.forgejo.org/forgejo/runner\"
+    org.opencontainers.image.version=\"${RELEASE_VERSION}\"
+    org.opencontainers.image.vendor=\"Forgejo\"
+    org.opencontainers.image.licenses=\"GPL-3.0-or-later\"
+    org.opencontainers.image.title=\"Forgejo Runner\"
+    org.opencontainers.image.description=\"A runner for Forgejo Actions.\"","ENV
+    HOME=/data","USER 1000:1000","WORKDIR /data","VOLUME [\"/data\"]","CMD
+    [\"/bin/forgejo-runner\"]"]}
+  download_count: 0
+- id: 738
+  package_id: 7
+  creator_id: 1
+  version: v1.0
+  lower_version: v1.0
+  created_unix: 1764694509
+  is_internal: false
+  metadata_json: >-
+    {"type":"oci","is_tagged":true,"manifests":[{"platform":"linux/amd64","digest":"sha256:a972a01ff13b1cb6a9c49b3c34a283b67b75f441b8ff17ad4833a472f7b0fe08","size":19758113},{"platform":"linux/arm64","digest":"sha256:4759bcf56210784f3b2c2b7438a43a5771c5eda61a11825c80f7b32143ac9c12","size":19297077}]}
+  download_count: 0
+- id: 740
+  package_id: 7
+  creator_id: 1
+  version: v2.0
+  lower_version: v2.0
+  created_unix: 1764695172
+  is_internal: false
+  metadata_json: >-
+    {"type":"oci","is_tagged":true,"platform":"linux/amd64","description":"A
+    runner for Forgejo
+    Actions.","authors":["Forgejo"],"license":"GPL-3.0-or-later","project_url":"https://forgejo.org","repository_url":"https://code.forgejo.org/forgejo/runner","documentation_url":"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner","labels":{"io.buildah.version":"1.42.0","maintainer":"contact@forgejo.org","org.opencontainers.image.authors":"Forgejo","org.opencontainers.image.description":"A
+    runner for Forgejo
+    Actions.","org.opencontainers.image.documentation":"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner","org.opencontainers.image.licenses":"GPL-3.0-or-later","org.opencontainers.image.source":"https://code.forgejo.org/forgejo/runner","org.opencontainers.image.title":"Forgejo
+    Runner","org.opencontainers.image.url":"https://forgejo.org","org.opencontainers.image.vendor":"Forgejo","org.opencontainers.image.version":"2"},"layer_creation":["ADD
+    alpine-minirootfs-3.22.2-x86_64.tar.gz / # buildkit","CMD
+    [\"/bin/sh\"]","ARG RELEASE_VERSION","|1 RELEASE_VERSION=2 /bin/sh -c apk
+    add --no-cache git bash","COPY
+    file:3c24d4a08c7006979c8b4397315c24dbb40df6b8fa474d8744daaf6fe17dce6f in
+    /bin/forgejo-runner","LABEL maintainer=\"contact@forgejo.org\"
+    org.opencontainers.image.authors=\"Forgejo\"
+    org.opencontainers.image.url=\"https://forgejo.org\"
+    org.opencontainers.image.documentation=\"https://forgejo.org/docs/latest/admin/actions/#forgejo-runner\"
+    org.opencontainers.image.source=\"https://code.forgejo.org/forgejo/runner\"
+    org.opencontainers.image.version=\"${RELEASE_VERSION}\"
+    org.opencontainers.image.vendor=\"Forgejo\"
+    org.opencontainers.image.licenses=\"GPL-3.0-or-later\"
+    org.opencontainers.image.title=\"Forgejo Runner\"
+    org.opencontainers.image.description=\"A runner for Forgejo Actions.\"","ENV
+    HOME=/data","USER 1000:1000","WORKDIR /data","VOLUME [\"/data\"]","CMD
+    [\"/bin/forgejo-runner\"]"]}
+  download_count: 0
