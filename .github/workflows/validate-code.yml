@@ -13,22 +13,16 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 12
     steps:
-      - name: Check out exact candidate
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
         with:
           persist-credentials: false
-      - name: Set up Node
-        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
         with:
           node-version: '22'
-      - name: Syntax and isolated API tests
+      - name: Node tests and import source checks
         run: |
           node --check services/api/server.mjs
-          node --check services/api/server.test.mjs
-          node --check services/api/access-policy.mjs
-          node --check services/api/provider-projections.mjs
-          node --check services/api/access-policy.test.mjs
           node --test services/api/*.test.mjs
+          node --test apps/web/preview.test.mjs
           bash -n scripts/import-forgejo.sh
-      - name: Verify imported Forgejo tracked-source snapshot
-        run: node scripts/verify-forgejo-snapshot.mjs
+          node scripts/verify-forgejo-snapshot.mjs
