@@ -1,0 +1,7 @@
+# Ownership of GoreeCloud Code review decisions
+* @GoreeCloud
+/services/api/ @GoreeCloud
+/.github/workflows/ @GoreeCloud
+/scripts/ @GoreeCloud
+/vendor/forgejo/ @GoreeCloud
+/goreecloud.platform.yaml @GoreeCloud
