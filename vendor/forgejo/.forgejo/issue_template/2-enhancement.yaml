@@ -1,0 +1,39 @@
+name: "Step 2: Enhancement"
+description: "[Advanced users only] Suggest a solution to one or multiple problems that have already been reported (see step 1)."
+title: "enh: "
+labels: ["enhancement/feature"]
+body:
+- type: markdown
+  attributes:
+    value: |
+      - Please speak English, as this is the language all maintainers can speak and write.
+      - Be civil, and follow the [Forgejo Code of Conduct](https://codeberg.org/forgejo/code-of-conduct).
+- type: markdown
+  attributes:
+    value: |
+      ### New workflow
+      
+      We are currently experimenting with a new workflow to manage issues and better understand your problems and needs. This is step 2 of the workflow, which is intended for Forgejo contributors: If you just want to raise a problem or need you have, please refer to step 1.
+      
+      This step allows to document a solution to one or multiple problems. It allows developers to focus on actionable implementation tasks without the clutter of previous discussions or triaging work.
+      
+      If you want to learn more about the background of our workflow, feel invited to read and participate in [the discussion that led to the current approach](https://codeberg.org/forgejo/discussions/issues/415). We are looking forward to your feedback.
+- type: textarea
+  id: problems
+  attributes:
+    label: Existing problems this enhancement addresses
+    description: Only list the issue numbers of the **existing** problems that your proposal addresses. **Do not add new descriptions.** If you haven't previously described a problem, please [complete step one of the workflow](https://codeberg.org/forgejo/forgejo/issues/new?template=.forgejo%2fissue_template%2fproblem.yaml) and describe the problem you'd like to solve first.
+  validations:
+    required: true
+- type: textarea
+  id: description
+  attributes:
+    label: Enhancement description
+    description: Describe the changes you suggest for Forgejo and explain how they address the problems.
+  validations:
+    required: true
+- type: textarea
+  id: details
+  attributes:
+    label: Details and notes
+    description: Feel free to supply additional information like technical considerations, link to alternative solutions, UI mockups etc.

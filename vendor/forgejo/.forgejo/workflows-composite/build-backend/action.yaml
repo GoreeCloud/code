@@ -1,0 +1,15 @@
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        su forgejo -c 'make deps-backend'
+    - uses: https://data.forgejo.org/actions/cache@v5
+      id: cache-backend
+      with:
+        path: ${{github.workspace}}/gitea
+        key: backend-build-${{ github.sha }}
+    - if: steps.cache-backend.outputs.cache-hit != 'true'
+      run: |
+        su forgejo -c 'make backend'
+      env:
+        TAGS: bindata

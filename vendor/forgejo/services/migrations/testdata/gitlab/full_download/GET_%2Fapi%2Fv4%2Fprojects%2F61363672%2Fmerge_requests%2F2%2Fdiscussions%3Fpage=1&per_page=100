@@ -1,0 +1,27 @@
+Cache-Control: max-age=0, private, must-revalidate
+Cf-Cache-Status: MISS
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json
+Etag: W/"d87805cd93ac626c7e1fe459c808b459"
+Gitlab-Lb: haproxy-main-10-lb-gprd
+Gitlab-Sv: api-gke-us-east1-b
+Link: <https://gitlab.com/api/v4/projects/61363672/merge_requests/2/discussions?id=61363672&noteable_id=2&page=1&per_page=100>; rel="first", <https://gitlab.com/api/v4/projects/61363672/merge_requests/2/discussions?id=61363672&noteable_id=2&page=1&per_page=100>; rel="last"
+Ratelimit-Limit: 2000
+Ratelimit-Name: throttle_authenticated_api
+Ratelimit-Observed: 20
+Ratelimit-Remaining: 1980
+Ratelimit-Reset: 1771055640
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Next-Page: 
+X-Page: 1
+X-Per-Page: 100
+X-Prev-Page: 
+X-Runtime: 0.166725
+X-Total: 2
+X-Total-Pages: 1
+
+[{"id":"b5ca983c1aa64f694c89a7c6df9a27a7b68b5414","individual_note":true,"notes":[{"id":2911818565,"type":null,"body":"Although we had some trouble with !1.","author":{"id":10529876,"username":"patdyn","public_email":"","name":"Pat Dyn","state":"active","locked":false,"avatar_url":"https://gitlab.com/uploads/-/system/user/avatar/10529876/avatar.png","web_url":"https://gitlab.com/patdyn"},"created_at":"2025-11-25T09:49:00.750Z","updated_at":"2025-11-25T09:49:00.750Z","system":false,"noteable_id":435564587,"noteable_type":"MergeRequest","project_id":61363672,"resolvable":false,"confidential":false,"internal":false,"imported":false,"imported_from":"none","noteable_iid":2,"commands_changes":{}}]},{"id":"d6baff3ff75a892764e7b3cc164689687c875266","individual_note":true,"notes":[{"id":2911820075,"type":null,"body":"mentioned in issue #3","author":{"id":10529876,"username":"patdyn","public_email":"","name":"Pat Dyn","state":"active","locked":false,"avatar_url":"https://gitlab.com/uploads/-/system/user/avatar/10529876/avatar.png","web_url":"https://gitlab.com/patdyn"},"created_at":"2025-11-25T09:49:32.263Z","updated_at":"2025-11-25T09:49:32.265Z","system":true,"noteable_id":435564587,"noteable_type":"MergeRequest","project_id":61363672,"resolvable":false,"confidential":false,"internal":false,"imported":false,"imported_from":"none","noteable_iid":2,"commands_changes":{}}]}]

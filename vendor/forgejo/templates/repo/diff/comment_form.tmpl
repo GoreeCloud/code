@@ -1,0 +1,48 @@
+{{if and $.root.SignedUserID (not $.Repository.IsArchived)}}
+	<form class="ui form {{if $.hidden}}tw-hidden comment-form tw-mt-2{{end}}" action="{{$.root.Issue.Link}}/files/reviews/comments" method="post">
+		<input type="hidden" name="origin" value="{{if $.root.PageIsPullFiles}}diff{{else}}timeline{{end}}">
+		<input type="hidden" name="before_commit_id" value="{{$.root.BeforeCommitID}}">
+		<input type="hidden" name="latest_commit_id" value="{{$.root.AfterCommitID}}">
+		<input type="hidden" name="side" value="{{if $.Side}}{{$.Side}}{{end}}">
+		<input type="hidden" name="line" value="{{if $.Line}}{{$.Line}}{{end}}">
+		<input type="hidden" name="path" value="{{if $.File}}{{$.File}}{{end}}">
+		<input type="hidden" name="diff_start_cid">
+		<input type="hidden" name="diff_end_cid">
+		<input type="hidden" name="diff_base_cid">
+
+		{{template "shared/combomarkdowneditor" (dict
+			"MarkdownPreviewUrl" (print $.root.Repository.Link "/markup")
+			"MarkdownPreviewContext" $.root.RepoLink
+			"TextareaName" "content"
+			"TextareaPlaceholder" (ctx.Locale.Tr "repo.diff.comment.placeholder")
+			"DropzoneParentContainer" "form"
+			"DisableAutosize" "true"
+		)}}
+
+		{{if $.root.IsAttachmentEnabled}}
+			<div class="field">
+				{{template "repo/upload" $.root}}
+			</div>
+		{{end}}
+
+		<div class="field footer">
+			<span class="markup-info">{{svg "octicon-markdown"}} {{ctx.Locale.Tr "repo.diff.comment.markdown_info"}}</span>
+			<div class="button-sequence tw-justify-end">
+				{{if $.reply}}
+					<button class="ui submit primary tiny button" type="submit">{{ctx.Locale.Tr "repo.diff.comment.reply"}}</button>
+					<input type="hidden" name="reply" value="{{$.reply}}">
+				{{else}}
+					{{if $.root.CurrentReview}}
+						<button name="pending_review" type="submit" class="ui submit primary tiny button">{{ctx.Locale.Tr "repo.diff.comment.add_review_comment"}}</button>
+					{{else}}
+						<button name="pending_review" type="submit" class="ui submit primary tiny button">{{ctx.Locale.Tr "repo.diff.comment.start_review"}}</button>
+						<button name="single_review" value="true" type="submit" class="ui submit tiny basic button btn-add-single">{{ctx.Locale.Tr "repo.diff.comment.add_single_comment"}}</button>
+					{{end}}
+				{{end}}
+				{{if or (not $.HasComments) $.hidden}}
+					<button type="button" class="ui submit tiny basic button cancel-code-comment">{{ctx.Locale.Tr "cancel"}}</button>
+				{{end}}
+			</div>
+		</div>
+	</form>
+{{end}}

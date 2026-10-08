@@ -1,0 +1,79 @@
+<div class="issue-content-right ui segment">
+	{{template "repo/issue/view_content/sidebar/branch_selector_field" .}}
+	{{if .Issue.IsPull}}
+		{{template "repo/issue/view_content/sidebar/pull_review" .}}
+		{{template "repo/issue/view_content/sidebar/pull_wip" .}}
+		<div class="divider"></div>
+	{{end}}
+
+	{{template "repo/issue/labels/labels_selector_field" .}}
+	{{template "repo/issue/labels/labels_sidebar" dict "root" $}}
+
+	<div class="divider"></div>
+
+	{{template "repo/issue/view_content/sidebar/milestones" .}}
+	<div class="divider"></div>
+
+	{{template "repo/issue/view_content/sidebar/projects" .}}
+	<div class="divider"></div>
+
+	{{template "repo/issue/view_content/sidebar/assignees" dict "isExistingIssue" true "." .}}
+	<div class="divider"></div>
+
+	{{if .Participants}}
+		{{template "repo/issue/view_content/sidebar/participants" .}}
+	{{end}}
+
+	{{if and $.IssueWatch (not .Repository.IsArchived)}}
+		<div class="divider"></div>
+
+		{{template "repo/issue/view_content/sidebar/watch" .}}
+	{{end}}
+
+	{{if .Repository.IsTimetrackerEnabled $.Context}}
+		{{template "repo/issue/view_content/sidebar/timetracking" .}}
+	{{end}}
+
+	<div class="divider"></div>
+	{{template "repo/issue/view_content/sidebar/due_deadline" .}}
+
+	{{if .Repository.IsDependenciesEnabled $.Context}}
+		<div class="divider"></div>
+
+		{{template "repo/issue/view_content/sidebar/dependencies" .}}
+	{{end}}
+
+	<div class="divider"></div>
+	{{template "repo/issue/view_content/sidebar/reference" .}}
+
+	{{if and .IsRepoAdmin (not .Repository.IsArchived)}}
+		<div class="divider"></div>
+
+		{{template "repo/issue/view_content/sidebar/actions" .}}
+	{{end}}
+
+	{{if and
+		.Issue.IsPull
+		(not .Issue.IsClosed)
+		.Issue.PullRequest.HeadRepo
+		(not (eq .Issue.PullRequest.HeadRepo.FullName .Issue.PullRequest.BaseRepo.FullName))
+	}}
+		{{if and
+			.IsIssuePoster
+			.CanWriteToHeadRepo
+		}}
+			<div class="divider"></div>
+			{{template "repo/issue/view_content/sidebar/pull_maintainer_edits" .}}
+		{{else if and
+			(not .IsIssuePoster)
+			.CanWriteCode
+		}}
+			<div class="divider"></div>
+			{{if .Issue.PullRequest.AllowMaintainerEdit}}
+				<span class="maintainers-can-edit-status">{{svg "octicon-check"}} {{ctx.Locale.Tr "repo.pulls.maintainers_can_edit"}}</span>
+			{{else}}
+				<span class="maintainers-can-edit-status">{{svg "octicon-x"}} {{ctx.Locale.Tr "repo.pulls.maintainers_cannot_edit"}}</span>
+			{{end}}
+		{{end}}
+	{{end}}
+</div>

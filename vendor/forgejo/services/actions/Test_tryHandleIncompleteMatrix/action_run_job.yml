@@ -1,0 +1,895 @@
+-
+  id: 600
+  run_id: 900
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: produce-artifacts
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  started: 1683636528
+  needs: '["job1", "job2"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: red
+
+-
+  id: 601
+  run_id: 901
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: produce-artifacts
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
+    incomplete_matrix: true
+-
+  id: 602
+  run_id: 901
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 100
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 603
+  run_id: 902
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: produce-artifacts
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
+    incomplete_matrix: true
+-
+  id: 604
+  run_id: 902
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 100
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+
+-
+  id: 605
+  run_id: 903
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: produce-artifacts
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix-1"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: ${{ fromJSON(needs.define-matrix-1.outputs.colors) }}
+            brightness:  ${{ fromJSON(needs.define-matrix-2.outputs.colors) }}
+    incomplete_matrix: true
+-
+  id: 606
+  run_id: 903
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix-1
+  attempt: 0
+  job_id: define-matrix-1
+  task_id: 100
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 607
+  run_id: 904
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: produce-artifacts
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
+    incomplete_matrix: true
+-
+  id: 608
+  run_id: 904
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 101
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 609
+  run_id: 905
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: run-tests
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      run-tests:
+        name: run-tests (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            datacenter: ${{ fromJSON(needs.define-matrix.outputs.datacenters) }}
+            node: ${{ fromJSON(needs.define-matrix.outputs.node-versions) }}
+            pg: ${{ fromJSON(needs.define-matrix.outputs.pg_version) }}
+    incomplete_matrix: true
+-
+  id: 610
+  run_id: 905
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 102
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 611
+  run_id: 906
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: run-tests
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      run-tests:
+        name: run-tests (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix: ${{ fromJSON(needs.define-matrix.outputs.entire-matrix) }}
+    incomplete_matrix: true
+-
+  id: 612
+  run_id: 906
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 103
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 613
+  run_id: 907
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: scalar-job
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on": [push]
+    jobs:
+      scalar-job:
+        name: scalar-job (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: |
+              set -x
+              [ "${{ matrix.scalar }}" = "scalar value" ] || [ "${{ matrix.scalar }}" = "hard-coded value" ] || exit 1
+        strategy:
+          matrix:
+            scalar:
+              - "${{ needs.define-matrix.outputs.scalar-value }}"
+              - hard-coded value
+    incomplete_matrix: true
+
+-
+  id: 614
+  run_id: 907
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 104
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 615
+  run_id: 908
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: produce-artifacts
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix-1"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: ${{ fromJSON(needs.define-matrix-1.outputs.colours-intentional-mistake) }}
+    incomplete_matrix: true
+-
+  id: 616
+  run_id: 908
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix-1
+  attempt: 0
+  job_id: define-matrix-1
+  task_id: 100
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 617
+  run_id: 909
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: consume-runs-on
+  attempt: 0
+  job_id: consume-runs-on
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-runs-on"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      consume-runs-on:
+        name: consume-runs-on
+        runs-on: ${{ needs.define-runs-on.outputs.run-on-this }}
+        steps:
+          - run: echo "OK!"
+    incomplete_runs_on: true
+-
+  id: 618
+  run_id: 909
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-runs-on
+  attempt: 0
+  job_id: define-runs-on
+  task_id: 105
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 619
+  run_id: 910
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: consume-runs-on
+  attempt: 0
+  job_id: consume-runs-on
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      consume-runs-on:
+        name: consume-runs-on (incomplete matrix)
+        strategy:
+          matrix: ${{ fromJSON(needs.define-matrix.outputs.entire-matrix) }}
+        runs-on: node-${{ matrix.node }}
+        steps:
+          - run: echo "OK!"
+    incomplete_matrix: true
+    incomplete_runs_on: true
+-
+  id: 620
+  run_id: 910
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 106
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 621
+  run_id: 911
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: consume-runs-on
+  attempt: 0
+  job_id: consume-runs-on
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-runs-on"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      consume-runs-on:
+        name: consume-runs-on
+        runs-on:
+          - datacenter-alpha
+          - ${{ needs.define-runs-on.outputs.run-on-this }}
+          - node-27.x
+        steps:
+          - run: echo "OK!"
+    incomplete_runs_on: true
+-
+  id: 622
+  run_id: 911
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-runs-on
+  attempt: 0
+  job_id: define-runs-on
+  task_id: 107
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 623
+  run_id: 912
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: consume-runs-on
+  attempt: 0
+  job_id: consume-runs-on
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-runs-on", "another-needs"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      consume-runs-on:
+        name: consume-runs-on
+        runs-on: ${{ needs.oops-i-misspelt-the-job-id.outputs.run-on-this }}
+        steps:
+          - run: echo "OK!"
+    incomplete_runs_on: true
+-
+  id: 624
+  run_id: 912
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-runs-on
+  attempt: 0
+  job_id: define-runs-on
+  task_id: 107
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 625
+  run_id: 913
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: consume-runs-on
+  attempt: 0
+  job_id: consume-runs-on
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-runs-on"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      consume-runs-on:
+        name: consume-runs-on
+        runs-on: ${{ needs.define-runs-on.outputs.output-doesnt-exist }}
+        steps:
+          - run: echo "OK!"
+    incomplete_runs_on: true
+-
+  id: 626
+  run_id: 913
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-runs-on
+  attempt: 0
+  job_id: define-runs-on
+  task_id: 107
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 627
+  run_id: 914
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: consume-runs-on
+  attempt: 0
+  job_id: consume-runs-on
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-runs-on"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      consume-runs-on:
+        name: consume-runs-on
+        runs-on: ${{ matrix.dimension-oops-error }}
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            dimension1: [ abc, def ]
+    incomplete_runs_on: true
+-
+  id: 628
+  run_id: 914
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-runs-on
+  attempt: 0
+  job_id: define-runs-on
+  task_id: 107
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 629
+  run_id: 915
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: consume-runs-on
+  attempt: 0
+  job_id: consume-runs-on
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["define-workflow-call"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      consume-runs-on:
+        name: consume-runs-on
+        uses: some-repo/some-org/.forgejo/workflows/reusable.yml@non-existent-reference
+        with:
+          workflow_input: ${{ needs.define-workflow-call.outputs.workflow_input }}
+    incomplete_with: true
+
+-
+  id: 630
+  run_id: 916
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: perform-workflow-call
+  attempt: 0
+  job_id: perform-workflow-call
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["define-workflow-call"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      perform-workflow-call:
+        name: perform-workflow-call
+        uses: some-repo/some-org/.forgejo/workflows/reusable.yml@simple
+        with:
+          workflow_input: ${{ needs.define-workflow-call.outputs.workflow_input }}
+    incomplete_with: true
+-
+  id: 631
+  run_id: 916
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-workflow-call
+  attempt: 0
+  job_id: define-workflow-call
+  task_id: 108
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 632
+  run_id: 917
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: perform-workflow-call
+  attempt: 0
+  job_id: perform-workflow-call
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["define-workflow-call"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      perform-workflow-call:
+        name: perform-workflow-call
+        uses: some-repo/some-org/.forgejo/workflows/reusable.yml@more-incomplete
+        with:
+          workflow_input: ${{ needs.define-workflow-call.outputs.workflow_input }}
+    incomplete_with: true
+-
+  id: 633
+  run_id: 917
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-workflow-call
+  attempt: 0
+  job_id: define-workflow-call
+  task_id: 109
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 634
+  run_id: 918
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: perform-workflow-call
+  attempt: 0
+  job_id: perform-workflow-call
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["define-workflow-call"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      perform-workflow-call:
+        name: perform-workflow-call
+        uses: some-repo/some-org/.forgejo/workflows/reusable.yml@more-incomplete
+        with:
+          workflow_input: ${{ needs.oops-i-misspelt-the-job-id.outputs.workflow_input }}
+    incomplete_with: true
+-
+  id: 635
+  run_id: 918
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-workflow-call
+  attempt: 0
+  job_id: define-workflow-call
+  task_id: 109
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 636
+  run_id: 919
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: perform-workflow-call
+  attempt: 0
+  job_id: perform-workflow-call
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["define-workflow-call"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      perform-workflow-call:
+        name: perform-workflow-call
+        uses: some-repo/some-org/.forgejo/workflows/reusable.yml@more-incomplete
+        with:
+          workflow_input: ${{ needs.define-workflow-call.outputs.output-doesnt-exist }}
+    incomplete_with: true
+-
+  id: 637
+  run_id: 919
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-workflow-call
+  attempt: 0
+  job_id: define-workflow-call
+  task_id: 109
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 638
+  run_id: 920
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: perform-workflow-call
+  attempt: 0
+  job_id: perform-workflow-call
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["define-workflow-call"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      perform-workflow-call:
+        name: perform-workflow-call
+        uses: some-repo/some-org/.forgejo/workflows/reusable.yml@more-incomplete
+        with:
+          workflow_input: ${{ matrix.dimension-oops-error }}
+        strategy:
+          matrix:
+            dimension1: [ abc, def ]
+    incomplete_with: true
+-
+  id: 639
+  run_id: 920
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-workflow-call
+  attempt: 0
+  job_id: define-workflow-call
+  task_id: 109
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 640
+  run_id: 921
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: perform-workflow-call
+  attempt: 0
+  job_id: perform-workflow-call
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["define-workflow-call"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      perform-workflow-call:
+        name: perform-workflow-call
+        uses: ./.forgejo/workflows/reusable.yml
+        with:
+          workflow_input: ${{ needs.define-workflow-call.outputs.workflow_input }}
+    incomplete_with: true
+-
+  id: 641
+  run_id: 921
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-workflow-call
+  attempt: 0
+  job_id: define-workflow-call
+  task_id: 108
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 642
+  run_id: 922
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job2
+  attempt: 0
+  job_id: job2
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '[]'
+  needs: '["job1"]'
+  workflow_payload: |
+    on:
+      push:
+        branches: [main]
+    jobs:
+      job2:
+        runs-on: default
+        strategy:
+          matrix:
+            name: ${{ fromJSON(needs.job1.outputs.empty-list) }}
+        steps:
+        - run: echo "${{ matrix.name }}"
+    incomplete_matrix: true
+-
+  id: 643
+  run_id: 922
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job1
+  attempt: 0
+  job_id: job1
+  task_id: 110
+  status: 1 # success
+  runs_on: '["fedora"]'

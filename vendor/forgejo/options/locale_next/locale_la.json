@@ -1,0 +1,11 @@
+{
+	"home.explore_orgs": "Explora organisationes",
+	"home.welcome.no_activity": "Nulla activitas",
+	"relativetime.now": "nunc",
+	"relativetime.future": "in futuro",
+	"relativetime.mins": {
+		"one": "ante %d minuta",
+		"other": "%d minuta abhinc"
+	},
+	"meta.last_line": " "
+}

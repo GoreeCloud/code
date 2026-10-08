@@ -1,0 +1,35 @@
+<div class="list-header">
+	<form class="ui form ignore-dirty list-header-search">
+		{{if .PageIsExploreUsers}}
+			{{template "shared/search/combo" dict "Value" .Keyword "Placeholder" (ctx.Locale.Tr "search.user_kind")}}
+		{{else}}
+			{{template "shared/search/combo" dict "Value" .Keyword "Placeholder" (ctx.Locale.Tr "search.org_kind")}}
+		{{end}}
+	</form>
+	<div class="button-row">
+		<!-- Sort -->
+		<details class="dropdown dir-rtl">
+			<summary class="options">
+				{{ctx.Locale.Tr "repo.issues.filter_sort"}}
+				{{svg "octicon-triangle-down" 14}}
+			</summary>
+			<div class="content">
+				<ul>
+					<li>
+						<a class="{{if eq .SortType "newest"}}active{{end}}" href="?sort=newest&q={{$.Keyword}}">{{ctx.Locale.Tr "repo.issues.filter_sort.latest"}}</a>
+					</li>
+					<li>
+						<a class="{{if eq .SortType "oldest"}}active{{end}}" href="?sort=oldest&q={{$.Keyword}}">{{ctx.Locale.Tr "repo.issues.filter_sort.oldest"}}</a>
+					</li>
+					<li>
+						<a class="{{if eq .SortType "alphabetically"}}active{{end}}" href="?sort=alphabetically&q={{$.Keyword}}">{{ctx.Locale.Tr "repo.issues.label.filter_sort.alphabetically"}}</a>
+					</li>
+					<li>
+						<a class="{{if eq .SortType "reversealphabetically"}}active{{end}}" href="?sort=reversealphabetically&q={{$.Keyword}}">{{ctx.Locale.Tr "repo.issues.label.filter_sort.reverse_alphabetically"}}</a>
+					</li>
+				</ul>
+			</div>
+		</details>
+	</div>
+</div>
+<div class="divider"></div>

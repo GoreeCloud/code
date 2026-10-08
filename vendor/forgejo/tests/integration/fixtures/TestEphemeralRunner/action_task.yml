@@ -1,0 +1,41 @@
+-
+  id: 10054
+  job_id: 10398
+  attempt: 1
+  runner_id: 10000008
+  status: 6 # running
+  started: 1683636528
+  stopped: 1683636626
+  repo_id: 64
+  owner_id: 3
+  commit_sha: c2d72f548424103f01ee1dc02889c1e2bff816b0
+  is_fork_pull_request: 0
+  token_hash: f8d3962425466b6709b9ac51446f93260c54afe8e7b6d3686e34f991fb8a8953822b0deed86fe41a103f34bc48dbc4784222
+  token_salt: ffffffffff
+  token_last_eight: ffffffff
+  log_filename: artifact-test2/2f/47.log
+  log_in_storage: 1
+  log_length: 707
+  log_size: 90179
+  log_expired: 0
+-
+  id: 10055
+  job_id: 10399
+  attempt: 1
+  runner_id: 10000011
+  status: 6 # running
+  started: 946684810
+  stopped: 0
+  repo_id: 64
+  owner_id: 3
+  commit_sha: c2d72f548424103f01ee1dc02889c1e2bff816b0
+  is_fork_pull_request: 0
+  token_hash: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0c1d2e3f4a5b6c7d8e9f0a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6e7f8a9b0
+  token_salt: zombietask
+  token_last_eight: zombietk
+  log_filename: zombie-task/55.log
+  log_in_storage: 0
+  log_length: 100
+  log_size: 1000
+  log_expired: 0
+  updated: 946684810

@@ -1,0 +1,12 @@
+-
+  id: 11
+  type: 0 # gitea pull request
+  status: 2 # mergeable
+  issue_id: 23
+  index: 3
+  head_repo_id: 2
+  base_repo_id: 2
+  head_branch: feature/protected-branch-pr
+  base_branch: protected-main
+  merge_base: 4a357436d925b5c974181ff12a994538ddc5a269
+  has_merged: false

@@ -1,0 +1,97 @@
+{{template "base/head" .}}
+<div role="main" aria-label="{{.Title}}" class="page-content dashboard issues">
+	{{template "user/dashboard/navbar" .}}
+	<div class="ui container">
+		{{template "base/alert" .}}
+		<div class="list-header">
+			<div class="switch list-header-toggle">
+				{{$keyword := StringUtils.RemoveAll $.Keyword "is:open" "-is:open" "is:closed" "-is:closed" "is:all"}}
+				<a class="item{{if not .IsShowClosed}} active{{end}}" href="?type={{$.ViewType}}&sort={{$.SortType}}&state=open&labels={{.SelectLabels}}&q={{$keyword}}">
+					{{svg "octicon-issue-opened" 16}}
+					{{ctx.Locale.PrettyNumber .IssueStats.OpenCount}}&nbsp;{{ctx.Locale.Tr "repo.issues.open_title"}}
+				</a>
+				<a class="item{{if .IsShowClosed}} active{{end}}" href="?type={{$.ViewType}}&sort={{$.SortType}}&state=closed&labels={{.SelectLabels}}&q={{$keyword}}">
+					{{svg "octicon-issue-closed" 16}}
+					{{ctx.Locale.PrettyNumber .IssueStats.ClosedCount}}&nbsp;{{ctx.Locale.Tr "repo.issues.closed_title"}}
+				</a>
+			</div>
+			<form class="list-header-search ui form ignore-dirty">
+				<div class="ui search fluid action input">
+					<input type="hidden" name="type" value="{{$.ViewType}}">
+					<input type="hidden" name="sort" value="{{$.SortType}}">
+					<input type="hidden" name="state" value="{{$.State}}">
+					{{$placeholder := ctx.Locale.Tr "search.issue_kind"}}
+					{{if .PageIsPulls}}
+						{{$placeholder = ctx.Locale.Tr "search.pull_kind"}}
+					{{end}}
+					{{template "shared/search/combo"
+						dict
+							"Value" $.Keyword
+							"Placeholder" $placeholder
+							"Tooltip" (ctx.Locale.Tr "explore.go_to")}}
+				</div>
+				{{template "shared/search/issue/syntax"}}
+			</form>
+			<div class="ui secondary menu tw-mt-0">
+				<!-- Label -->
+				{{if .PageIsOrgIssues}}
+				{{template "shared/label_filter" .}}
+				{{end}}
+				<!-- Type -->
+				<div class="list-header ui dropdown type jump item">
+					<span class="text tw-whitespace-nowrap">
+						{{ctx.Locale.Tr "repo.issues.filter_type"}}
+					</span>
+					{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+					<div class="ui menu">
+						<a class="{{if eq .ViewType "created_by"}}active{{end}} item" href="?type=created_by&sort={{$.SortType}}&state={{.State}}&q={{$.Keyword}}">
+							<div class="ui circular mini label tw-ml-0">{{CountFmt .IssueStats.CreateCount}}</div>
+							{{ctx.Locale.Tr "repo.issues.filter_type.created_by_you"}}
+						</a>
+						<a class="{{if eq .ViewType "your_repositories"}}active{{end}} item" href="?type=your_repositories&sort={{$.SortType}}&state={{.State}}&q={{$.Keyword}}">
+							<div class="ui circular mini label tw-ml-0">{{CountFmt .IssueStats.YourRepositoriesCount}}</div>
+							{{ctx.Locale.Tr "home.issues.in_your_repos"}}
+						</a>
+						<a class="{{if eq .ViewType "assigned"}}active{{end}} item" href="?type=assigned&sort={{$.SortType}}&state={{.State}}&q={{$.Keyword}}">
+							<div class="ui circular mini label tw-ml-0">{{CountFmt .IssueStats.AssignCount}}</div>
+							{{ctx.Locale.Tr "repo.issues.filter_type.assigned_to_you"}}
+						</a>
+						{{if .PageIsPulls}}
+							<a class="{{if eq .ViewType "review_requested"}}active{{end}} item" href="?type=review_requested&sort={{$.SortType}}&state={{.State}}&q={{$.Keyword}}">
+								<div class="ui circular mini label tw-ml-0">{{CountFmt .IssueStats.ReviewRequestedCount}}</div>
+								{{ctx.Locale.Tr "repo.issues.filter_type.review_requested"}}
+							</a>
+							<a class="{{if eq .ViewType "reviewed_by"}}active{{end}} item" href="?type=reviewed_by&sort={{$.SortType}}&state={{.State}}&q={{$.Keyword}}">
+								<div class="ui circular mini label tw-ml-0">{{CountFmt .IssueStats.ReviewedCount}}</div>
+								{{ctx.Locale.Tr "repo.issues.filter_type.reviewed_by_you"}}
+							</a>
+						{{end}}
+						<a class="{{if eq .ViewType "mentioned"}}active{{end}} item" href="?type=mentioned&sort={{$.SortType}}&state={{.State}}&q={{$.Keyword}}">
+							<div class="ui circular mini label tw-ml-0">{{CountFmt .IssueStats.MentionCount}}</div>
+							{{ctx.Locale.Tr "repo.issues.filter_type.mentioning_you"}}
+						</a>
+					</div>
+				</div>
+				<!-- Sort -->
+				<div class="list-header-sort ui dropdown type jump item">
+					<span class="text tw-whitespace-nowrap">
+						{{ctx.Locale.Tr "repo.issues.filter_sort"}}
+					</span>
+					{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+					<div class="menu">
+						{{$keyword := StringUtils.RemoveAllPrefix $.Keyword "sort:"}}
+						{{$o := .}}
+						{{range $opt := StringUtils.Make "recentupdate" "leastupdate" "latest" "oldest" "mostcomment" "leastcomment" "nearduedate" "farduedate"}}
+							{{$text := ctx.Locale.Tr (printf "repo.issues.filter_sort.%s" $opt)}}
+							<a class="{{if or (eq $o.SortType $opt) (and (eq $opt "latest") (not $o.SortType))}}active {{end}}item" href="?type={{$.ViewType}}&sort={{$opt}}&state={{$.State}}&labels={{$o.SelectLabels}}&q={{$keyword}}">{{
+								$text
+							}}</a>
+						{{end}}
+					</div>
+				</div>
+			</div>
+		</div>
+		{{template "shared/issuelist" dict "." . "listType" "dashboard"}}
+	</div>
+</div>
+{{template "base/footer" .}}

@@ -1,0 +1,45 @@
+- id: 719931
+  uuid: "9e0eb762-cbdf-4725-9c90-4298568a2a77"
+  name: "runner-1"
+  version: "dev"
+  owner_id: 3  # Owned by org3
+  repo_id: 0
+  description: "A superb runner"
+  agent_labels: ["debian", "gpu"]
+  deleted: 0
+- id: 719932
+  uuid: "b0a0a168-1b08-4365-95dd-e65040ca384d"
+  name: "runner-2"
+  version: "11.3.1"
+  owner_id: 2  # Owned by user2
+  repo_id: 0
+  description: "An exclusive runner"
+  agent_labels: ["docker"]
+  deleted: 0
+- id: 719933
+  uuid: "974f9caf-ee64-4022-a56b-67b28ea06a0d"
+  name: "runner-3"
+  version: "12.2.0"
+  owner_id: 0
+  repo_id: 0
+  description: "A runner for everyone"
+  agent_labels: ["docker"]
+  deleted: 0
+- id: 719934
+  uuid: "022650a8-e999-4a3d-afb0-21f75233798b"
+  name: "runner-4"
+  version: "12.1.0"
+  owner_id: 0
+  repo_id: 32  # owned by org3
+  description: ""
+  agent_labels: ["debian"]
+  deleted: 0
+- id: 719935
+  uuid: "f3031695-87ea-41cf-8d48-21948e83ee17"
+  name: "runner-5"
+  version: "12.7.0"
+  owner_id: 0
+  repo_id: 36  # owned by user2
+  description: ""
+  agent_labels: ["arch"]
+  deleted: 0

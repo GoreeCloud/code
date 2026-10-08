@@ -1,0 +1,107 @@
+/* Copyright 2024-2025 The Forgejo Authors. All rights reserved.
+ * SPDX-License-Identifier: GPL-3.0-or-later */
+
+:root {
+  --button-min-height: 36px;
+  --button-padding-inline: 1.35rem;
+}
+
+:root .small:is(.button, .button-row, .button-sequence) {
+  --button-min-height: 34px;
+  --button-padding-inline: 1.25rem;
+}
+
+@media (pointer: coarse) {
+  :root {
+    --button-min-height: 40px;
+  }
+
+  :root .small:is(.button, .button-row, .button-sequence) {
+    --button-min-height: 38px;
+  }
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--button-min-height);
+  padding-block: 0;
+  padding-inline: var(--button-padding-inline);
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: var(--border-radius);
+  font-weight: var(--font-weight-medium);
+
+  &:hover,
+  &:focus {
+    text-decoration: none;
+  }
+
+  &.disabled {
+    opacity: var(--opacity-disabled);
+    pointer-events: none;
+  }
+}
+
+.button.primary {
+  background: var(--color-primary);
+  color: var(--color-primary-contrast);
+
+  &:hover,
+  &:focus {
+    background-color: var(--color-primary-hover);
+  }
+}
+
+.button.secondary {
+  background: var(--color-button);
+  border: 1px solid var(--color-light-border);
+  color: var(--color-text-light);
+
+  &:hover,
+  &:focus {
+    color: var(--color-text);
+  }
+}
+
+.button.danger {
+  /* Fallbacks are needed while -thin vars are not supplied by all themes */
+  background: var(--color-danger-bg, var(--color-error-bg));
+  border: 1px solid var(--color-thin-red, var(--color-red));
+  color: var(--color-thin-red, var(--color-red));
+
+  &:hover,
+  &:focus {
+    color: var(--color-thin-red-highlight, var(--color-red));
+  }
+}
+
+/* Dropdown openers should be at least tall as buttons they are in line with, and
+ * as wide as they are tall */
+:is(.button-row, .button-sequence) details.dropdown summary {
+  min-height: var(--button-min-height);
+  min-width: var(--button-min-height);
+}
+
+/* button-row is a simple helper made to improve consistency of fomantic buttons
+ * placed in a row. It provides gap and cancels out fomantic's margins */
+.button-row {
+  gap: var(--button-spacing);
+}
+
+/* button-sequence is a more complex helper that has wrap. Using it is preferred
+ * but also requires deeper consideration */
+.button-sequence {
+  display: flex;
+  flex-flow: wrap;
+  gap: var(--button-spacing);
+}
+
+/* Fomantic buttons have annoying margins to set distance between elements. In
+ * the button-row/sequence helpers this is set by flex+gap */
+.button-row .ui.button {
+  margin-right: 0;
+}
+.button-sequence .ui.button {
+  margin: 0 !important;
+}

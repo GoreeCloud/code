@@ -1,0 +1,34 @@
+<div class="runner-container">
+	<h4 class="ui top attached header">
+		{{ctx.Locale.Tr "actions.runners.edit_runner.title" .Runner.Name}}
+	</h4>
+	<form class="ui form attached segment" action="{{.Link}}" method="post">
+		<fieldset>
+			<legend>{{ctx.Locale.Tr "actions.runners.edit_runner.properties_fieldset"}}</legend>
+			<div class="form-field">
+				<label class="required" for="name">{{ctx.Locale.Tr "actions.runners.edit_runner.name_label"}}</label>
+				<input id="name" name="runner_name" type="text" value="{{.Runner.Name}}" {{if .Err_RunnerName}}class="error"{{end}}>
+			</div>
+			<div class="form-field">
+				<label for="description">{{ctx.Locale.Tr "actions.runners.edit_runner.description_label"}}</label>
+				<textarea id="description" name="runner_description" {{if .Err_RunnerDescription}}class="error"{{end}}>{{.Runner.Description}}</textarea>
+			</div>
+		</fieldset>
+		<fieldset>
+			<legend>{{ctx.Locale.Tr "actions.runners.edit_runner.properties_options"}}</legend>
+			<div class="form-field tw-flex tw-gap-x-4">
+				<div class="tw-flex tw-h-6 tw-items-center">
+					<input type="checkbox" id="regenerate_token" name="regenerate_token">
+				</div>
+				<div>
+					<label for="regenerate_token" class="tw-font-medium tw-m-0">{{ctx.Locale.Tr "actions.runners.edit_runner.regenerate_token_label"}}</label>
+					<p class="help">{{ctx.Locale.Tr "actions.runners.edit_runner.regenerate_token_help"}}</p>
+				</div>
+			</div>
+		</fieldset>
+		<div class="button-sequence">
+			<button class="primary button">{{ctx.Locale.Tr "actions.runners.edit_runner.save_button"}}</button>
+			<a class="secondary button" href="{{$.RunnersListLink}}">{{ctx.Locale.Tr "actions.runners.edit_runner.cancel_button"}}</a>
+		</div>
+	</form>
+</div>

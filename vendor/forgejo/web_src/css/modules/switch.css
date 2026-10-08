@@ -1,0 +1,69 @@
+/* Copyright 2025 The Forgejo Authors. All rights reserved.
+ * SPDX-License-Identifier: GPL-3.0-or-later */
+
+:root .switch {
+  /* The resulting switch height is --switch-item-min-height + 2px */
+  --switch-item-min-height: 34px;
+  --switch-padding-inline: 1.125em;
+}
+
+@media (pointer: coarse) {
+  :root .switch {
+    --switch-item-min-height: 38px;
+  }
+}
+
+.switch {
+  display: grid;
+  grid-auto-flow: column;
+  height: fit-content;
+  align-items: center;
+  align-self: center;
+  background: var(--color-menu);
+  border: 1px solid var(--color-input-border);
+  border-radius: var(--border-radius);
+}
+
+.switch > .item {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding-inline: var(--switch-padding-inline);
+  min-height: var(--switch-item-min-height);
+  color: var(--color-text);
+  border-radius: var(--border-radius);
+  text-wrap: nowrap;
+  transition: background-color 0.1s ease;
+
+  &:hover {
+    background: var(--color-hover);
+  }
+
+  &.active {
+    z-index: 2;
+    padding-left: var(--switch-padding-inline);
+    background: var(--color-active);
+    outline: 1px solid var(--color-input-border);
+  }
+
+  /* Prevent default browser styling */
+  &button {
+    background: transparent;
+  }
+}
+
+/* Corner rounding aid: item that has to crawl under it's active neighbor,
+so when it is hovered, there are no ugly unpainted v/^ shapes between them */
+.switch > .item:has(+ .active.item) { /* Active neighbor is next item */
+  margin-right: calc(-1 * var(--border-radius));
+  padding-right: calc(var(--switch-padding-inline) + var(--border-radius));
+}
+.switch > .active.item + .item { /* Active neighbor is previous item */
+  margin-left: calc(-1 * var(--border-radius));
+  padding-left: calc(var(--switch-padding-inline) + var(--border-radius));
+}
+
+/* Make counters embedded into items more visible on brighter backgrounds */
+.switch > .item:is(.active, :hover) > .ui.label {
+  background: var(--color-label-bg-alt, var(--color-label-bg));
+}

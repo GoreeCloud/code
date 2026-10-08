@@ -1,0 +1,24 @@
+rules:
+  - id: xorm-sync-missing-ignore-drop-indices
+    patterns:
+      - pattern-either:
+          - pattern: |
+              $X.Sync(...)
+          - pattern: |
+              $X.SyncWithOptions($OPTS, ...)
+      - pattern-not: |
+          $X.SyncWithOptions(xorm.SyncOptions{..., IgnoreDropIndices: true, ...}, ...)
+      - metavariable-type:
+          metavariable: $X
+          types:
+            - "*xorm.Engine"
+            - "*xorm.Session"
+    paths:
+      exclude:
+        - /models/gitea_migrations/**/*.go
+        - /models/forgejo_migrations_legacy/**/*.go
+    languages:
+      - go
+    message: |
+      xorm Sync operation may drop indices if used on an incomplete bean definition for an existing table. Use SyncWithOptions with IgnoreDropIndices: true instead.
+    severity: ERROR

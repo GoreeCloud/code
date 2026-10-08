@@ -1,0 +1,16 @@
+-
+  id: 1
+  uid: 1
+  lookup_key: key-1
+
+# Expected to be deleted due to invalid user foreign key
+-
+  id: 2
+  uid: 100
+  lookup_key: key-2
+
+# Expected to be deleted due to a null user foreign key
+-
+  id: 3
+  uid: null
+  lookup_key: key-3

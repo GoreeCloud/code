@@ -1,0 +1,15 @@
+-
+  id: 1000
+  uid: 1000
+  email: oauth2_user_with_password@example.com
+  lower_email: oauth2_user_with_password@example.com
+  is_activated: true
+  is_primary: true
+
+-
+  id: 1001
+  uid: 1001
+  email: oauth2_user_no_password@example.com
+  lower_email: oauth2_user_no_password@example.com
+  is_activated: true
+  is_primary: true

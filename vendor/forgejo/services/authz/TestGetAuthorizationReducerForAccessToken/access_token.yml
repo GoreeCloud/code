@@ -1,0 +1,31 @@
+-
+  id: 5
+  uid: 2
+  name: Unrestricted Token
+  token_hash: a6d404048048812d9e911d93aefbe94fc768d4876fdf75e3bef0bdc67828e0af422846d3056f2f25ec35c51dc92075685ec5
+  token_salt: 99ArgXKlQQ
+  token_last_eight: 69d28c91
+  created_unix: 946687980
+  updated_unix: 946687980
+  resource_all_repos: true
+-
+  id: 6
+  uid: 2
+  name: Public Resources Only Token
+  token_hash: b6d404048048812d9e911d93aefbe94fc768d4876fdf75e3bef0bdc67828e0af422846d3056f2f25ec35c51dc92075685ec5
+  token_salt: 99ArgXKlQQ
+  token_last_eight: 69d28c91
+  created_unix: 946687980
+  updated_unix: 946687980
+  scope: public-only,read:activitypub
+  resource_all_repos: true
+-
+  id: 7
+  uid: 2
+  name: Specific Repos Only Token
+  token_hash: c6d404048048812d9e911d93aefbe94fc768d4876fdf75e3bef0bdc67828e0af422846d3056f2f25ec35c51dc92075685ec5
+  token_salt: 99ArgXKlQQ
+  token_last_eight: 69d28c91
+  created_unix: 946687980
+  updated_unix: 946687980
+  resource_all_repos: false

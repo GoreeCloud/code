@@ -1,0 +1,178 @@
+// Copyright 2023 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package setting
+
+import (
+	"os"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestConfigProviderBehaviors(t *testing.T) {
+	t.Run("BuggyKeyOverwritten", func(t *testing.T) {
+		cfg, _ := NewConfigProviderFromData(`
+[foo]
+key =
+`)
+		sec := cfg.Section("foo")
+		secSub := cfg.Section("foo.bar")
+		secSub.Key("key").MustString("1")             // try to read a key from subsection
+		assert.Equal(t, "1", sec.Key("key").String()) // TODO: BUGGY! the key in [foo] is overwritten
+	})
+
+	t.Run("SubsectionSeeParentKeys", func(t *testing.T) {
+		cfg, _ := NewConfigProviderFromData(`
+[foo]
+key = 123
+`)
+		secSub := cfg.Section("foo.bar.xxx")
+		assert.Equal(t, "123", secSub.Key("key").String())
+	})
+	t.Run("TrailingSlash", func(t *testing.T) {
+		cfg, _ := NewConfigProviderFromData(`
+[foo]
+key = E:\
+xxx = yyy
+`)
+		sec := cfg.Section("foo")
+		assert.Equal(t, "E:\\", sec.Key("key").String())
+		assert.Equal(t, "yyy", sec.Key("xxx").String())
+	})
+}
+
+func TestConfigProviderHelper(t *testing.T) {
+	cfg, _ := NewConfigProviderFromData(`
+[foo]
+empty =
+key = 123
+`)
+
+	sec := cfg.Section("foo")
+	secSub := cfg.Section("foo.bar")
+
+	// test empty key
+	assert.Equal(t, "def", ConfigSectionKeyString(sec, "empty", "def"))
+	assert.Equal(t, "xyz", ConfigSectionKeyString(secSub, "empty", "xyz"))
+
+	// test non-inherited key, only see the keys in current section
+	assert.NotNil(t, ConfigSectionKey(sec, "key"))
+	assert.Nil(t, ConfigSectionKey(secSub, "key"))
+
+	// test default behavior
+	assert.Equal(t, "123", ConfigSectionKeyString(sec, "key"))
+	assert.Empty(t, ConfigSectionKeyString(secSub, "key"))
+	assert.Equal(t, "def", ConfigSectionKeyString(secSub, "key", "def"))
+
+	assert.Equal(t, "123", ConfigInheritedKeyString(secSub, "key"))
+
+	// Workaround for ini package's BuggyKeyOverwritten behavior
+	assert.Empty(t, ConfigSectionKeyString(sec, "empty"))
+	assert.Empty(t, ConfigSectionKeyString(secSub, "empty"))
+	assert.Equal(t, "def", ConfigInheritedKey(secSub, "empty").MustString("def"))
+	assert.Equal(t, "def", ConfigInheritedKey(secSub, "empty").MustString("xyz"))
+	assert.Empty(t, ConfigSectionKeyString(sec, "empty"))
+	assert.Equal(t, "def", ConfigSectionKeyString(secSub, "empty"))
+}
+
+func TestNewConfigProviderFromFile(t *testing.T) {
+	cfg, err := NewConfigProviderFromFile("no-such.ini")
+	require.NoError(t, err)
+	assert.True(t, cfg.IsLoadedFromEmpty())
+
+	// load non-existing file and save
+	testFile := t.TempDir() + "/test.ini"
+	testFile1 := t.TempDir() + "/test1.ini"
+	cfg, err = NewConfigProviderFromFile(testFile)
+	require.NoError(t, err)
+
+	sec, _ := cfg.NewSection("foo")
+	_, _ = sec.NewKey("k1", "a")
+	require.NoError(t, cfg.Save())
+	_, _ = sec.NewKey("k2", "b")
+	require.NoError(t, cfg.SaveTo(testFile1))
+
+	bs, err := os.ReadFile(testFile)
+	require.NoError(t, err)
+	assert.Equal(t, "[foo]\nk1 = a\n", string(bs))
+
+	bs, err = os.ReadFile(testFile1)
+	require.NoError(t, err)
+	assert.Equal(t, "[foo]\nk1 = a\nk2 = b\n", string(bs))
+
+	// load existing file and save
+	cfg, err = NewConfigProviderFromFile(testFile)
+	require.NoError(t, err)
+	assert.Equal(t, "a", cfg.Section("foo").Key("k1").String())
+	sec, _ = cfg.NewSection("bar")
+	_, _ = sec.NewKey("k1", "b")
+	require.NoError(t, cfg.Save())
+	bs, err = os.ReadFile(testFile)
+	require.NoError(t, err)
+	assert.Equal(t, "[foo]\nk1 = a\n\n[bar]\nk1 = b\n", string(bs))
+}
+
+func TestNewConfigProviderForLocale(t *testing.T) {
+	// load locale from file
+	localeFile := t.TempDir() + "/locale.ini"
+	_ = os.WriteFile(localeFile, []byte(`k1=a`), 0o644)
+	cfg, err := NewConfigProviderForLocale(localeFile)
+	require.NoError(t, err)
+	assert.Equal(t, "a", cfg.Section("").Key("k1").String())
+
+	// load locale from bytes
+	cfg, err = NewConfigProviderForLocale([]byte("k1=foo\nk2=bar"))
+	require.NoError(t, err)
+	assert.Equal(t, "foo", cfg.Section("").Key("k1").String())
+	cfg, err = NewConfigProviderForLocale([]byte("k1=foo\nk2=bar"), []byte("k2=xxx"))
+	require.NoError(t, err)
+	assert.Equal(t, "foo", cfg.Section("").Key("k1").String())
+	assert.Equal(t, "xxx", cfg.Section("").Key("k2").String())
+}
+
+func TestDisableSaving(t *testing.T) {
+	testFile := t.TempDir() + "/test.ini"
+	_ = os.WriteFile(testFile, []byte("k1=a\nk2=b"), 0o644)
+	cfg, err := NewConfigProviderFromFile(testFile)
+	require.NoError(t, err)
+
+	cfg.DisableSaving()
+	err = cfg.Save()
+	require.ErrorIs(t, err, errDisableSaving)
+
+	saveCfg, err := cfg.PrepareSaving()
+	require.NoError(t, err)
+
+	saveCfg.Section("").Key("k1").MustString("x")
+	saveCfg.Section("").Key("k2").SetValue("y")
+	saveCfg.Section("").Key("k3").SetValue("z")
+	err = saveCfg.Save()
+	require.NoError(t, err)
+
+	bs, err := os.ReadFile(testFile)
+	require.NoError(t, err)
+	assert.Equal(t, "k1 = a\nk2 = y\nk3 = z\n", string(bs))
+}
+
+func TestMustBytes(t *testing.T) {
+	test := func(value string) int64 {
+		cfg, err := NewConfigProviderFromData("[test]")
+		require.NoError(t, err)
+		sec := cfg.Section("test")
+		sec.NewKey("VALUE", value)
+
+		return mustBytes(sec, "VALUE")
+	}
+
+	assert.EqualValues(t, -1, test(""))
+	assert.EqualValues(t, -1, test("-1"))
+	assert.EqualValues(t, 0, test("0"))
+	assert.EqualValues(t, 1, test("1"))
+	assert.EqualValues(t, 10000, test("10000"))
+	assert.EqualValues(t, 1000000, test("1 mb"))
+	assert.EqualValues(t, 1048576, test("1mib"))
+	assert.EqualValues(t, 1782579, test("1.7mib"))
+	assert.EqualValues(t, -1, test("1 yib")) // too large
+}

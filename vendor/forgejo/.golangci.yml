@@ -1,0 +1,443 @@
+---
+version: "2"
+output:
+  sort-order:
+    - file
+linters:
+  default: none
+  enable:
+    - bidichk
+    - depguard
+    - dupl
+    - errcheck
+    - forbidigo
+    - gocritic
+    - govet
+    - importas
+    - ineffassign
+    - modernize
+    - nakedret
+    - nolintlint
+    - revive
+    - staticcheck
+    - testifylint
+    - unconvert
+    - unparam
+    - unused
+    - usetesting
+    - wastedassign
+    - nilnil
+  settings:
+    depguard:
+      rules:
+        main:
+          deny:
+            - pkg: encoding/json
+              desc: use gitea's modules/json instead of encoding/json
+            - pkg: golang.org/x/exp
+              desc: it's experimental and unreliable
+            - pkg: forgejo.org/modules/git/internal
+              desc: do not use the internal package, use AddXxx function instead
+            - pkg: gopkg.in/ini.v1
+              desc: do not use the ini package, use gitea's config system instead
+            - pkg: github.com/minio/sha256-simd
+              desc: use crypto/sha256 instead, see https://codeberg.org/forgejo/forgejo/pulls/1528
+            - pkg: github.com/go-git/go-git
+              desc: use forgejo.org/modules/git instead, see https://codeberg.org/forgejo/forgejo/pulls/4941
+            - pkg: gopkg.in/yaml.v3
+              desc: use go.yaml.in/yaml instead, see https://codeberg.org/forgejo/forgejo/pulls/8956
+        migration-isolation:
+          list-mode: lax
+          files:
+            - "**/models/forgejo_migrations/**"
+          deny:
+            - pkg: "forgejo.org/models"
+              desc: >
+                Migrations must not import application models. Application models will be the most recent schema for
+                Forgejo, while migrations will be operating against the database schema that existed when they were
+                authored.
+            - pkg: "forgejo.org/services"
+              desc: >
+                Migrations must not import application services. Application services will reference application
+                models which will use the most recent schema for Forgejo, while migrations will be operating against the
+                database schema that existed when they were authored.
+          allow:
+            - "forgejo.org/models/db"
+            - "forgejo.org/models/gitea_migrations/base"
+            - "forgejo.org/models/gitea_migrations/test"
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+    importas:
+      alias:
+        # Specific overrides that would violate the default rules further below.
+        - pkg: forgejo.org/models/db
+          alias: ""
+        - pkg: forgejo.org/models/organization
+          alias: org_model
+
+        - pkg: forgejo.org/services/context
+          alias: app_context
+        - pkg: forgejo.org/services/doctor
+          alias: doctor
+        - pkg: forgejo.org/services/repository
+          alias: repo_service
+
+        # Make sure that we follow a consistent naming for model and service aliases.
+        - pkg: 'forgejo.org/(model|service)s/(\w+)'
+          alias: '${2}_${1}'
+
+    revive:
+      severity: error
+      rules:
+        - name: atomic
+        - name: bare-return
+        - name: blank-imports
+        - name: constant-logical-expr
+        - name: context-as-argument
+        - name: context-keys-type
+        - name: dot-imports
+        - name: duplicated-imports
+        - name: empty-lines
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: exported
+        - name: identical-branches
+        - name: if-return
+        - name: increment-decrement
+        - name: indent-error-flow
+        - name: modifies-value-receiver
+        - name: package-comments
+        - name: range
+        - name: receiver-naming
+        - name: redefines-builtin-id
+        - name: string-of-int
+        - name: superfluous-else
+        - name: time-naming
+        - name: unconditional-recursion
+        - name: unexported-return
+        - name: unreachable-code
+        - name: var-declaration
+        - name: var-naming
+          arguments:
+            - []
+            - []
+            - - skip-package-name-checks: true
+        - name: redefines-builtin-id
+          disabled: true
+    staticcheck:
+      checks:
+        - all
+    testifylint:
+      disable:
+        - error-is-as
+        - go-require
+    nilnil:
+      only-two: false
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - nolintlint
+        path: models/db/sql_postgres_with_schema.go
+      - linters:
+          - dupl
+          - errcheck
+          - gocyclo
+          - gosec
+          - staticcheck
+          - unparam
+        path: _test\.go
+      - linters:
+          - dupl
+          - errcheck
+          - gocyclo
+          - gosec
+          - staticcheck
+          - unparam
+        path: routers/api/v1/permissions/tests
+      - linters:
+          - dupl
+          - errcheck
+          - gocyclo
+          - gosec
+        path: models/gitea_migrations/v
+      - linters:
+          - forbidigo
+        path: cmd
+      - linters:
+          - forbidigo
+        path: build/lint-single-response
+      - linters:
+          - dupl
+        text: (?i)webhook
+      - linters:
+          - gocritic
+        text: (?i)`ID' should not be capitalized
+      - linters:
+          - deadcode
+          - unused
+        text: (?i)swagger
+      - linters:
+          - staticcheck
+        text: (?i)argument x is overwritten before first use
+      - linters:
+          - gocritic
+        text: '(?i)commentFormatting: put a space between `//` and comment text'
+      - linters:
+          - gocritic
+        text: '(?i)exitAfterDefer:'
+      - linters:
+          - staticcheck
+        text: "(ST1005|ST1003|QF1001):"
+
+      # TODO: eventually remove this section entirely
+      - path: cmd/admin_auth_ldap_test.go
+        linters:
+          - nilnil
+      - path: cmd/admin_auth_oauth_test.go
+        linters:
+          - nilnil
+      - path: cmd/admin_auth_pam_test.go
+        linters:
+          - nilnil
+      - path: cmd/cmd.go
+        linters:
+          - nilnil
+      - path: cmd/forgejo/actions.go
+        linters:
+          - nilnil
+      - path: models/actions/run.go
+        linters:
+          - nilnil
+      - path: models/actions/task.go
+        linters:
+          - nilnil
+      - path: models/activities/action_list.go
+        linters:
+          - nilnil
+      - path: models/asymkey/gpg_key_object_verification.go
+        linters:
+          - nilnil
+      - path: models/auth/oauth2.go
+        linters:
+          - nilnil
+      - path: models/db/collation.go
+        linters:
+          - nilnil
+      - path: models/dbfs/dbfile.go
+        linters:
+          - nilnil
+      - path: models/forgefed/federationhost_repository.go
+        linters:
+          - nilnil
+      - path: models/forgejo_migrations_legacy/v32.go
+        linters:
+          - nilnil
+      - path: models/forgejo_migrations_legacy/v32_test.go
+        linters:
+          - nilnil
+      - path: models/db/context.go
+        linters:
+          - nilnil
+      - path: models/git/branch_list.go
+        linters:
+          - nilnil
+      - path: models/git/lfs_lock.go
+        linters:
+          - nilnil
+      - path: models/git/protected_branch.go
+        linters:
+          - nilnil
+      - path: models/git/protected_tag.go
+        linters:
+          - nilnil
+      - path: models/issues/issue.go
+        linters:
+          - nilnil
+      - path: models/issues/issue_xref.go
+        linters:
+          - nilnil
+      - path: models/issues/review.go
+        linters:
+          - nilnil
+      - path: models/organization/org_user.go
+        linters:
+          - nilnil
+      - path: models/quota/rule.go
+        linters:
+          - nilnil
+      - path: models/repo/archiver.go
+        linters:
+          - nilnil
+      - path: models/repo/fork.go
+        linters:
+          - nilnil
+      - path: models/repo/topic.go
+        linters:
+          - nilnil
+      - path: models/user/email_address.go
+        linters:
+          - nilnil
+      - path: models/user/list.go
+        linters:
+          - nilnil
+      - path: models/user/user.go
+        linters:
+          - nilnil
+      - path: models/repo/repo.go
+        linters:
+          - nilnil
+      - path: models/user/user_repository.go
+        linters:
+          - nilnil
+      - path: modules/git/commit.go
+        linters:
+          - nilnil
+      - path: modules/git/foreachref/parser.go
+        linters:
+          - nilnil
+      - path: modules/git/last_commit_cache.go
+        linters:
+          - nilnil
+      - path: modules/git/log_name_status.go
+        linters:
+          - nilnil
+      - path: modules/graceful/net_unix.go
+        linters:
+          - nilnil
+      - path: modules/indexer/internal/bleve/util.go
+        linters:
+          - nilnil
+      - path: modules/indexer/issues/util.go
+        linters:
+          - nilnil
+      - path: modules/optional/serialization.go
+        linters:
+          - nilnil
+      - path: modules/setting/storage.go
+        linters:
+          - nilnil
+      - path: routers/api/packages/chef/auth.go
+        linters:
+          - nilnil
+      - path: routers/api/packages/container/auth.go
+        linters:
+          - nilnil
+      - path: routers/api/packages/nuget/auth.go
+        linters:
+          - nilnil
+      - path: routers/api/packages/swift/swift.go
+        linters:
+          - nilnil
+      - path: routers/web/auth/oauth.go
+        linters:
+          - nilnil
+      - path: routers/web/repo/compare.go
+        linters:
+          - nilnil
+      - path: routers/web/repo/release.go
+        linters:
+          - nilnil
+      - path: routers/web/repo/setting/runners.go
+        linters:
+          - nilnil
+      - path: routers/web/repo/setting/secrets.go
+        linters:
+          - nilnil
+      - path: routers/web/repo/setting/variables.go
+        linters:
+          - nilnil
+      - path: services/actions/context.go
+        linters:
+          - nilnil
+      - path: services/actions/task.go
+        linters:
+          - nilnil
+      - path: services/actions/trust.go
+        linters:
+          - nilnil
+      - path: services/contexttest/context_tests.go
+        linters:
+          - nilnil
+      - path: services/gitdiff/csv.go
+        linters:
+          - nilnil
+      - path: services/issue/assignee.go
+        linters:
+          - nilnil
+      - path: routers/api/packages/conan/auth.go
+        linters:
+          - nilnil
+      - path: services/federation/signature_service.go
+        linters:
+          - nilnil
+      - path: services/issue/commit.go
+        linters:
+          - nilnil
+      - path: services/issue/issue.go
+        linters:
+          - nilnil
+      - path: services/migrations/onedev.go
+        linters:
+          - nilnil
+      - path: services/packages/cargo/index.go
+        linters:
+          - nilnil
+      - path: services/pull/check.go
+        linters:
+          - nilnil
+      - path: services/pull/comment.go
+        linters:
+          - nilnil
+      - path: services/pull/merge.go
+        linters:
+          - nilnil
+      - path: services/pull/review.go
+        linters:
+          - nilnil
+      - path: services/remote/promote.go
+        linters:
+          - nilnil
+      - path: services/repository/archiver/archiver.go
+        linters:
+          - nilnil
+      - path: services/repository/generate_repo_commit.go
+        linters:
+          - nilnil
+      - path: services/repository/repository.go
+        linters:
+          - nilnil
+    paths:
+      - node_modules
+      - public
+      - web_src
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  max-issues-per-linter: 0
+  max-same-issues: 0
+formatters:
+  enable:
+    - gofmt
+    - gofumpt
+  settings:
+    gofumpt:
+      extra-rules: true
+  exclusions:
+    generated: lax
+    paths:
+      - node_modules
+      - public
+      - web_src
+      - third_party$
+      - builtin$
+      - examples$

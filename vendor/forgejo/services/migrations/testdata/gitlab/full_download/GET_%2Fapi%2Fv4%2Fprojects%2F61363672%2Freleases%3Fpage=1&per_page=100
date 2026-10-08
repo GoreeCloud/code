@@ -1,0 +1,27 @@
+Cache-Control: max-age=0, private, must-revalidate
+Cf-Cache-Status: MISS
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json
+Etag: W/"fc79a561cf4910ed7107f242a4561dab"
+Gitlab-Lb: haproxy-main-40-lb-gprd
+Gitlab-Sv: api-gke-us-east1-b
+Link: <https://gitlab.com/api/v4/projects/61363672/releases?id=61363672&order_by=released_at&page=1&per_page=100&sort=desc>; rel="first", <https://gitlab.com/api/v4/projects/61363672/releases?id=61363672&order_by=released_at&page=1&per_page=100&sort=desc>; rel="last"
+Ratelimit-Limit: 2000
+Ratelimit-Name: throttle_authenticated_api
+Ratelimit-Observed: 7
+Ratelimit-Remaining: 1993
+Ratelimit-Reset: 1771055640
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Next-Page: 
+X-Page: 1
+X-Per-Page: 100
+X-Prev-Page: 
+X-Runtime: 0.113045
+X-Total: 1
+X-Total-Pages: 1
+
+[{"name":"First Release","tag_name":"v0.9.99","description":"A test release","created_at":"2024-09-03T15:01:01.513Z","released_at":"2024-09-03T15:01:01.000Z","upcoming_release":false,"author":{"id":548513,"username":"mkobel","public_email":"","name":"Moritz Kobel","state":"active","locked":false,"avatar_url":"https://secure.gravatar.com/avatar/eae1be6324682816aedc885acbf5858719b40956e0278edabe5c0db7cbc95f3b?s=80\u0026d=identicon","web_url":"https://gitlab.com/mkobel"},"commit":{"id":"0720a3ec57c1f843568298117b874319e7deee75","short_id":"0720a3ec","created_at":"2019-11-28T08:49:16.000+00:00","parent_ids":["93ea21ce45d35690c35e80961d239645139e872c"],"title":"Add new file","message":"Add new file","author_name":"Lauris BH","author_email":"lauris@nix.lv","authored_date":"2019-11-28T08:49:16.000+00:00","committer_name":"Lauris BH","committer_email":"lauris@nix.lv","committed_date":"2019-11-28T08:49:16.000+00:00","trailers":{},"extended_trailers":{},"web_url":"https://gitlab.com/forgejo/test_repo/-/commit/0720a3ec57c1f843568298117b874319e7deee75"},"commit_path":"/forgejo/test_repo/-/commit/0720a3ec57c1f843568298117b874319e7deee75","tag_path":"/forgejo/test_repo/-/tags/v0.9.99","assets":{"count":10,"sources":[{"format":"zip","url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.zip"},{"format":"tar.gz","url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.tar.gz"},{"format":"tar.bz2","url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.tar.bz2"},{"format":"tar","url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.tar"}],"links":[{"id":10694714,"name":"Forgejo logo","url":"https://gitlab.com/-/project/61363672/uploads/3756af8a4893bea08b99536df000e932/image.png","direct_asset_url":"https://gitlab.com/forgejo/test_repo/-/releases/v0.9.99/downloads/forgejo.png","link_type":"other"},{"id":10687293,"name":"zip (other)","url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.zip","direct_asset_url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.zip","link_type":"other"},{"id":10687292,"name":"Forgejo","url":"https://forgejo.org/","direct_asset_url":"https://forgejo.org/","link_type":"other"},{"id":10687291,"name":"Frogejo 🐸","url":"https://frogejo.org/","direct_asset_url":"https://frogejo.org/","link_type":"image"},{"id":10687290,"name":"tar.bz2 (runbook)","url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.tar.bz2","direct_asset_url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.tar.bz2","link_type":"runbook"},{"id":10687289,"name":"tar.gz (package)","url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.tar.gz","direct_asset_url":"https://gitlab.com/forgejo/test_repo/-/archive/v0.9.99/test_repo-v0.9.99.tar.gz","link_type":"package"}]},"evidences":[{"sha":"e30c1d21d05ff0c73436ee1e97b3ef12a1d6d33d0dcd","filepath":"https://gitlab.com/forgejo/test_repo/-/releases/v0.9.99/evidences/9608487.json","collected_at":"2024-09-03T15:01:02.963Z"}],"_links":{"closed_issues_url":"https://gitlab.com/forgejo/test_repo/-/issues?release_tag=v0.9.99\u0026scope=all\u0026state=closed","closed_merge_requests_url":"https://gitlab.com/forgejo/test_repo/-/merge_requests?release_tag=v0.9.99\u0026scope=all\u0026state=closed","edit_url":"https://gitlab.com/forgejo/test_repo/-/releases/v0.9.99/edit","merged_merge_requests_url":"https://gitlab.com/forgejo/test_repo/-/merge_requests?release_tag=v0.9.99\u0026scope=all\u0026state=merged","opened_issues_url":"https://gitlab.com/forgejo/test_repo/-/issues?release_tag=v0.9.99\u0026scope=all\u0026state=opened","opened_merge_requests_url":"https://gitlab.com/forgejo/test_repo/-/merge_requests?release_tag=v0.9.99\u0026scope=all\u0026state=opened","self":"https://gitlab.com/forgejo/test_repo/-/releases/v0.9.99"}}]

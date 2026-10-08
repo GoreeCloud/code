@@ -1,0 +1,17 @@
+-
+  id: 1
+  owner_id: 3
+  repo_id: 3
+  header_authorization_encrypted: '54586e944822336738b940c2560b7ef38bea3a91dcfe43c9c32e55b2a57050f75c63456b'
+
+-
+  id: 2
+  owner_id: 1
+  repo_id: 2
+  header_authorization_encrypted: 'badbadbad'
+
+-
+  id: 3
+  owner_id: 2
+  repo_id: 1
+  header_authorization_encrypted: ''

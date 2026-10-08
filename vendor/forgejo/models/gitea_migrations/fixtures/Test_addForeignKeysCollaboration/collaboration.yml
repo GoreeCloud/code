@@ -1,0 +1,16 @@
+-
+  id: 1
+  user_id: 1
+  repo_id: 1
+
+# Expected to be deleted due to invalid user_id foreign key
+-
+  id: 2
+  user_id: 100
+  repo_id: 1
+
+# Expected to be deleted due to invalid repo_id foreign key
+-
+  id: 3
+  user_id: 1
+  repo_id: 100

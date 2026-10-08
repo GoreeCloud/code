@@ -1,0 +1,51 @@
+{{template "base/head" .}}
+
+<div class="page-content ui container">
+	<h1>Buttons</h1>
+
+	<p>
+		Main types:
+		<a href="#primary">primary</a>,
+		<a href="#secondary">secondary</a>,
+		<a href="#danger">dangerous</a>.
+		<br>
+	</p>
+	<p>
+		Can optionally contain an icon.
+	</p>
+
+	<h2 id="primary">Primary</h2>
+	<div class="button-sequence">
+		<button class="primary button" type="button">
+			Follow
+		</button>
+		<a class="primary disabled button" href="">
+			{{svg "octicon-person"}}
+			{{ctx.Locale.Tr "user.follow"}}
+		</a>
+	</div>
+
+	<h2 id="secondary">Secondary</h2>
+	<div class="button-sequence">
+		<button class="secondary button" type="button">
+			Follow
+		</button>
+		<a class="secondary disabled button" href="">
+			{{svg "octicon-person"}}
+			{{ctx.Locale.Tr "user.unfollow"}}
+		</a>
+	</div>
+
+	<h2 id="danger">Dangerous (<code>danger</code>)</h2>
+	<div class="button-sequence">
+		<button class="danger button" type="button">
+			Delete
+		</button>
+		<a class="danger disabled button" href="">
+			{{svg "octicon-trash"}}
+			Delete
+		</a>
+	</div>
+</div>
+
+{{template "base/footer" .}}

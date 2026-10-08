@@ -1,0 +1,406 @@
+// Copyright 2020 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package git
+
+import (
+	"bufio"
+	"bytes"
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"os"
+	"regexp"
+	"strconv"
+	"strings"
+
+	"forgejo.org/modules/log"
+)
+
+// RawDiffType type of a raw diff.
+type RawDiffType string
+
+// RawDiffType possible values.
+const (
+	RawDiffNormal RawDiffType = "diff"
+	RawDiffPatch  RawDiffType = "patch"
+)
+
+// GetRawDiff dumps diff results of repository in given commit ID to io.Writer.
+func GetRawDiff(repo *Repository, commitID string, diffType RawDiffType, writer io.Writer) error {
+	return GetRepoRawDiffForFile(repo, "", commitID, diffType, "", writer)
+}
+
+// GetReverseRawDiff dumps the reverse diff results of repository in given commit ID to io.Writer.
+func GetReverseRawDiff(ctx context.Context, repoPath, commitID string, writer io.Writer) error {
+	stderr := new(bytes.Buffer)
+	cmd := NewCommand(ctx, "show", "--pretty=format:revert %H%n", "-R").AddDynamicArguments(commitID)
+	if err := cmd.Run(&RunOpts{
+		Dir:    repoPath,
+		Stdout: writer,
+		Stderr: stderr,
+	}); err != nil {
+		return fmt.Errorf("Run: %w - %s", err, stderr)
+	}
+	return nil
+}
+
+// GetRepoRawDiffForFile dumps diff results of file in given commit ID to io.Writer according given repository
+func GetRepoRawDiffForFile(repo *Repository, startCommit, endCommit string, diffType RawDiffType, file string, writer io.Writer) error {
+	commit, err := repo.GetCommit(endCommit)
+	if err != nil {
+		return err
+	}
+	var files []string
+	if len(file) > 0 {
+		files = append(files, file)
+	}
+
+	cmd := NewCommand(repo.Ctx)
+	switch diffType {
+	case RawDiffNormal:
+		if len(startCommit) != 0 {
+			cmd.AddArguments("diff", "-M").AddDynamicArguments(startCommit, endCommit).AddDashesAndList(files...)
+		} else if commit.ParentCount() == 0 {
+			cmd.AddArguments("show").AddDynamicArguments(endCommit).AddDashesAndList(files...)
+		} else {
+			c, err := commit.Parent(0)
+			if err != nil {
+				return err
+			}
+			cmd.AddArguments("diff", "-M").AddDynamicArguments(c.ID.String(), endCommit).AddDashesAndList(files...)
+		}
+	case RawDiffPatch:
+		if len(startCommit) != 0 {
+			query := fmt.Sprintf("%s...%s", endCommit, startCommit)
+			cmd.AddArguments("format-patch", "--no-signature", "--stdout", "--root").AddDynamicArguments(query).AddDashesAndList(files...)
+		} else if commit.ParentCount() == 0 {
+			cmd.AddArguments("format-patch", "--no-signature", "--stdout", "--root").AddDynamicArguments(endCommit).AddDashesAndList(files...)
+		} else {
+			c, err := commit.Parent(0)
+			if err != nil {
+				return err
+			}
+			query := fmt.Sprintf("%s...%s", endCommit, c.ID.String())
+			cmd.AddArguments("format-patch", "--no-signature", "--stdout").AddDynamicArguments(query).AddDashesAndList(files...)
+		}
+	default:
+		return fmt.Errorf("invalid diffType: %s", diffType)
+	}
+
+	stderr := new(bytes.Buffer)
+	if err = cmd.Run(&RunOpts{
+		Dir:    repo.Path,
+		Stdout: writer,
+		Stderr: stderr,
+	}); err != nil {
+		return fmt.Errorf("Run: %w - %s", err, stderr)
+	}
+	return nil
+}
+
+// ParseDiffHunkString parse the diffhunk content and return
+func ParseDiffHunkString(diffhunk string) (leftLine, leftHunk, rightLine, rightHunk int) {
+	ss := strings.Split(diffhunk, "@@")
+	ranges := strings.Split(ss[1][1:], " ")
+	leftRange := strings.Split(ranges[0], ",")
+	leftLine, _ = strconv.Atoi(leftRange[0][1:])
+	if len(leftRange) > 1 {
+		leftHunk, _ = strconv.Atoi(leftRange[1])
+	}
+	if len(ranges) > 1 {
+		rightRange := strings.Split(ranges[1], ",")
+		rightLine, _ = strconv.Atoi(rightRange[0])
+		if len(rightRange) > 1 {
+			rightHunk, _ = strconv.Atoi(rightRange[1])
+		}
+	} else {
+		log.Debug("Parse line number failed: %v", diffhunk)
+		rightLine = leftLine
+		rightHunk = leftHunk
+	}
+	return leftLine, leftHunk, rightLine, rightHunk
+}
+
+// Example: @@ -1,8 +1,9 @@ => [..., 1, 8, 1, 9]
+var hunkRegex = regexp.MustCompile(`^@@ -(?P<beginOld>[0-9]+)(,(?P<endOld>[0-9]+))? \+(?P<beginNew>[0-9]+)(,(?P<endNew>[0-9]+))? @@`)
+
+const cmdDiffHead = "diff --git "
+
+func isHeader(lof string, inHunk bool) bool {
+	return strings.HasPrefix(lof, cmdDiffHead) || (!inHunk && (strings.HasPrefix(lof, "---") || strings.HasPrefix(lof, "+++")))
+}
+
+// CutDiffAroundLine cuts a diff of a file in way that only the given line + numberOfLine above it will be shown
+// it also recalculates hunks and adds the appropriate headers to the new diff.
+// Warning: Only one-file diffs are allowed.
+func CutDiffAroundLine(originalDiff io.Reader, line int64, old bool, numbersOfLine int) (string, error) {
+	if line == 0 || numbersOfLine == 0 {
+		// no line or num of lines => no diff
+		return "", nil
+	}
+
+	scanner := bufio.NewScanner(originalDiff)
+	hunk := make([]string, 0)
+
+	// begin is the start of the hunk containing searched line
+	// end is the end of the hunk ...
+	// currentLine is the line number on the side of the searched line (differentiated by old)
+	// otherLine is the line number on the opposite side of the searched line (differentiated by old)
+	var begin, end, currentLine, otherLine int64
+	var headerLines int
+
+	inHunk := false
+
+	for scanner.Scan() {
+		lof := scanner.Text()
+		// Add header to enable parsing
+
+		if isHeader(lof, inHunk) {
+			if strings.HasPrefix(lof, cmdDiffHead) {
+				inHunk = false
+			}
+			hunk = append(hunk, lof)
+			headerLines++
+		}
+		if currentLine > line {
+			break
+		}
+		// Detect "hunk" with contains commented lof
+		if strings.HasPrefix(lof, "@@") {
+			inHunk = true
+			// Already got our hunk. End of hunk detected!
+			if len(hunk) > headerLines {
+				break
+			}
+			// A map with named groups of our regex to recognize them later more easily
+			submatches := hunkRegex.FindStringSubmatch(lof)
+			groups := make(map[string]string)
+			for i, name := range hunkRegex.SubexpNames() {
+				if i != 0 && name != "" {
+					groups[name] = submatches[i]
+				}
+			}
+			if old {
+				begin, _ = strconv.ParseInt(groups["beginOld"], 10, 64)
+				end, _ = strconv.ParseInt(groups["endOld"], 10, 64)
+				// init otherLine with begin of opposite side
+				otherLine, _ = strconv.ParseInt(groups["beginNew"], 10, 64)
+			} else {
+				begin, _ = strconv.ParseInt(groups["beginNew"], 10, 64)
+				if groups["endNew"] != "" {
+					end, _ = strconv.ParseInt(groups["endNew"], 10, 64)
+				} else {
+					end = 0
+				}
+				// init otherLine with begin of opposite side
+				otherLine, _ = strconv.ParseInt(groups["beginOld"], 10, 64)
+			}
+			end += begin // end is for real only the number of lines in hunk
+			// lof is between begin and end
+			if begin <= line && end >= line {
+				hunk = append(hunk, lof)
+				currentLine = begin
+				continue
+			}
+		} else if len(hunk) > headerLines {
+			hunk = append(hunk, lof)
+			// Count lines in context
+			switch lof[0] {
+			case '+':
+				if !old {
+					currentLine++
+				} else {
+					otherLine++
+				}
+			case '-':
+				if old {
+					currentLine++
+				} else {
+					otherLine++
+				}
+			case '\\':
+				// FIXME: handle `\ No newline at end of file`
+				break
+			default:
+				currentLine++
+				otherLine++
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return "", err
+	}
+
+	// No hunk found
+	if currentLine == 0 {
+		return "", nil
+	}
+	// headerLines + hunkLine (1) = totalNonCodeLines
+	if len(hunk)-headerLines-1 <= numbersOfLine {
+		// No need to cut the hunk => return existing hunk
+		return strings.Join(hunk, "\n"), nil
+	}
+	var oldBegin, oldNumOfLines, newBegin, newNumOfLines int64
+	if old {
+		oldBegin = currentLine
+		newBegin = otherLine
+	} else {
+		oldBegin = otherLine
+		newBegin = currentLine
+	}
+	// headers + hunk header
+	newHunk := make([]string, headerLines)
+	// transfer existing headers
+	copy(newHunk, hunk[:headerLines])
+	// transfer last n lines
+	newHunk = append(newHunk, hunk[len(hunk)-numbersOfLine-1:]...)
+	// calculate newBegin, ... by counting lines
+	for i := len(hunk) - 1; i >= len(hunk)-numbersOfLine; i-- {
+		switch hunk[i][0] {
+		case '+':
+			newBegin--
+			newNumOfLines++
+		case '-':
+			oldBegin--
+			oldNumOfLines++
+		default:
+			oldBegin--
+			newBegin--
+			newNumOfLines++
+			oldNumOfLines++
+		}
+	}
+	// construct the new hunk header
+	newHunk[headerLines] = fmt.Sprintf("@@ -%d,%d +%d,%d @@",
+		oldBegin, oldNumOfLines, newBegin, newNumOfLines)
+	return strings.Join(newHunk, "\n"), nil
+}
+
+var ErrLineNotFound = errors.New("line not found in diff")
+
+type LinePlacement struct {
+	Left  int64
+	Right int64
+}
+
+// Find the line of code where an old line of code from an old patch is, if present, in a new patch. Given a cutDiff
+// (from CutDiffAroundLine) and the line of code that it was cut from, and, given a single-file diff from the commit
+// where that patch came into a new head, this routine will read through the diff and identify the new line number. It
+// will only return successful if the line is exactly the same as the original line, but just placed in a new location
+// due to added or removed lines in the diff before the target line of code.
+func FindAdjustedLineNumber(cutDiff string, originalLine int64, fullDiff io.Reader) (LinePlacement, error) {
+	cutDiffSplit := strings.Split(cutDiff, "\n")
+	if len(cutDiffSplit) == 0 {
+		return LinePlacement{}, errors.New("cutDiff has no contents")
+	}
+	endOfCutDiff := cutDiffSplit[len(cutDiffSplit)-1]
+
+	scanner := bufio.NewScanner(fullDiff)
+	inHunk := false // used to skip header lines before the first hunk
+	leftLine := int64(-1)
+	rightLine := int64(-1)
+
+	for scanner.Scan() {
+		lineText := scanner.Text()
+		if strings.HasPrefix(lineText, "@@") {
+			// A map with named groups of our regex to recognize them later more easily
+			submatches := hunkRegex.FindStringSubmatch(lineText)
+			groups := make(map[string]string)
+			for i, name := range hunkRegex.SubexpNames() {
+				if i != 0 && name != "" {
+					groups[name] = submatches[i]
+				}
+			}
+			beginLeft, _ := strconv.ParseInt(groups["beginOld"], 10, 64)
+			beginRight, _ := strconv.ParseInt(groups["beginNew"], 10, 64)
+			leftLine = beginLeft
+			rightLine = beginRight
+			inHunk = true
+		} else if inHunk {
+			if leftLine == originalLine {
+				if lineText != endOfCutDiff {
+					return LinePlacement{}, fmt.Errorf(
+						"line was adjusted from index %d to %d, but contents changed from %q to %q: %w",
+						originalLine, leftLine, endOfCutDiff, lineText, ErrLineNotFound)
+				}
+				return LinePlacement{Left: leftLine, Right: rightLine}, nil
+			}
+			switch lineText[0] {
+			case '+':
+				rightLine++
+			case '-':
+				leftLine++
+			case '\\':
+				// Should be the end-of-file with "\ No newline at end of file" -- nothing to do here.
+				break
+			default:
+				rightLine++
+				leftLine++
+			}
+		}
+	}
+	if err := scanner.Err(); err != nil {
+		return LinePlacement{}, err
+	}
+
+	return LinePlacement{}, fmt.Errorf("line is no longer in diff: %w", ErrLineNotFound)
+}
+
+// GetAffectedFiles returns the affected files between two commits
+func GetAffectedFiles(repo *Repository, oldCommitID, newCommitID string, env []string) ([]string, error) {
+	objectFormat, err := repo.GetObjectFormat()
+	if err != nil {
+		return nil, err
+	}
+
+	// If the oldCommitID is empty, then we must assume its a new branch, so diff
+	// against the empty tree. So all changes of this new branch are included.
+	if oldCommitID == objectFormat.EmptyObjectID().String() {
+		oldCommitID = objectFormat.EmptyTree().String()
+	}
+
+	stdoutReader, stdoutWriter, err := os.Pipe()
+	if err != nil {
+		log.Error("Unable to create os.Pipe for %s", repo.Path)
+		return nil, err
+	}
+	defer func() {
+		_ = stdoutReader.Close()
+		_ = stdoutWriter.Close()
+	}()
+
+	affectedFiles := make([]string, 0, 32)
+
+	// Run `git diff --name-only` to get the names of the changed files
+	err = NewCommand(repo.Ctx, "diff", "--name-only").AddDynamicArguments(oldCommitID, newCommitID).
+		Run(&RunOpts{
+			Env:    env,
+			Dir:    repo.Path,
+			Stdout: stdoutWriter,
+			PipelineFunc: func(ctx context.Context, cancel context.CancelFunc) error {
+				// Close the writer end of the pipe to begin processing
+				_ = stdoutWriter.Close()
+				defer func() {
+					// Close the reader on return to terminate the git command if necessary
+					_ = stdoutReader.Close()
+				}()
+				// Now scan the output from the command
+				scanner := bufio.NewScanner(stdoutReader)
+				for scanner.Scan() {
+					path := strings.TrimSpace(scanner.Text())
+					if len(path) == 0 {
+						continue
+					}
+					affectedFiles = append(affectedFiles, path)
+				}
+				return scanner.Err()
+			},
+		})
+	if err != nil {
+		log.Error("Unable to get affected files for commits from %s to %s in %s: %v", oldCommitID, newCommitID, repo.Path, err)
+	}
+
+	return affectedFiles, err
+}

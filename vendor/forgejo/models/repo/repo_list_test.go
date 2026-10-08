@@ -1,0 +1,462 @@
+// Copyright 2017 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package repo_test
+
+import (
+	"slices"
+	"strings"
+	"testing"
+
+	"forgejo.org/models/db"
+	repo_model "forgejo.org/models/repo"
+	"forgejo.org/models/unittest"
+	"forgejo.org/models/user"
+	"forgejo.org/modules/optional"
+	"forgejo.org/modules/structs"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func getTestCases() []struct {
+	name  string
+	opts  *repo_model.SearchRepoOptions
+	count int
+} {
+	testCases := []struct {
+		name  string
+		opts  *repo_model.SearchRepoOptions
+		count int
+	}{
+		{
+			name:  "PublicRepositoriesByName",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{PageSize: 10}, Collaborate: optional.Some(false)},
+			count: 7,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesByName",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{Page: 1, PageSize: 10}, Private: true, Collaborate: optional.Some(false)},
+			count: 14,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesByNameWithPagesizeLimitFirstPage",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{Page: 1, PageSize: 5}, Private: true, Collaborate: optional.Some(false)},
+			count: 14,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesByNameWithPagesizeLimitSecondPage",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{Page: 2, PageSize: 5}, Private: true, Collaborate: optional.Some(false)},
+			count: 14,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesByNameWithPagesizeLimitThirdPage",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{Page: 3, PageSize: 5}, Private: true, Collaborate: optional.Some(false)},
+			count: 14,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesByNameWithPagesizeLimitFourthPage",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{Page: 3, PageSize: 5}, Private: true, Collaborate: optional.Some(false)},
+			count: 14,
+		},
+		{
+			name:  "PublicRepositoriesOfUser",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 15, Collaborate: optional.Some(false)},
+			count: 2,
+		},
+		{
+			name:  "PublicRepositoriesOfUser2",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 18, Collaborate: optional.Some(false)},
+			count: 0,
+		},
+		{
+			name:  "PublicRepositoriesOfOrg3",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 20, Collaborate: optional.Some(false)},
+			count: 2,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesOfUser",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 15, Private: true, Collaborate: optional.Some(false)},
+			count: 4,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesOfUser2",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 18, Private: true, Collaborate: optional.Some(false)},
+			count: 0,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesOfOrg3",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 20, Private: true, Collaborate: optional.Some(false)},
+			count: 4,
+		},
+		{
+			name:  "PublicRepositoriesOfUserIncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 15},
+			count: 5,
+		},
+		{
+			name:  "PublicRepositoriesOfUser2IncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 18},
+			count: 1,
+		},
+		{
+			name:  "PublicRepositoriesOfOrg3IncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 20},
+			count: 3,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesOfUserIncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 15, Private: true},
+			count: 9,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesOfUser2IncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 18, Private: true},
+			count: 4,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesOfOrg3IncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 20, Private: true},
+			count: 7,
+		},
+		{
+			name:  "PublicRepositoriesOfOrganization",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 17, Collaborate: optional.Some(false)},
+			count: 1,
+		},
+		{
+			name:  "PublicAndPrivateRepositoriesOfOrganization",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 17, Private: true, Collaborate: optional.Some(false)},
+			count: 2,
+		},
+		{
+			name:  "AllPublic/PublicRepositoriesByName",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{PageSize: 10}, AllPublic: true, Collaborate: optional.Some(false)},
+			count: 7,
+		},
+		{
+			name:  "AllPublic/PublicAndPrivateRepositoriesByName",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "big_test_", ListOptions: db.ListOptions{Page: 1, PageSize: 10}, Private: true, AllPublic: true, Collaborate: optional.Some(false)},
+			count: 14,
+		},
+		{
+			name:  "AllPublic/PublicRepositoriesOfUserIncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 15, AllPublic: true, Template: optional.Some(false)},
+			count: 36,
+		},
+		{
+			name:  "AllPublic/PublicAndPrivateRepositoriesOfUserIncludingCollaborative",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 15, Private: true, AllPublic: true, AllLimited: true, Template: optional.Some(false)},
+			count: 41,
+		},
+		{
+			name:  "AllPublic/PublicAndPrivateRepositoriesOfUserIncludingCollaborativeByName",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "test", ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 15, Private: true, AllPublic: true},
+			count: 16,
+		},
+		{
+			name:  "AllPublic/PublicAndPrivateRepositoriesOfUser2IncludingCollaborativeByName",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "test", ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 18, Private: true, AllPublic: true},
+			count: 14,
+		},
+		{
+			name:  "AllPublic/PublicRepositoriesOfOrganization",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerID: 17, AllPublic: true, Collaborate: optional.Some(false), Template: optional.Some(false)},
+			count: 36,
+		},
+		{
+			name:  "AllTemplates",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, Template: optional.Some(true)},
+			count: 2,
+		},
+		{
+			name:  "OwnerSlashRepoSearch",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "user/repo2", ListOptions: db.ListOptions{Page: 1, PageSize: 10}, Private: true, OwnerID: 0},
+			count: 3,
+		},
+		{
+			name:  "OwnerSlashSearch",
+			opts:  &repo_model.SearchRepoOptions{Keyword: "user20/", ListOptions: db.ListOptions{Page: 1, PageSize: 10}, Private: true, OwnerID: 0},
+			count: 4,
+		},
+		{
+			name:  "OwnerAndName Single",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerAndName: [][2]string{{"user15", "big_test_public_1"}}},
+			count: 1,
+		},
+		{
+			name:  "OwnerAndName Multiple",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerAndName: [][2]string{{"user15", "big_test_public_1"}, {"user15", "big_test_public_2"}}},
+			count: 2,
+		},
+		{
+			name:  "OwnerAndName Miss",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerAndName: [][2]string{{"user15", "big_test_public_1"}, {"user15", "blah blah"}}},
+			count: 1,
+		},
+		{
+			name:  "OwnerAndName Empty",
+			opts:  &repo_model.SearchRepoOptions{ListOptions: db.ListOptions{Page: 1, PageSize: 10}, OwnerAndName: [][2]string{}},
+			count: 0,
+		},
+	}
+
+	return testCases
+}
+
+func TestSearchRepository(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+
+	// test search public repository on explore page
+	repos, count, err := repo_model.SearchRepositoryByName(db.DefaultContext, &repo_model.SearchRepoOptions{
+		ListOptions: db.ListOptions{
+			Page:     1,
+			PageSize: 10,
+		},
+		Keyword:     "repo_12",
+		Collaborate: optional.Some(false),
+	})
+
+	require.NoError(t, err)
+	if assert.Len(t, repos, 1) {
+		assert.Equal(t, "test_repo_12", repos[0].Name)
+	}
+	assert.Equal(t, int64(1), count)
+
+	repos, count, err = repo_model.SearchRepositoryByName(db.DefaultContext, &repo_model.SearchRepoOptions{
+		ListOptions: db.ListOptions{
+			Page:     1,
+			PageSize: 10,
+		},
+		Keyword:     "test_repo",
+		Collaborate: optional.Some(false),
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(2), count)
+	assert.Len(t, repos, 2)
+
+	// test search private repository on explore page
+	repos, count, err = repo_model.SearchRepositoryByName(db.DefaultContext, &repo_model.SearchRepoOptions{
+		ListOptions: db.ListOptions{
+			Page:     1,
+			PageSize: 10,
+		},
+		Keyword:     "repo_13",
+		Private:     true,
+		Collaborate: optional.Some(false),
+	})
+
+	require.NoError(t, err)
+	if assert.Len(t, repos, 1) {
+		assert.Equal(t, "test_repo_13", repos[0].Name)
+	}
+	assert.Equal(t, int64(1), count)
+
+	repos, count, err = repo_model.SearchRepositoryByName(db.DefaultContext, &repo_model.SearchRepoOptions{
+		ListOptions: db.ListOptions{
+			Page:     1,
+			PageSize: 10,
+		},
+		Keyword:     "test_repo",
+		Private:     true,
+		Collaborate: optional.Some(false),
+	})
+
+	require.NoError(t, err)
+	assert.Equal(t, int64(3), count)
+	assert.Len(t, repos, 3)
+
+	// Test non existing owner
+	repos, count, err = repo_model.SearchRepositoryByName(db.DefaultContext, &repo_model.SearchRepoOptions{OwnerID: unittest.NonexistentID})
+
+	require.NoError(t, err)
+	assert.Empty(t, repos)
+	assert.Equal(t, int64(0), count)
+
+	// Test search within description
+	repos, count, err = repo_model.SearchRepository(db.DefaultContext, &repo_model.SearchRepoOptions{
+		ListOptions: db.ListOptions{
+			Page:     1,
+			PageSize: 10,
+		},
+		Keyword:            "description_14",
+		Collaborate:        optional.Some(false),
+		IncludeDescription: true,
+	})
+
+	require.NoError(t, err)
+	if assert.Len(t, repos, 1) {
+		assert.Equal(t, "test_repo_14", repos[0].Name)
+	}
+	assert.Equal(t, int64(1), count)
+
+	// Test NOT search within description
+	repos, count, err = repo_model.SearchRepository(db.DefaultContext, &repo_model.SearchRepoOptions{
+		ListOptions: db.ListOptions{
+			Page:     1,
+			PageSize: 10,
+		},
+		Keyword:            "description_14",
+		Collaborate:        optional.Some(false),
+		IncludeDescription: false,
+	})
+
+	require.NoError(t, err)
+	assert.Empty(t, repos)
+	assert.Equal(t, int64(0), count)
+
+	testCases := getTestCases()
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			repos, count, err := repo_model.SearchRepositoryByName(db.DefaultContext, testCase.opts)
+
+			require.NoError(t, err)
+			assert.Equal(t, int64(testCase.count), count)
+
+			page := testCase.opts.Page
+			if page <= 0 {
+				page = 1
+			}
+			expectedLen := testCase.opts.PageSize
+			if testCase.opts.PageSize*page > testCase.count+testCase.opts.PageSize {
+				expectedLen = 0
+			} else if testCase.opts.PageSize*page > testCase.count {
+				expectedLen = testCase.count % testCase.opts.PageSize
+			}
+			if assert.Len(t, repos, expectedLen) {
+				for _, repo := range repos {
+					assert.NotEmpty(t, repo.Name)
+
+					if len(testCase.opts.Keyword) > 0 {
+						// Keyword match condition is different for search terms of form "owner/repo"
+						if strings.Count(testCase.opts.Keyword, "/") == 1 {
+							// May still match as a whole...
+							wholeMatch := strings.Contains(repo.Name, testCase.opts.Keyword)
+
+							pieces := strings.Split(testCase.opts.Keyword, "/")
+							ownerName := pieces[0]
+							repoName := pieces[1]
+							// ... or match in parts
+							splitMatch := strings.Contains(repo.OwnerName, ownerName) && strings.Contains(repo.Name, repoName)
+
+							assert.True(t, wholeMatch || splitMatch, "Keyword '%s' does not match repo '%s/%s'", testCase.opts.Keyword, repo.Owner.Name, repo.Name)
+						} else {
+							assert.Contains(t, repo.Name, testCase.opts.Keyword)
+						}
+					}
+
+					if !testCase.opts.Private {
+						assert.False(t, repo.IsPrivate)
+					}
+
+					if testCase.opts.Fork.ValueOrZeroValue() && testCase.opts.Mirror.ValueOrZeroValue() {
+						assert.True(t, repo.IsFork && repo.IsMirror)
+					} else {
+						if has, value := testCase.opts.Fork.Get(); has {
+							assert.Equal(t, value, repo.IsFork)
+						}
+
+						if has, value := testCase.opts.Mirror.Get(); has {
+							assert.Equal(t, value, repo.IsMirror)
+						}
+					}
+
+					if testCase.opts.OwnerID > 0 && !testCase.opts.AllPublic {
+						if has, value := testCase.opts.Collaborate.Get(); has {
+							if value {
+								assert.NotEqual(t, testCase.opts.OwnerID, repo.Owner.ID)
+							} else {
+								assert.Equal(t, testCase.opts.OwnerID, repo.Owner.ID)
+							}
+						}
+					}
+				}
+			}
+		})
+	}
+}
+
+func TestCountRepository(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+
+	testCases := getTestCases()
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			count, err := repo_model.CountRepository(db.DefaultContext, testCase.opts)
+
+			require.NoError(t, err)
+			assert.Equal(t, int64(testCase.count), count)
+		})
+	}
+}
+
+func TestSearchRepositoryByTopicName(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+
+	testCases := []struct {
+		name  string
+		opts  *repo_model.SearchRepoOptions
+		count int
+	}{
+		{
+			name:  "AllPublic/SearchPublicRepositoriesFromTopicAndName",
+			opts:  &repo_model.SearchRepoOptions{OwnerID: 21, AllPublic: true, Keyword: "graphql"},
+			count: 2,
+		},
+		{
+			name:  "AllPublic/OnlySearchPublicRepositoriesFromTopic",
+			opts:  &repo_model.SearchRepoOptions{OwnerID: 21, AllPublic: true, Keyword: "graphql", TopicOnly: true},
+			count: 1,
+		},
+		{
+			name:  "AllPublic/OnlySearchMultipleKeywordPublicRepositoriesFromTopic",
+			opts:  &repo_model.SearchRepoOptions{OwnerID: 21, AllPublic: true, Keyword: "graphql,golang", TopicOnly: true},
+			count: 2,
+		},
+	}
+
+	for _, testCase := range testCases {
+		t.Run(testCase.name, func(t *testing.T) {
+			_, count, err := repo_model.SearchRepositoryByName(db.DefaultContext, testCase.opts)
+			require.NoError(t, err)
+			assert.Equal(t, int64(testCase.count), count)
+		})
+	}
+}
+
+func TestSearchRepositoryIDsByCondition(t *testing.T) {
+	defer unittest.OverrideFixtures("models/repo/TestSearchRepositoryIDsByCondition")()
+	require.NoError(t, unittest.PrepareTestDatabase())
+	// Sanity check of the database
+	limitedUser := unittest.AssertExistsAndLoadBean(t, &user.User{ID: 33, Visibility: structs.VisibleTypeLimited})
+	unittest.AssertExistsAndLoadBean(t, &repo_model.Repository{ID: 1001, OwnerID: limitedUser.ID})
+
+	testCases := []struct {
+		user    *user.User
+		repoIDs []int64
+	}{
+		{
+			user:    nil,
+			repoIDs: []int64{1, 4, 8, 9, 10, 11, 12, 14, 17, 18, 21, 23, 25, 27, 29, 32, 33, 34, 35, 36, 37, 42, 44, 45, 46, 47, 48, 49, 50, 51, 53, 57, 58, 60, 61, 62, 66, 1059},
+		},
+		{
+			user:    unittest.AssertExistsAndLoadBean(t, &user.User{ID: 4}),
+			repoIDs: []int64{1, 3, 4, 8, 9, 10, 11, 12, 14, 17, 18, 21, 23, 25, 27, 29, 32, 33, 34, 35, 36, 37, 38, 40, 42, 44, 45, 46, 47, 48, 49, 50, 51, 53, 57, 58, 60, 61, 62, 66, 1001, 1059},
+		},
+		{
+			user:    unittest.AssertExistsAndLoadBean(t, &user.User{ID: 5}),
+			repoIDs: []int64{1, 4, 8, 9, 10, 11, 12, 14, 17, 18, 21, 23, 25, 27, 29, 32, 33, 34, 35, 36, 37, 38, 40, 42, 44, 45, 46, 47, 48, 49, 50, 51, 53, 57, 58, 60, 61, 62, 66, 1001, 1059},
+		},
+	}
+
+	for _, testCase := range testCases {
+		repoIDs, err := repo_model.FindUserCodeAccessibleRepoIDs(db.DefaultContext, testCase.user)
+		require.NoError(t, err)
+
+		slices.Sort(repoIDs)
+		assert.Equal(t, testCase.repoIDs, repoIDs)
+	}
+}

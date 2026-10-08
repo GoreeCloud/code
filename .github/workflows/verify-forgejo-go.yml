@@ -1,0 +1,38 @@
+name: Verify Forgejo Go source
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'vendor/forgejo/**'
+      - '.github/workflows/verify-forgejo-go.yml'
+
+concurrency:
+  group: forgejo-source-pr-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  upstream-go:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 40
+    env:
+      GOMAXPROCS: '2'
+      GOTOOLCHAIN: auto
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Install upstream-required Go toolchain
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
+        with:
+          go-version-file: vendor/forgejo/go.mod
+          cache: false
+      - name: Go source smoke test
+        working-directory: vendor/forgejo
+        run: |
+          go version
+          go test ./modules/git/...

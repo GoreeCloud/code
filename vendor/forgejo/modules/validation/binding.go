@@ -1,0 +1,289 @@
+// Copyright 2017 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package validation
+
+import (
+	"fmt"
+	"regexp"
+	"strings"
+
+	"forgejo.org/modules/auth"
+	"forgejo.org/modules/git"
+	"forgejo.org/modules/util"
+
+	"code.forgejo.org/go-chi/binding"
+	"github.com/gobwas/glob"
+)
+
+const (
+	// ErrGitRefName is git reference name error
+	ErrGitRefName = "GitRefNameError"
+	// ErrGlobPattern is returned when glob pattern is invalid
+	ErrGlobPattern = "GlobPattern"
+	// ErrRegexPattern is returned when a regex pattern is invalid
+	ErrRegexPattern = "RegexPattern"
+	// ErrUsername is username error
+	ErrUsername = "UsernameError"
+	// ErrInvalidGroupTeamMap is returned when a group team mapping is invalid
+	ErrInvalidGroupTeamMap = "InvalidGroupTeamMap"
+	// ErrInvalidQuotaGroupMap is returned when a quota group mapping is invalid
+	ErrInvalidQuotaGroupMap = "InvalidQuotaGroupMap"
+	// ErrEmail is returned when an email address is invalid
+	ErrEmail = "Email"
+)
+
+// AddBindingRules adds additional binding rules
+func AddBindingRules() {
+	addGitRefNameBindingRule()
+	addValidURLListBindingRule()
+	addValidURLBindingRule()
+	addValidSiteURLBindingRule()
+	addGlobPatternRule()
+	addRegexPatternRule()
+	addGlobOrRegexPatternRule()
+	addUsernamePatternRule()
+	addValidGroupTeamMapRule()
+	addValidQuotaGroupMapRule()
+	addEmailBindingRules()
+}
+
+func addGitRefNameBindingRule() {
+	// Git refname validation rule
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "GitRefName"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			str := fmt.Sprintf("%v", val)
+
+			if !git.IsValidRefPattern(str) {
+				errs.Add([]string{name}, ErrGitRefName, "GitRefName")
+				return false, errs
+			}
+			return true, errs
+		},
+	})
+}
+
+func addValidURLListBindingRule() {
+	// URL validation rule
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "ValidUrlList"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			str := fmt.Sprintf("%v", val)
+			if len(str) == 0 {
+				errs.Add([]string{name}, binding.ERR_URL, "Url")
+				return false, errs
+			}
+
+			ok := true
+			urls := util.SplitTrimSpace(str, "\n")
+			for _, u := range urls {
+				if !IsValidURL(u) {
+					ok = false
+					errs.Add([]string{name}, binding.ERR_URL, u)
+				}
+			}
+
+			return ok, errs
+		},
+	})
+}
+
+func addValidURLBindingRule() {
+	// URL validation rule
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "ValidUrl"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			str := fmt.Sprintf("%v", val)
+			if len(str) != 0 && !IsValidURL(str) {
+				errs.Add([]string{name}, binding.ERR_URL, "Url")
+				return false, errs
+			}
+
+			return true, errs
+		},
+	})
+}
+
+func addValidSiteURLBindingRule() {
+	// URL validation rule
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "ValidSiteUrl"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			str := fmt.Sprintf("%v", val)
+			if len(str) != 0 && !IsValidSiteURL(str) {
+				errs.Add([]string{name}, binding.ERR_URL, "Url")
+				return false, errs
+			}
+
+			return true, errs
+		},
+	})
+}
+
+func addGlobPatternRule() {
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "GlobPattern"
+		},
+		IsValid: globPatternValidator,
+	})
+}
+
+func globPatternValidator(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+	str := fmt.Sprintf("%v", val)
+
+	if len(str) != 0 {
+		if _, err := glob.Compile(str); err != nil {
+			errs.Add([]string{name}, ErrGlobPattern, err.Error())
+			return false, errs
+		}
+	}
+
+	return true, errs
+}
+
+func addRegexPatternRule() {
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "RegexPattern"
+		},
+		IsValid: regexPatternValidator,
+	})
+}
+
+func regexPatternValidator(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+	str := fmt.Sprintf("%v", val)
+
+	if _, err := regexp.Compile(str); err != nil {
+		errs.Add([]string{name}, ErrRegexPattern, err.Error())
+		return false, errs
+	}
+
+	return true, errs
+}
+
+func addGlobOrRegexPatternRule() {
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "GlobOrRegexPattern"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			str := strings.TrimSpace(fmt.Sprintf("%v", val))
+
+			if len(str) >= 2 && strings.HasPrefix(str, "/") && strings.HasSuffix(str, "/") {
+				return regexPatternValidator(errs, name, str[1:len(str)-1])
+			}
+			return globPatternValidator(errs, name, val)
+		},
+	})
+}
+
+func addUsernamePatternRule() {
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "Username"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			str := fmt.Sprintf("%v", val)
+			if !IsValidUsername(str) {
+				errs.Add([]string{name}, ErrUsername, "invalid username")
+				return false, errs
+			}
+			return true, errs
+		},
+	})
+}
+
+func addValidGroupTeamMapRule() {
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "ValidGroupTeamMap"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			_, err := auth.UnmarshalGroupTeamMapping(fmt.Sprintf("%v", val))
+			if err != nil {
+				errs.Add([]string{name}, ErrInvalidGroupTeamMap, err.Error())
+				return false, errs
+			}
+
+			return true, errs
+		},
+	})
+}
+
+func addValidQuotaGroupMapRule() {
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return rule == "ValidQuotaGroupMap"
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			_, err := auth.UnmarshalQuotaGroupMapping(fmt.Sprintf("%v", val))
+			if err != nil {
+				errs.Add([]string{name}, ErrInvalidQuotaGroupMap, err.Error())
+				return false, errs
+			}
+
+			return true, errs
+		},
+	})
+}
+
+func addEmailBindingRules() {
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return strings.HasPrefix(rule, "EmailWithAllowedDomain")
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			if err := ValidateEmail(fmt.Sprintf("%v", val)); err != nil {
+				errs.Add([]string{name}, ErrEmail, err.Error())
+				return false, errs
+			}
+			return true, errs
+		},
+	})
+
+	binding.AddRule(&binding.Rule{
+		IsMatch: func(rule string) bool {
+			return strings.HasPrefix(rule, "EmailForAdmin")
+		},
+		IsValid: func(errs binding.Errors, name string, val any) (bool, binding.Errors) {
+			if err := ValidateEmailForAdmin(fmt.Sprintf("%v", val)); err != nil {
+				errs.Add([]string{name}, ErrEmail, err.Error())
+				return false, errs
+			}
+			return true, errs
+		},
+	})
+}
+
+func portOnly(hostport string) string {
+	_, after, ok := strings.Cut(hostport, ":")
+	if !ok {
+		return ""
+	}
+	if _, after, ok := strings.Cut(hostport, "]:"); ok {
+		return after
+	}
+	if strings.Contains(hostport, "]") {
+		return ""
+	}
+	return after
+}
+
+func validPort(p string) bool {
+	for _, r := range []byte(p) {
+		if r < '0' || r > '9' {
+			return false
+		}
+	}
+	return true
+}

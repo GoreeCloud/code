@@ -1,0 +1,24 @@
+X-Ratelimit-Reset: 1769189499
+X-Ratelimit-Used: 5
+Link: <https://api.github.com/repositories/68390476/issues?direction=asc&per_page=45&sort=created&state=all&before=Y3Vyc29yOnYyOpLPAAABmw6cnwDO3cGf4g%3D%3D>; rel="prev"
+Access-Control-Expose-Headers: ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Used, X-RateLimit-Resource, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval, X-GitHub-Media-Type, X-GitHub-SSO, X-GitHub-Request-Id, Deprecation, Sunset
+Strict-Transport-Security: max-age=31536000; includeSubdomains; preload
+X-Ratelimit-Limit: 5000
+X-Github-Request-Id: 545E:1E338F:1CE503C:199716F:6973A26E
+Vary: Accept, Authorization, Cookie, X-GitHub-OTP,Accept-Encoding, Accept, X-Requested-With
+X-Github-Media-Type: github.v3; param=squirrel-girl-preview
+X-Frame-Options: deny
+Referrer-Policy: origin-when-cross-origin, strict-origin-when-cross-origin
+X-Ratelimit-Resource: core
+Content-Type: application/json; charset=utf-8
+Cache-Control: private, max-age=60, s-maxage=60
+Etag: W/"c62d1ce27432411ccc529108455637a8bb6afea88b1be0bc1285beac77d2d917"
+X-Github-Api-Version-Selected: 2022-11-28
+X-Content-Type-Options: nosniff
+X-Ratelimit-Remaining: 4995
+X-Accepted-Github-Permissions: issues=read
+Access-Control-Allow-Origin: *
+X-Xss-Protection: 0
+Content-Security-Policy: default-src 'none'
+
+[{"url":"https://api.github.com/repos/nigoroll/libvmod-dynamic/issues/137","repository_url":"https://api.github.com/repos/nigoroll/libvmod-dynamic","labels_url":"https://api.github.com/repos/nigoroll/libvmod-dynamic/issues/137/labels{/name}","comments_url":"https://api.github.com/repos/nigoroll/libvmod-dynamic/issues/137/comments","events_url":"https://api.github.com/repos/nigoroll/libvmod-dynamic/issues/137/events","html_url":"https://github.com/nigoroll/libvmod-dynamic/issues/137","id":3720454114,"node_id":"I_kwDOBBOOTM7dwZ_i","number":137,"title":"resolver_test01.vtc is broken to the redirection","user":{"login":"gquintard","id":3776553,"node_id":"MDQ6VXNlcjM3NzY1NTM=","avatar_url":"https://avatars.githubusercontent.com/u/3776553?v=4","gravatar_id":"","url":"https://api.github.com/users/gquintard","html_url":"https://github.com/gquintard","followers_url":"https://api.github.com/users/gquintard/followers","following_url":"https://api.github.com/users/gquintard/following{/other_user}","gists_url":"https://api.github.com/users/gquintard/gists{/gist_id}","starred_url":"https://api.github.com/users/gquintard/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/gquintard/subscriptions","organizations_url":"https://api.github.com/users/gquintard/orgs","repos_url":"https://api.github.com/users/gquintard/repos","events_url":"https://api.github.com/users/gquintard/events{/privacy}","received_events_url":"https://api.github.com/users/gquintard/received_events","type":"User","user_view_type":"public","site_admin":false},"labels":[],"state":"closed","locked":false,"assignee":null,"assignees":[],"milestone":null,"comments":0,"created_at":"2025-12-11T18:11:44Z","updated_at":"2025-12-12T11:12:19Z","closed_at":"2025-12-12T11:12:19Z","author_association":"CONTRIBUTOR","active_lock_reason":null,"sub_issues_summary":{"total":0,"completed":0,"percent_completed":0},"issue_dependencies_summary":{"blocked_by":0,"total_blocked_by":0,"blocking":0,"total_blocking":0},"body":"https://github.com/nigoroll/libvmod-dynamic/blob/master/src/vtc/resolver/resolver_test01.vtc#L25 now gets a 301.\n\nCan we get a release soon fixing this? Until then I'll disable tests while packaging as this is blocking the docker image builds","closed_by":{"login":"nigoroll","id":1528104,"node_id":"MDQ6VXNlcjE1MjgxMDQ=","avatar_url":"https://avatars.githubusercontent.com/u/1528104?v=4","gravatar_id":"","url":"https://api.github.com/users/nigoroll","html_url":"https://github.com/nigoroll","followers_url":"https://api.github.com/users/nigoroll/followers","following_url":"https://api.github.com/users/nigoroll/following{/other_user}","gists_url":"https://api.github.com/users/nigoroll/gists{/gist_id}","starred_url":"https://api.github.com/users/nigoroll/starred{/owner}{/repo}","subscriptions_url":"https://api.github.com/users/nigoroll/subscriptions","organizations_url":"https://api.github.com/users/nigoroll/orgs","repos_url":"https://api.github.com/users/nigoroll/repos","events_url":"https://api.github.com/users/nigoroll/events{/privacy}","received_events_url":"https://api.github.com/users/nigoroll/received_events","type":"User","user_view_type":"public","site_admin":false},"reactions":{"url":"https://api.github.com/repos/nigoroll/libvmod-dynamic/issues/137/reactions","total_count":0,"+1":0,"-1":0,"laugh":0,"hooray":0,"confused":0,"heart":0,"rocket":0,"eyes":0},"timeline_url":"https://api.github.com/repos/nigoroll/libvmod-dynamic/issues/137/timeline","performed_via_github_app":null,"state_reason":"completed"}]

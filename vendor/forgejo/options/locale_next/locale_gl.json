@@ -1,0 +1,47 @@
+{
+	"relativetime.now": "agora",
+	"relativetime.future": "máis adiante",
+	"repo.form.cannot_create": "Todos os espazos onde podes crear repositorios chegaron ao límite de repositorios creados.",
+	"followers.outgoing.list.self.none": "Non esas seguindo a ninguén.",
+	"followers.outgoing.list.none": "%s non está seguindo a ninguén.",
+	"relativetime.1day": "onte",
+	"relativetime.1week": "a semana pasada",
+	"relativetime.1month": "hai un mes",
+	"relativetime.1year": "hai un ano",
+	"relativetime.mins": {
+		"one": "hai %d minuto",
+		"other": "hai %d minutos"
+	},
+	"relativetime.hours": {
+		"one": "hai %d hora",
+		"other": "hai %d horas"
+	},
+	"relativetime.days": {
+		"one": "hai %d día",
+		"other": "hai %d días"
+	},
+	"relativetime.weeks": {
+		"one": "hai %d semana",
+		"other": "hai %d semanas"
+	},
+	"relativetime.months": {
+		"one": "hai %d mes",
+		"other": "hai %d meses"
+	},
+	"relativetime.years": {
+		"one": "hai %d ano",
+		"other": "hai %d anos"
+	},
+	"meta.last_line": " ",
+	"home.welcome.no_activity": "Sen actividade",
+	"home.welcome.activity_hint": "Aínda non hai nada no teu feed. Tanto as túas accións como a actividade dos repositorios seguidos aparecerán aqui.",
+	"home.explore_repos": "Explorar repositorios",
+	"home.explore_users": "Explorar usuarios",
+	"home.explore_orgs": "Explorar organizacións",
+	"stars.list.none": "Ninguén lle dou unha estrela a este repo.",
+	"watch.list.none": "Ninguén está seguindo este repo.",
+	"followers.incoming.list.self.none": "Ninguén está seguindo o teu perfil.",
+	"followers.incoming.list.none": "Ninguén está seguindo este usuario.",
+	"repo.issues.filter_poster.hint": "Filtrar por autor",
+	"repo.issues.filter_assignee.hint": "Filtrar por usuario asignado"
+}

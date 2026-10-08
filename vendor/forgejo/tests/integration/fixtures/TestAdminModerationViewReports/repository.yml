@@ -1,0 +1,37 @@
+-
+  id: 1001
+  owner_id: 1001
+  owner_name: contributor
+  lower_name: first
+  name: first
+  description: ''
+  website: ''
+  default_branch: main
+  num_watches: 1
+  num_stars: 0
+  num_forks: 0
+  is_private: false
+  is_empty: false
+  is_archived: false
+  size: 0
+  topics: '[]'
+  created_unix: 1121422260 # 2005-07-15 10:11:00
+
+-
+  id: 1002
+  owner_id: 1003
+  owner_name: SPAM-services
+  lower_name: spammer-tools
+  name: spammer-Tools
+  description: Another _place_ for abusive content.
+  website: ''
+  default_branch: main
+  num_watches: 1
+  num_stars: 0
+  num_forks: 0
+  is_private: false
+  is_empty: false
+  is_archived: false
+  size: 0
+  topics: "[\"bulk-email\",\"email-services\",\"spam\",\"spamservices.co\"]"
+  created_unix: 1121422920 # 2005-07-15 10:22:00

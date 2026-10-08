@@ -1,0 +1,151 @@
+-
+  id: 1000
+  title: "63, 2 not trusted"
+  repo_id: 63
+  trigger_user_id: 2
+  approved_by: 0
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1000
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+
+-
+  id: 1001
+  title: "63, 3 trusted"
+  repo_id: 63
+  trigger_user_id: 3
+  approved_by: 1
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1001
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+
+-
+  id: 1002
+  title: "63, 3 trusted (duplicate, ignored)"
+  repo_id: 63
+  trigger_user_id: 3
+  approved_by: 1
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1002
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+
+-
+  id: 1003
+  title: "5000, 3 trusted (non existent repo_id, ignored)"
+  repo_id: 5000
+  trigger_user_id: 2
+  approved_by: 1
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1003
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+
+-
+  id: 1004
+  title: "63, 3000 trusted (non existent trigger_user, ignored)"
+  repo_id: 63
+  trigger_user_id: 3000
+  approved_by: 1
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1004
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+
+-
+  id: 1005
+  title: "63, 4 trusted"
+  repo_id: 63
+  trigger_user_id: 4
+  approved_by: 1
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1005
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+
+-
+  id: 1006
+  title: "15, 3 trusted"
+  repo_id: 15
+  trigger_user_id: 3
+  approved_by: 1
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1006
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false
+
+-
+  id: 1007
+  title: "15, 0 trigger user id zero is ignored"
+  repo_id: 15
+  trigger_user_id: 0
+  approved_by: 1
+  owner_id: 2
+  workflow_id: "running.yaml"
+  index: 1007
+  ref: "refs/heads/main"
+  commit_sha: "97f29ee599c373c729132a5c46a046978311e0ee"
+  trigger_event: "workflow_dispatch"
+  is_fork_pull_request: false
+  status: 1 # success
+  started: 1683636528
+  created: 1683636108
+  updated: 1683636626
+  need_approval: false

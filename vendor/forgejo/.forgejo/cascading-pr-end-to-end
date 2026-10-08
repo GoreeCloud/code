@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -ex
+
+end_to_end=$1
+end_to_end_pr=$2
+forgejo=$3
+forgejo_pr_or_ref=$4
+
+cd $forgejo
+full_version=$(make show-version-full)
+minor_version=$(make show-version-minor)
+
+cd $end_to_end
+
+if ! test -f forgejo/sources/$minor_version; then
+  echo "FAIL: forgejo/sources/$minor_version does not exist in the end-to-end repository"
+  false
+fi
+
+echo -n $minor_version >forgejo/build-from-sources
+date >last-upgrade
+
+if test -f "$forgejo_pr_or_ref"; then
+  forgejo_pr=$forgejo_pr_or_ref
+  head_url=$(jq --raw-output .head.repo.html_url <$forgejo_pr)
+  test "$head_url" != null
+  branch=$(jq --raw-output .head.ref <$forgejo_pr)
+  test "$branch" != null
+  echo $head_url $branch $full_version >forgejo/sources/$minor_version
+else
+  forgejo_ref=$forgejo_pr_or_ref
+  echo $GITHUB_SERVER_URL/$GITHUB_REPOSITORY ${forgejo_ref#refs/heads/} $full_version >forgejo/sources/$minor_version
+fi

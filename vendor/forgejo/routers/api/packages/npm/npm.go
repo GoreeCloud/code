@@ -1,0 +1,475 @@
+// Copyright 2021 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package npm
+
+import (
+	"bytes"
+	std_ctx "context"
+	"errors"
+	"fmt"
+	"io"
+	"net/http"
+	"strings"
+
+	"forgejo.org/models/db"
+	packages_model "forgejo.org/models/packages"
+	access_model "forgejo.org/models/perm/access"
+	repo_model "forgejo.org/models/repo"
+	"forgejo.org/models/unit"
+	"forgejo.org/modules/optional"
+	packages_module "forgejo.org/modules/packages"
+	npm_module "forgejo.org/modules/packages/npm"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/util"
+	"forgejo.org/routers/api/packages/helper"
+	"forgejo.org/services/context"
+	packages_service "forgejo.org/services/packages"
+
+	"github.com/hashicorp/go-version"
+)
+
+// errInvalidTagName indicates an invalid tag name
+var errInvalidTagName = errors.New("The tag name is invalid")
+
+func apiError(ctx *context.Context, status int, obj any) {
+	helper.LogAndProcessError(ctx, status, obj, func(message string) {
+		ctx.JSON(status, map[string]string{
+			"error": message,
+		})
+	})
+}
+
+// packageNameFromParams gets the package name from the url parameters
+// Variations: /name/, /@scope/name/, /@scope%2Fname/
+func packageNameFromParams(ctx *context.Context) string {
+	scope := ctx.Params("scope")
+	id := ctx.Params("id")
+	if scope != "" {
+		return fmt.Sprintf("@%s/%s", scope, id)
+	}
+	return id
+}
+
+// PackageMetadata returns the metadata for a single package
+func PackageMetadata(ctx *context.Context) {
+	packageName := packageNameFromParams(ctx)
+
+	pvs, err := packages_model.GetVersionsByPackageName(ctx, ctx.Package.Owner.ID, packages_model.TypeNpm, packageName)
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+	if len(pvs) == 0 {
+		apiError(ctx, http.StatusNotFound, err)
+		return
+	}
+
+	pds, err := packages_model.GetPackageDescriptors(ctx, pvs)
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	resp := createPackageMetadataResponse(
+		setting.AppURL+"api/packages/"+ctx.Package.Owner.Name+"/npm",
+		pds,
+	)
+
+	ctx.JSON(http.StatusOK, resp)
+}
+
+// DownloadPackageFile serves the content of a package
+func DownloadPackageFile(ctx *context.Context) {
+	packageName := packageNameFromParams(ctx)
+	packageVersion := ctx.Params("version")
+	filename := ctx.Params("filename")
+
+	s, u, pf, err := packages_service.GetFileStreamByPackageNameAndVersion(
+		ctx,
+		&packages_service.PackageInfo{
+			Owner:       ctx.Package.Owner,
+			PackageType: packages_model.TypeNpm,
+			Name:        packageName,
+			Version:     packageVersion,
+		},
+		&packages_service.PackageFileInfo{
+			Filename: filename,
+		},
+	)
+	if err != nil {
+		if err == packages_model.ErrPackageNotExist || err == packages_model.ErrPackageFileNotExist {
+			apiError(ctx, http.StatusNotFound, err)
+			return
+		}
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	helper.ServePackageFile(ctx, s, u, pf)
+}
+
+// DownloadPackageFileByName finds the version and serves the contents of a package
+func DownloadPackageFileByName(ctx *context.Context) {
+	filename := ctx.Params("filename")
+
+	pvs, _, err := packages_model.SearchVersions(ctx, &packages_model.PackageSearchOptions{
+		OwnerID: ctx.Package.Owner.ID,
+		Type:    packages_model.TypeNpm,
+		Name: packages_model.SearchValue{
+			ExactMatch: true,
+			Value:      packageNameFromParams(ctx),
+		},
+		HasFileWithName: filename,
+		IsInternal:      optional.Some(false),
+	})
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+	if len(pvs) != 1 {
+		apiError(ctx, http.StatusNotFound, nil)
+		return
+	}
+
+	s, u, pf, err := packages_service.GetFileStreamByPackageVersion(
+		ctx,
+		pvs[0],
+		&packages_service.PackageFileInfo{
+			Filename: filename,
+		},
+	)
+	if err != nil {
+		if err == packages_model.ErrPackageFileNotExist {
+			apiError(ctx, http.StatusNotFound, err)
+			return
+		}
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	helper.ServePackageFile(ctx, s, u, pf)
+}
+
+// UploadPackage creates a new package
+func UploadPackage(ctx *context.Context) {
+	npmPackage, err := npm_module.ParsePackage(ctx.Req.Body)
+	if err != nil {
+		if errors.Is(err, util.ErrInvalidArgument) {
+			apiError(ctx, http.StatusBadRequest, err)
+		} else {
+			apiError(ctx, http.StatusInternalServerError, err)
+		}
+		return
+	}
+
+	repo, err := repo_model.GetRepositoryByURL(ctx, npmPackage.Metadata.Repository.URL)
+	if err == nil {
+		canWrite := repo.OwnerID == ctx.Doer.ID
+
+		if !canWrite {
+			// GetUserRepoPermission is used, which doesn't take into account any `AuthorizationReducer` from access
+			// tokens.  At present, `AuthorizationReducer` only provides capabilities to implement repo-specific access
+			// tokens.  It is not possible to create a repo-specific access token with the `package:write` scope, and
+			// that scope is required to call this API, so implementing `AuthorizationReducer` is not necessary here.
+			//
+			// This access check would need revision if either: package-specific access tokens were created, or,
+			// `package:write` scope was permitted on a repo-specific access token.
+			//
+			// (Because package APIs doesn't take use an `APIContext`, we don't have access to a reducer to provide to
+			// GetUserRepoPermissionWithReducer, otherwise we'd just do it and not spend so much time describing why we
+			// don't have to.)
+			//
+			// nosemgrep: forgejo-api-suspicious-GetUserRepoPermission
+			perms, err := access_model.GetUserRepoPermission(ctx, repo, ctx.Doer)
+			if err != nil {
+				apiError(ctx, http.StatusInternalServerError, err)
+				return
+			}
+
+			canWrite = perms.CanWrite(unit.TypePackages)
+		}
+
+		if !canWrite {
+			apiError(ctx, http.StatusForbidden, "no permission to upload this package")
+			return
+		}
+	}
+
+	buf, err := packages_module.CreateHashedBufferFromReader(bytes.NewReader(npmPackage.Data))
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+	defer buf.Close()
+
+	pv, _, err := packages_service.CreatePackageAndAddFile(
+		ctx,
+		&packages_service.PackageCreationInfo{
+			PackageInfo: packages_service.PackageInfo{
+				Owner:       ctx.Package.Owner,
+				PackageType: packages_model.TypeNpm,
+				Name:        npmPackage.Name,
+				Version:     npmPackage.Version,
+			},
+			SemverCompatible: true,
+			Creator:          ctx.Doer,
+			Metadata:         npmPackage.Metadata,
+		},
+		&packages_service.PackageFileCreationInfo{
+			PackageFileInfo: packages_service.PackageFileInfo{
+				Filename: npmPackage.Filename,
+			},
+			Creator: ctx.Doer,
+			Data:    buf,
+			IsLead:  true,
+		},
+	)
+	if err != nil {
+		switch err {
+		case packages_model.ErrDuplicatePackageVersion:
+			apiError(ctx, http.StatusConflict, err)
+		case packages_service.ErrQuotaTotalCount, packages_service.ErrQuotaTypeSize, packages_service.ErrQuotaTotalSize:
+			apiError(ctx, http.StatusForbidden, err)
+		default:
+			apiError(ctx, http.StatusInternalServerError, err)
+		}
+		return
+	}
+
+	for _, tag := range npmPackage.DistTags {
+		if err := setPackageTag(ctx, tag, pv, false); err != nil {
+			if err == errInvalidTagName {
+				apiError(ctx, http.StatusBadRequest, err)
+				return
+			}
+			apiError(ctx, http.StatusInternalServerError, err)
+			return
+		}
+	}
+
+	if repo != nil {
+		if err := packages_model.SetRepositoryLink(ctx, pv.PackageID, repo.ID); err != nil {
+			apiError(ctx, http.StatusInternalServerError, err)
+			return
+		}
+	}
+
+	ctx.Status(http.StatusCreated)
+}
+
+// DeletePreview does nothing
+// The client tells the server what package version it knows about after deleting a version.
+func DeletePreview(ctx *context.Context) {
+	ctx.Status(http.StatusOK)
+}
+
+// DeletePackageVersion deletes the package version
+func DeletePackageVersion(ctx *context.Context) {
+	packageName := packageNameFromParams(ctx)
+	packageVersion := ctx.Params("version")
+
+	err := packages_service.RemovePackageVersionByNameAndVersion(
+		ctx,
+		ctx.Doer,
+		&packages_service.PackageInfo{
+			Owner:       ctx.Package.Owner,
+			PackageType: packages_model.TypeNpm,
+			Name:        packageName,
+			Version:     packageVersion,
+		},
+	)
+	if err != nil {
+		if err == packages_model.ErrPackageNotExist {
+			apiError(ctx, http.StatusNotFound, err)
+			return
+		}
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	ctx.Status(http.StatusOK)
+}
+
+// DeletePackage deletes the package and all versions
+func DeletePackage(ctx *context.Context) {
+	packageName := packageNameFromParams(ctx)
+
+	pvs, err := packages_model.GetVersionsByPackageName(ctx, ctx.Package.Owner.ID, packages_model.TypeNpm, packageName)
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	if len(pvs) == 0 {
+		apiError(ctx, http.StatusNotFound, err)
+		return
+	}
+
+	for _, pv := range pvs {
+		if err := packages_service.RemovePackageVersion(ctx, ctx.Doer, pv); err != nil {
+			apiError(ctx, http.StatusInternalServerError, err)
+			return
+		}
+	}
+
+	ctx.Status(http.StatusOK)
+}
+
+// ListPackageTags returns all tags for a package
+func ListPackageTags(ctx *context.Context) {
+	packageName := packageNameFromParams(ctx)
+
+	pvs, err := packages_model.GetVersionsByPackageName(ctx, ctx.Package.Owner.ID, packages_model.TypeNpm, packageName)
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	tags := make(map[string]string)
+	for _, pv := range pvs {
+		pvps, err := packages_model.GetPropertiesByName(ctx, packages_model.PropertyTypeVersion, pv.ID, npm_module.TagProperty)
+		if err != nil {
+			apiError(ctx, http.StatusInternalServerError, err)
+			return
+		}
+		for _, pvp := range pvps {
+			tags[pvp.Value] = pv.Version
+		}
+	}
+
+	ctx.JSON(http.StatusOK, tags)
+}
+
+// AddPackageTag adds a tag to the package
+func AddPackageTag(ctx *context.Context) {
+	packageName := packageNameFromParams(ctx)
+
+	body, err := io.ReadAll(ctx.Req.Body)
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+	version := strings.Trim(string(body), "\"") // is as "version" in the body
+
+	pv, err := packages_model.GetVersionByNameAndVersion(ctx, ctx.Package.Owner.ID, packages_model.TypeNpm, packageName, version)
+	if err != nil {
+		if err == packages_model.ErrPackageNotExist {
+			apiError(ctx, http.StatusNotFound, err)
+			return
+		}
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	if err := setPackageTag(ctx, ctx.Params("tag"), pv, false); err != nil {
+		if err == errInvalidTagName {
+			apiError(ctx, http.StatusBadRequest, err)
+			return
+		}
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+}
+
+// DeletePackageTag deletes a package tag
+func DeletePackageTag(ctx *context.Context) {
+	packageName := packageNameFromParams(ctx)
+
+	pvs, err := packages_model.GetVersionsByPackageName(ctx, ctx.Package.Owner.ID, packages_model.TypeNpm, packageName)
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	if len(pvs) != 0 {
+		if err := setPackageTag(ctx, ctx.Params("tag"), pvs[0], true); err != nil {
+			if err == errInvalidTagName {
+				apiError(ctx, http.StatusBadRequest, err)
+				return
+			}
+			apiError(ctx, http.StatusInternalServerError, err)
+			return
+		}
+	}
+}
+
+func setPackageTag(ctx std_ctx.Context, tag string, pv *packages_model.PackageVersion, deleteOnly bool) error {
+	if tag == "" {
+		return errInvalidTagName
+	}
+	_, err := version.NewVersion(tag)
+	if err == nil {
+		return errInvalidTagName
+	}
+
+	return db.WithTx(ctx, func(ctx std_ctx.Context) error {
+		pvs, _, err := packages_model.SearchVersions(ctx, &packages_model.PackageSearchOptions{
+			PackageID: pv.PackageID,
+			Properties: map[string]string{
+				npm_module.TagProperty: tag,
+			},
+			IsInternal: optional.Some(false),
+		})
+		if err != nil {
+			return err
+		}
+
+		if len(pvs) == 1 {
+			pvps, err := packages_model.GetPropertiesByName(ctx, packages_model.PropertyTypeVersion, pvs[0].ID, npm_module.TagProperty)
+			if err != nil {
+				return err
+			}
+
+			for _, pvp := range pvps {
+				if pvp.Value == tag {
+					if err := packages_model.DeletePropertyByID(ctx, pvp.ID); err != nil {
+						return err
+					}
+					break
+				}
+			}
+		}
+
+		if !deleteOnly {
+			_, err = packages_model.InsertProperty(ctx, packages_model.PropertyTypeVersion, pv.ID, npm_module.TagProperty, tag)
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+}
+
+func PackageSearch(ctx *context.Context) {
+	pvs, total, err := packages_model.SearchLatestVersions(ctx, &packages_model.PackageSearchOptions{
+		OwnerID:    ctx.Package.Owner.ID,
+		Type:       packages_model.TypeNpm,
+		IsInternal: optional.Some(false),
+		Name: packages_model.SearchValue{
+			ExactMatch: false,
+			Value:      ctx.FormTrim("text"),
+		},
+		Paginator: db.NewAbsoluteListOptions(
+			ctx.FormInt("from"),
+			ctx.FormInt("size"),
+		),
+	})
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	pds, err := packages_model.GetPackageDescriptors(ctx, pvs)
+	if err != nil {
+		apiError(ctx, http.StatusInternalServerError, err)
+		return
+	}
+
+	resp := createPackageSearchResponse(
+		pds,
+		total,
+	)
+
+	ctx.JSON(http.StatusOK, resp)
+}

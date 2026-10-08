@@ -1,0 +1,23 @@
+name: Verify Glaze Stable source
+
+on:
+  push:
+    branches: [feat/forgejo-bootstrap]
+    paths: ['.github/workflows/glaze-source.yml']
+  pull_request:
+    branches: [main]
+    paths: ['apps/web/**', '.github/workflows/glaze-source.yml']
+
+permissions:
+  contents: read
+
+jobs:
+  stable-source:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: GoreeCloud/glaze
+          ref: cf35eeb82659fbc6b16f9881e6a5f68f7e5f473e
+          persist-credentials: false
+      - run: test "$(cat VERSION)" = '1.7.0'

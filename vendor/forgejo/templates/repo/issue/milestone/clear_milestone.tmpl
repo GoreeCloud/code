@@ -1,0 +1,3 @@
+<div hx-swap-oob="true" id="clear-milestone" class="{{if and .UseHTMX (or (and (not .OpenMilestones) (not .ClosedMilestones)) (not .Issue.Milestone))}}disabled {{end}}no-select item"{{if .UseHTMX}} hx-post="{{$.RepoLink}}/issues/milestone?issue_ids={{.Issue.ID}}&htmx=true"{{end}}>
+	{{ctx.Locale.Tr "repo.issues.new.clear_milestone"}}
+</div>

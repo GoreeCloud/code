@@ -1,0 +1,24 @@
+date: Wed, 23 Jul 2025 06:43:47 GMT
+server: Apache/2.4.37 (Red Hat Enterprise Linux) OpenSSL/1.1.1k mod_wsgi/4.6.4 Python/3.6
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: same-origin
+x-frame-options: ALLOW-FROM https://pagure.io/
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 452
+content-security-policy: default-src 'self';script-src 'self' 'nonce-bDXeQlGZOYsS26Mr1BJPgodzY'; style-src 'self' 'nonce-bDXeQlGZOYsS26Mr1BJPgodzY'; object-src 'none';base-uri 'self';img-src 'self' https:;connect-src 'self' https://pagure.io:8088;frame-src https://docs.pagure.org;frame-ancestors https://pagure.io;
+set-cookie: pagure=eyJfcGVybWFuZW50Ijp0cnVlLCJjc3JmX3Rva2VuIjoiNDRkYmIwMjQwODI1ODc4MGUzYWM4ZDZhZTkxYWQ2NTkyMDFhNTg0ZSJ9.G2IWIw.U2Rb6xUm4Wk9ODweB3hH1cggWkM; Expires=Sat, 23-Aug-2025 06:43:47 GMT; Secure; HttpOnly; Path=/
+content-type: application/json
+
+{
+  "author": "Akashdeep Dhar", 
+  "commit_time": 1747635352, 
+  "commit_time_offset": 0, 
+  "committer": "Akashdeep Dhar", 
+  "hash": "1a6ccc212aa958a0fe76155c2907c889969a7224", 
+  "message": "Change the branch identity to `test-ffff` in the README.md file\n\nSigned-off-by: Akashdeep Dhar <akashdeep.dhar@gmail.com>\n", 
+  "parent_ids": [
+    "01b420e2964928a15f790f9b7c1a0053e7b5f0a5"
+  ], 
+  "tree_id": "0c5e64a6b912cb0c3d66e66896fa98a98da69fe4"
+}

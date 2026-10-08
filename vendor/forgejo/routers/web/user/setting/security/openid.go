@@ -1,0 +1,151 @@
+// Copyright 2018 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package security
+
+import (
+	"net/http"
+	"net/url"
+
+	user_model "forgejo.org/models/user"
+	"forgejo.org/modules/auth/openid"
+	"forgejo.org/modules/log"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/web"
+	"forgejo.org/services/context"
+	"forgejo.org/services/forms"
+
+	gouuid "github.com/google/uuid"
+)
+
+// OpenIDPost response for change user's openid
+func OpenIDPost(ctx *context.Context) {
+	form := web.GetForm(ctx).(*forms.AddOpenIDForm)
+	ctx.Data["Title"] = ctx.Tr("settings")
+	ctx.Data["PageIsSettingsSecurity"] = true
+
+	if ctx.HasError() {
+		loadSecurityData(ctx)
+
+		ctx.HTML(http.StatusOK, tplSettingsSecurity)
+		return
+	}
+
+	// WARNING: specifying a wrong OpenID here could lock
+	// a user out of her account, would be better to
+	// verify/confirm the new OpenID before storing it
+
+	// Also, consider allowing for multiple OpenID URIs
+
+	id, err := openid.Normalize(form.Openid)
+	if err != nil {
+		loadSecurityData(ctx)
+
+		ctx.RenderWithErr(err.Error(), tplSettingsSecurity, &form)
+		return
+	}
+	form.Openid = id
+	log.Trace("Normalized id: " + id)
+
+	oids, err := user_model.GetUserOpenIDs(ctx, ctx.Doer.ID)
+	if err != nil {
+		ctx.ServerError("GetUserOpenIDs", err)
+		return
+	}
+	ctx.Data["OpenIDs"] = oids
+
+	// Check that the OpenID is not already used
+	for _, obj := range oids {
+		if obj.URI == id {
+			loadSecurityData(ctx)
+
+			ctx.RenderWithErr(ctx.Tr("form.openid_been_used", id), tplSettingsSecurity, &form)
+			return
+		}
+	}
+
+	// To ensure that any OpenID associations performed are generated as a result of the user's actions, attach a
+	// randomly generated value to the return URL and store it in the user's session.
+	openIDState := gouuid.New().String()
+	if err := ctx.Session.Set("openIDState", openIDState); err != nil {
+		ctx.ServerError("Session.Set", err)
+		return
+	}
+
+	redirectTo := setting.AppURL + "user/settings/security?s=" + url.QueryEscape(openIDState)
+	url, err := openid.RedirectURL(id, redirectTo, setting.AppURL)
+	if err != nil {
+		loadSecurityData(ctx)
+
+		ctx.RenderWithErr(err.Error(), tplSettingsSecurity, &form)
+		return
+	}
+	ctx.Redirect(url)
+}
+
+func settingsOpenIDVerify(ctx *context.Context) {
+	log.Trace("Incoming call to: %s", ctx.Req.URL.String())
+
+	// To ensure that any OpenID associations performed are generated as a result of the user's actions, validate the
+	// `s` parameter that was generated when the association process started matches the one in the user's session.
+	// Remove it so it can be used only once.
+	incomingOpenIDState := ctx.FormString("s")
+	expectedOpenIDState := ctx.Session.Get("openIDState").(string)
+	if err := ctx.Session.Delete("openIDState"); err != nil {
+		// Treat as a fatal error, otherwise the state value could be reused with unknown risks.
+		ctx.ServerError("Session.Delete", err)
+		return
+	} else if incomingOpenIDState != expectedOpenIDState {
+		ctx.RenderWithErr("Invalid OpenID state parameter", tplSettingsSecurity, &forms.AddOpenIDForm{})
+		return
+	}
+
+	fullURL := setting.AppURL + ctx.Req.URL.String()[1:]
+	log.Trace("Full URL: %q", fullURL)
+
+	id, err := openid.Verify(fullURL)
+	if err != nil {
+		ctx.RenderWithErr(err.Error(), tplSettingsSecurity, &forms.AddOpenIDForm{
+			Openid: id,
+		})
+		return
+	}
+
+	log.Trace("Verified ID: %s", id)
+
+	oid := &user_model.UserOpenID{UID: ctx.Doer.ID, URI: id}
+	if err = user_model.AddUserOpenID(ctx, oid); err != nil {
+		if user_model.IsErrOpenIDAlreadyUsed(err) {
+			ctx.RenderWithErr(ctx.Tr("form.openid_been_used", id), tplSettingsSecurity, &forms.AddOpenIDForm{Openid: id})
+			return
+		}
+		ctx.ServerError("AddUserOpenID", err)
+		return
+	}
+	log.Trace("Associated OpenID %s to user %s", id, ctx.Doer.Name)
+	ctx.Flash.Success(ctx.Tr("settings.add_openid_success"))
+
+	ctx.Redirect(setting.AppSubURL + "/user/settings/security")
+}
+
+// DeleteOpenID response for delete user's openid
+func DeleteOpenID(ctx *context.Context) {
+	if err := user_model.DeleteUserOpenID(ctx, &user_model.UserOpenID{ID: ctx.FormInt64("id"), UID: ctx.Doer.ID}); err != nil {
+		ctx.ServerError("DeleteUserOpenID", err)
+		return
+	}
+	log.Trace("OpenID address deleted: %s", ctx.Doer.Name)
+
+	ctx.Flash.Success(ctx.Tr("settings.openid_deletion_success"))
+	ctx.JSONRedirect(setting.AppSubURL + "/user/settings/security")
+}
+
+// ToggleOpenIDVisibility response for toggle visibility of user's openid
+func ToggleOpenIDVisibility(ctx *context.Context) {
+	if err := user_model.ToggleUserOpenIDVisibility(ctx, ctx.Doer.ID, ctx.FormInt64("id")); err != nil {
+		ctx.ServerError("ToggleUserOpenIDVisibility", err)
+		return
+	}
+
+	ctx.Redirect(setting.AppSubURL + "/user/settings/security")
+}

@@ -1,0 +1,23 @@
+-
+  id: 1001
+  repo_id: 1001 # contributor/first
+  index: 1
+  poster_id: 1001
+  name: first repo should have a first issue
+  content: so here we go
+  is_closed: false
+  is_pull: false
+  num_comments: 2
+  created_unix: 1121422320 # 2005-07-15 10:12:00
+
+-
+  id: 1002
+  repo_id: 1002 # SPAM-services/spammer-tools
+  index: 1
+  poster_id: 1002
+  name: Professional marketing services
+  content: Visit my website at spammer.xyz/services for a list of available services.
+  is_closed: false
+  is_pull: false
+  num_comments: 0
+  created_unix: 1121422980 # 2005-07-15 10:23:00

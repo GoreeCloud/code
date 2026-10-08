@@ -1,0 +1,98 @@
+// Copyright 2019 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package repo
+
+import (
+	"net/http"
+	"strings"
+
+	"forgejo.org/services/context"
+	files_service "forgejo.org/services/repository/files"
+)
+
+// GetBlobs gets multiple blobs of a repository.
+func GetBlobs(ctx *context.APIContext) {
+	// swagger:operation GET /repos/{owner}/{repo}/git/blobs repository GetBlobs
+	// ---
+	// summary: Gets multiple blobs of a repository.
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: owner
+	//   in: path
+	//   description: owner of the repo
+	//   type: string
+	//   required: true
+	// - name: repo
+	//   in: path
+	//   description: name of the repo
+	//   type: string
+	//   required: true
+	// - name: shas
+	//   in: query
+	//   description: a comma separated list of blob-sha (mind the overall URL-length limit of ~2,083 chars)
+	//   type: string
+	//   required: true
+	// responses:
+	//   "200":
+	//     "$ref": "#/responses/GitBlobList"
+	//   "400":
+	//     "$ref": "#/responses/error"
+
+	shas := ctx.FormString("shas")
+	if len(shas) == 0 {
+		ctx.Error(http.StatusBadRequest, "", "shas not provided")
+		return
+	}
+
+	if blobs, err := files_service.GetBlobsBySHA(ctx, ctx.Repo().Repository, ctx.Repo().GitRepo, strings.Split(shas, ",")); err != nil {
+		ctx.Error(http.StatusBadRequest, "", err)
+	} else {
+		ctx.JSON(http.StatusOK, blobs)
+	}
+}
+
+// GetBlob get the blob of a repository file.
+func GetBlob(ctx *context.APIContext) {
+	// swagger:operation GET /repos/{owner}/{repo}/git/blobs/{sha} repository GetBlob
+	// ---
+	// summary: Gets the blob of a repository.
+	// produces:
+	// - application/json
+	// parameters:
+	// - name: owner
+	//   in: path
+	//   description: owner of the repo
+	//   type: string
+	//   required: true
+	// - name: repo
+	//   in: path
+	//   description: name of the repo
+	//   type: string
+	//   required: true
+	// - name: sha
+	//   in: path
+	//   description: sha of the blob to retrieve
+	//   type: string
+	//   required: true
+	// responses:
+	//   "200":
+	//     "$ref": "#/responses/GitBlob"
+	//   "400":
+	//     "$ref": "#/responses/error"
+	//   "404":
+	//     "$ref": "#/responses/notFound"
+
+	sha := ctx.Params("sha")
+	if len(sha) == 0 {
+		ctx.Error(http.StatusBadRequest, "", "sha not provided")
+		return
+	}
+
+	if blob, err := files_service.GetBlobBySHA(ctx, ctx.Repo().Repository, ctx.Repo().GitRepo, sha); err != nil {
+		ctx.Error(http.StatusBadRequest, "", err)
+	} else {
+		ctx.JSON(http.StatusOK, blob)
+	}
+}

@@ -1,0 +1,22 @@
+- # This user is a spammer and will create abusive content (for testing moderation functionalities).
+  id: 1002
+  lower_name: alexsmith
+  name: alexsmith
+  full_name: Alex Smith
+  email: alexsmith@example.org
+  keep_email_private: false
+  passwd: passwdSalt:password
+  passwd_hash_algo: dummy
+  type: 0
+  location: '@master@seo.net'
+  website: http://promote-your-business.biz
+  pronouns: SEO
+  salt: passwdSalt
+  description: I can help you promote your business online using SEO.
+  created_unix: 1752697800 # 2025-07-16 20:30:00
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  avatar: avatar-hash-1002
+  avatar_email: alexsmith@example.org
+  use_custom_avatar: false

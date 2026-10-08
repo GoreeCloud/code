@@ -1,0 +1,66 @@
+-
+  id: 5
+  repo_id: 0
+  owner_id: 0
+  url: http://www.example.com/systemhook5
+  http_method: POST
+  type: forgejo
+  content_type: 1 # json
+  events: '{"push_only":true,"send_everything":false,"choose_events":false,"events":{"create":false,"push":true,"pull_request":false}}'
+  is_active: true
+  is_system_webhook: true
+-
+  id: 6
+  repo_id: 0
+  owner_id: 0
+  url: http://www.example.com/systemhook6
+  http_method: POST
+  type: forgejo
+  content_type: 1 # json
+  events: '{"push_only":true,"send_everything":false,"choose_events":false,"events":{"create":false,"push":true,"pull_request":false}}'
+  is_active: true
+  is_system_webhook: true
+-
+  id: 7
+  repo_id: 0
+  owner_id: 0
+  url: http://www.example.com/systemhook7
+  http_method: POST
+  type: forgejo
+  content_type: 1 # json
+  events: '{"push_only":true,"send_everything":false,"choose_events":false,"events":{"create":false,"push":true,"pull_request":false}}'
+  is_active: true
+  is_system_webhook: true
+-
+  id: 8
+  repo_id: 0
+  owner_id: 0
+  url: http://www.example.com/systemhook8
+  http_method: POST
+  type: forgejo
+  content_type: 1 # json
+  events: '{"push_only":true,"send_everything":false,"choose_events":false,"events":{"create":false,"push":true,"pull_request":false}}'
+  is_active: false
+  is_system_webhook: true
+-
+  id: 9
+  repo_id: 0
+  owner_id: 0
+  url: http://www.example.com/systemhook9
+  http_method: POST
+  type: forgejo
+  content_type: 1 # json
+  events: '{"push_only":true,"send_everything":false,"choose_events":false,"events":{"create":false,"push":true,"pull_request":false}}'
+  is_active: false
+  is_system_webhook: true
+-
+  id: 10
+  repo_id: 0
+  owner_id: 0
+  url: http://www.example.com/systemhook
+  http_method: POST
+  type: forgejo
+  content_type: 1 # json
+  events: '{"push_only":true,"send_everything":false,"choose_events":false,"events":{"create":false,"push":true,"pull_request":false}}'
+  is_active: false
+  is_system_webhook: false

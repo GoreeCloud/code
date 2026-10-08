@@ -1,0 +1,7 @@
+- id: 1001
+  type: 0 # Pending review
+  reviewer_id: 10
+  issue_id: 1
+  content: "Pending review for issue 1"
+  updated_unix: 946684810
+  created_unix: 946684810

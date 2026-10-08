@@ -1,0 +1,218 @@
+// Copyright 2017 The Gitea Authors. All rights reserved.
+// Copyright 2024-2025 The Forgejo Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package integration
+
+import (
+	"fmt"
+	"net/http"
+	"net/url"
+	"strings"
+	"testing"
+
+	"forgejo.org/models/db"
+	repo_model "forgejo.org/models/repo"
+	code_indexer "forgejo.org/modules/indexer/code"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/test"
+	"forgejo.org/modules/translation"
+	"forgejo.org/routers"
+	"forgejo.org/tests"
+
+	"github.com/PuerkitoBio/goquery"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func resultFilenames(t testing.TB, doc *HTMLDoc) []string {
+	resultSelections := doc.
+		Find(".repository.search").
+		Find("details.repo-search-result")
+
+	result := make([]string, resultSelections.Length())
+	resultSelections.Each(func(i int, selection *goquery.Selection) {
+		assert.Positive(t, selection.Find("div ol li").Length(), 0)
+		assert.Positive(t, selection.Find(".code-inner").Find(".search-highlight").Length(), 0)
+		result[i] = selection.
+			Find(".header").
+			Find("span.file a.file-link").
+			First().
+			Text()
+	})
+
+	return result
+}
+
+func TestSearchRepoIndexer(t *testing.T) {
+	testSearchRepo(t, true)
+}
+
+func TestSearchRepoNoIndexer(t *testing.T) {
+	testSearchRepo(t, false)
+}
+
+func testSearchRepo(t *testing.T, indexer bool) {
+	defer tests.PrepareTestEnv(t)()
+	defer test.MockVariableValue(&setting.Indexer.RepoIndexerEnabled, indexer)()
+	defer test.MockVariableValue(&testWebRoutes, routers.NormalRoutes())()
+
+	repo, err := repo_model.GetRepositoryByOwnerAndName(db.DefaultContext, "user2", "repo1")
+	require.NoError(t, err)
+
+	if indexer {
+		code_indexer.UpdateRepoIndexer(repo)
+	}
+
+	testSearch(t, "/user2/repo1/search?q=Description&page=1", []string{"README.md"}, indexer)
+
+	req := NewRequest(t, "HEAD", "/user2/repo1/search/branch/"+repo.DefaultBranch)
+	if indexer {
+		MakeRequest(t, req, http.StatusNotFound)
+	} else {
+		MakeRequest(t, req, http.StatusOK)
+	}
+
+	defer test.MockVariableValue(&setting.Indexer.IncludePatterns, setting.IndexerGlobFromString("**.txt"))()
+	defer test.MockVariableValue(&setting.Indexer.ExcludePatterns, setting.IndexerGlobFromString("**/y/**"))()
+
+	repo, err = repo_model.GetRepositoryByOwnerAndName(db.DefaultContext, "user2", "glob")
+	require.NoError(t, err)
+
+	if indexer {
+		code_indexer.UpdateRepoIndexer(repo)
+	}
+
+	testEmptySearch(t, indexer, true)
+	testEmptySearch(t, indexer, false)
+
+	testSearch(t, "/user2/glob/search?q=", []string{}, indexer)
+	testSearch(t, "/user2/glob/search?q=loren&page=1", []string{"a.txt"}, indexer)
+	testSearch(t, "/user2/glob/search?q=loren&page=1&mode=exact", []string{"a.txt"}, indexer)
+
+	// union search: Union/OR of all the keywords
+	testSearch(t, "/user2/glob/search?q=file3+file1&mode=union&page=1", []string{"a.txt", "x/b.txt"}, indexer)
+	testSearch(t, "/user2/glob/search?q=file4&mode=union&page=1", []string{}, indexer)
+	testSearch(t, "/user2/glob/search?q=file5&mode=union&page=1", []string{}, indexer)
+
+	testSearch(t, "/user2/glob/search?q=file3&page=1&mode=exact", []string{"x/b.txt"}, indexer)
+	testSearch(t, "/user2/glob/search?q=file4&page=1&mode=exact", []string{}, indexer)
+	testSearch(t, "/user2/glob/search?q=file5&page=1&mode=exact", []string{}, indexer)
+}
+
+func testEmptySearch(t *testing.T, indexer, withFuzzy bool) {
+	defer test.MockVariableValue(&setting.Indexer.RepoIndexerEnableFuzzy, withFuzzy)()
+	req := NewRequest(t, "GET", "/user2/glob/search")
+	resp := MakeRequest(t, req, http.StatusOK)
+
+	container := NewHTMLParser(t, resp.Body).
+		Find(".repository").
+		Find(".ui.container")
+
+	key := "search.exact"
+	if withFuzzy && indexer {
+		key = "search.fuzzy"
+	}
+
+	expected := translation.NewLocale("en-US").TrString(key)
+	menu := container.Find(".menu[data-test-tag=fuzzy-dropdown]")
+	defaultOpt := menu.
+		Parent().
+		Find(".text").
+		Text()
+
+	assert.Equal(t, expected, strings.TrimSpace(defaultOpt))
+}
+
+func testSearch(t *testing.T, rawURL string, expected []string, indexer bool) {
+	req := NewRequest(t, "GET", rawURL)
+	resp := MakeRequest(t, req, http.StatusOK)
+
+	doc := NewHTMLParser(t, resp.Body)
+	container := doc.Find(".repository").Find(".ui.container")
+
+	branchDropdown := container.Find(".js-branch-tag-selector")
+	assert.Equal(t, indexer, len(branchDropdown.Nodes) == 0)
+
+	dropdownOptions := container.
+		Find(".menu[data-test-tag=fuzzy-dropdown]").
+		Find("input[type=radio][name=mode]").
+		Map(func(_ int, sel *goquery.Selection) string {
+			attr, exists := sel.Attr("value")
+			assert.True(t, exists)
+			return attr
+		})
+
+	expectedTypes := []string{"exact", "union", "regexp"}
+	if indexer {
+		expectedTypes = []string{"exact", "union"}
+	}
+	assert.Equal(t, expectedTypes, dropdownOptions)
+	testDropdownOptions(t, container, expectedTypes, translation.NewLocale("en-US"))
+
+	filenames := resultFilenames(t, doc)
+	assert.ElementsMatch(t, expected, filenames)
+
+	testSearchPagination(t, rawURL, doc)
+}
+
+// testDropdownOptions verifies additional properties of dropdown options
+func testDropdownOptions(t *testing.T, container *goquery.Selection, options []string, locale translation.Locale) {
+	tr := make([]string, len(options))
+	for i, option := range options {
+		tr[i] = locale.TrString(fmt.Sprintf("search.%s", option))
+	}
+
+	// assert that the default value (in a .text adjacent to the menu) is a valid option
+	defaultOpt := container.
+		Find(".menu[data-test-tag=fuzzy-dropdown]").
+		Parent().
+		Find(".text").
+		Text()
+	assert.Contains(t, tr, strings.TrimSpace(defaultOpt))
+
+	for i, option := range options {
+		label := container.Find(fmt.Sprintf("label.item:has(input[value='%s'])", option))
+		name := strings.TrimSpace(label.Text())
+		assert.Equal(t, name, tr[i])
+
+		tooltip, exists := label.Attr("data-tooltip-content")
+		assert.True(t, exists)
+		assert.Equal(t, tooltip, locale.TrString(fmt.Sprintf("search.%s_tooltip", option)))
+	}
+}
+
+// Tests that the variables set in the url persist for all the paginated links
+func testSearchPagination(t *testing.T, rawURL string, doc *HTMLDoc) {
+	original, err := queryFromStr(rawURL)
+	require.NoError(t, err)
+
+	hrefs := doc.
+		Find(".pagination.menu a[href]:not(.disabled)").
+		Map(func(i int, el *goquery.Selection) string {
+			attr, ok := el.Attr("href")
+			require.True(t, ok)
+			return attr
+		})
+	query := make([]url.Values, len(hrefs))
+	for i, href := range hrefs {
+		query[i], err = queryFromStr(href)
+		require.NoError(t, err)
+	}
+
+	for key := range original {
+		for i, q := range query {
+			assert.Equal(t, original.Get(key), q.Get(key),
+				"failed at index '%d' with url '%v'", i, hrefs[i])
+		}
+	}
+}
+
+func queryFromStr(rawURL string) (url.Values, error) {
+	u, err := url.Parse(rawURL)
+	if err != nil {
+		return nil, err
+	}
+
+	return url.ParseQuery(u.RawQuery)
+}

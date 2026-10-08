@@ -1,0 +1,35 @@
+-
+  id: 10001
+  type: 30 # project
+  poster_id: 1
+  issue_id: 1 # in repo_id 1
+  project_id: 4 # user-level project
+  old_project_id: 0
+  created_unix: 1761222939
+
+-
+  id: 10002
+  type: 30 # project
+  poster_id: 1
+  issue_id: 1 # in repo_id 1
+  project_id: 2
+  old_project_id: 4
+  created_unix: 1761222939
+
+-
+  id: 10003
+  type: 30 # project
+  poster_id: 1
+  issue_id: 1 # in repo_id 1
+  project_id: 4
+  old_project_id: 2
+  created_unix: 1761222939
+
+-
+  id: 10004
+  type: 30 # project
+  poster_id: 1
+  issue_id: 1 # in repo_id 1
+  project_id: 0
+  old_project_id: 4
+  created_unix: 1761222939

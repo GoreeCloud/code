@@ -1,0 +1,41 @@
+{{template "base/head" .}}
+
+<div class="page-content ui container">
+	<h1>Modals</h1>
+
+	<div class="button-sequence">
+		<button class="secondary button show-modal" data-modal="#short-modal">Short</button>
+		<button class="secondary button show-modal" data-modal="#medium-modal">Medium</button>
+		<button class="secondary button show-modal" data-modal="#long-modal">Long</button>
+	</div>
+
+	<dialog id="short-modal">
+		<article>
+			<header>Short modal</header>
+			<div class="content">🐈</div>
+			<footer class="actions">
+					<button class="secondary button cancel">{{ctx.Locale.Tr "settings.cancel"}}</button>
+			</footer>
+		</article>
+	</dialog>
+	<dialog id="medium-modal">
+		<article>
+			<header>Medium modal</header>
+			<div class="content">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+			<footer class="actions">
+					<button class="secondary button cancel">{{ctx.Locale.Tr "settings.cancel"}}</button>
+			</footer>
+		</article>
+	</dialog>
+	<dialog id="long-modal">
+		<article>
+			<header>Long modal</header>
+			<div class="content">aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</div>
+			<footer class="actions">
+					<button class="secondary button cancel">{{ctx.Locale.Tr "settings.cancel"}}</button>
+			</footer>
+		</article>
+	</dialog>
+</div>
+
+{{template "base/footer" .}}

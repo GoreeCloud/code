@@ -1,0 +1,49 @@
+<h4 class="ui top attached header">
+	{{ctx.Locale.Tr "settings.quota"}}
+</h4>
+<div class="ui attached segment">
+	<p>{{if .ContextUser.IsOrganization}}{{ctx.Locale.Tr "settings.quota.applies_to_org"}}{{else}}{{ctx.Locale.Tr "settings.quota.applies_to_user"}}{{end}}:</p>
+	{{range $group := .QuotaGroups}}
+		<p class="tw-my-4"><strong>{{$group.Name}}</strong></p>
+		<div class="tw-flex tw-flex-col tw-gap-1">
+		{{range $rule := .Rules}}
+			<div class="tw-flex tw-flex-col tw-gap-3">
+				<details class="stats">
+					<summary>
+						<div class="tw-flex tw-justify-between tw-gap-3">
+							<span class="tw-flex tw-items-center tw-gap-2">
+								{{if $rule.Acceptable ($.SizeUsed)}}
+									{{svg "octicon-check-circle-fill" 16 "text green"}}
+									{{$rule.Name}}
+								{{else}}
+									{{svg "octicon-alert-fill" 16 "text red"}}
+									<span data-tooltip-content="{{ctx.Locale.Tr "settings.quota.rule.exceeded.helper"}}" data-tooltip-placement="top">
+										{{$rule.Name}} – {{ctx.Locale.Tr "settings.quota.rule.exceeded"}}
+									</span>
+								{{end}}
+							</span>
+							<span>{{ctx.Locale.TrSize ($rule.Sum $.SizeUsed)}} / {{if eq $rule.Limit -1 -}}{{ctx.Locale.Tr "settings.quota.rule.no_limit"}}{{else}}{{ctx.Locale.TrSize $rule.Limit}}{{end}}</span>
+						</div>
+						<stats-bar>
+							{{range $idx, $subject := .Subjects}}
+								<div class="slice" style="width: calc(max(1%, {{Eval 100.0 "*" ($.SizeUsed.CalculateFor $subject) "/" $rule.Limit}}%)); background-color: oklch(80% 30% {{call $.Color $subject}}deg)" data-tooltip-placement="top" data-tooltip-content="{{call $.PrettySubject $subject}} – {{ctx.Locale.TrSize ($.SizeUsed.CalculateFor $subject)}}" data-tooltip-follow-cursor="horizontal"></div>
+							{{end}}
+						</stats-bar>
+					</summary>
+					<ul>
+						{{range $idx, $subject := .Subjects}}
+							<li>
+								<div class="color-icon" style="background-color: oklch(80% 30% {{call $.Color $subject}}deg)"></div>
+								<div class="tw-flex tw-justify-between tw-gap-1 tw-w-full">
+									<span>{{call $.PrettySubject $subject}}</span>
+									<span>{{ctx.Locale.TrSize ($.SizeUsed.CalculateFor $subject)}}</span>
+								</div>
+							</li>
+						{{end}}
+					</ul>
+				</details>
+			</div>
+		{{end}}
+		</div>
+	{{end}}
+</div>

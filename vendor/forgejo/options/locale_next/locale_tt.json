@@ -1,0 +1,9 @@
+{
+	"home.welcome.no_activity": "Эшчәнлек юк",
+	"home.welcome.activity_hint": "Сезнең тасмада әлегә бернәрсә дә юк. Сез күзәткән репозиторийлардагы гамәлләрегез һәм активлыгыгыз монда күрсәтеләчәк.",
+	"home.explore_repos": "Репозиторийларны карау",
+	"home.explore_users": "Кулланучыларны өйрәнү",
+	"home.explore_orgs": "Оешмаларны өйрәнү",
+	"fork.n_forks": "%s чәнечке",
+	"meta.last_line": " "
+}

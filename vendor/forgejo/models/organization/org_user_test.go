@@ -1,0 +1,202 @@
+// Copyright 2022 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package organization_test
+
+import (
+	"fmt"
+	"testing"
+
+	"forgejo.org/models/db"
+	"forgejo.org/models/organization"
+	"forgejo.org/models/unittest"
+	user_model "forgejo.org/models/user"
+	"forgejo.org/modules/setting"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestUserIsPublicMember(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+
+	tt := []struct {
+		uid      int64
+		orgid    int64
+		expected bool
+	}{
+		{2, 3, true},
+		{4, 3, false},
+		{5, 6, true},
+		{5, 7, false},
+	}
+	for _, v := range tt {
+		t.Run(fmt.Sprintf("UserId%dIsPublicMemberOf%d", v.uid, v.orgid), func(t *testing.T) {
+			testUserIsPublicMember(t, v.uid, v.orgid, v.expected)
+		})
+	}
+}
+
+func testUserIsPublicMember(t *testing.T, uid, orgID int64, expected bool) {
+	user, err := user_model.GetUserByID(db.DefaultContext, uid)
+	require.NoError(t, err)
+	is, err := organization.IsPublicMembership(db.DefaultContext, orgID, user.ID)
+	require.NoError(t, err)
+	assert.Equal(t, expected, is)
+}
+
+func TestIsUserOrgOwner(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+
+	tt := []struct {
+		uid      int64
+		orgid    int64
+		expected bool
+	}{
+		{2, 3, true},
+		{4, 3, false},
+		{5, 6, true},
+		{5, 7, true},
+	}
+	for _, v := range tt {
+		t.Run(fmt.Sprintf("UserId%dIsOrgOwnerOf%d", v.uid, v.orgid), func(t *testing.T) {
+			testIsUserOrgOwner(t, v.uid, v.orgid, v.expected)
+		})
+	}
+}
+
+func testIsUserOrgOwner(t *testing.T, uid, orgID int64, expected bool) {
+	user, err := user_model.GetUserByID(db.DefaultContext, uid)
+	require.NoError(t, err)
+	is, err := organization.IsOrganizationOwner(db.DefaultContext, orgID, user.ID)
+	require.NoError(t, err)
+	assert.Equal(t, expected, is)
+}
+
+func TestUserListIsPublicMember(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+	tt := []struct {
+		orgid    int64
+		expected map[int64]bool
+	}{
+		{3, map[int64]bool{2: true, 4: false, 28: true}},
+		{6, map[int64]bool{5: true, 28: true}},
+		{7, map[int64]bool{5: false}},
+		{25, map[int64]bool{24: true}},
+		{22, map[int64]bool{}},
+	}
+	for _, v := range tt {
+		t.Run(fmt.Sprintf("IsPublicMemberOfOrgId%d", v.orgid), func(t *testing.T) {
+			testUserListIsPublicMember(t, v.orgid, v.expected)
+		})
+	}
+}
+
+func testUserListIsPublicMember(t *testing.T, orgID int64, expected map[int64]bool) {
+	org, err := organization.GetOrgByID(db.DefaultContext, orgID)
+	require.NoError(t, err)
+	_, membersIsPublic, err := org.GetMembers(db.DefaultContext, &user_model.User{IsAdmin: true})
+	require.NoError(t, err)
+	assert.Equal(t, expected, membersIsPublic)
+}
+
+func TestUserListIsUserOrgOwner(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+	tt := []struct {
+		orgid    int64
+		expected map[int64]bool
+	}{
+		{3, map[int64]bool{2: true, 4: false, 28: false}},
+		{6, map[int64]bool{5: true, 28: false}},
+		{7, map[int64]bool{5: true}},
+		{25, map[int64]bool{24: false}}, // ErrTeamNotExist
+		{22, map[int64]bool{}},          // No member
+	}
+	for _, v := range tt {
+		t.Run(fmt.Sprintf("IsUserOrgOwnerOfOrgId%d", v.orgid), func(t *testing.T) {
+			testUserListIsUserOrgOwner(t, v.orgid, v.expected)
+		})
+	}
+}
+
+func testUserListIsUserOrgOwner(t *testing.T, orgID int64, expected map[int64]bool) {
+	org, err := organization.GetOrgByID(db.DefaultContext, orgID)
+	require.NoError(t, err)
+	members, _, err := org.GetMembers(db.DefaultContext, &user_model.User{IsAdmin: true})
+	require.NoError(t, err)
+	assert.Equal(t, expected, organization.IsUserOrgOwner(db.DefaultContext, members, orgID))
+}
+
+func TestAddOrgUser(t *testing.T) {
+	require.NoError(t, unittest.PrepareTestDatabase())
+	testSuccess := func(orgID, userID int64, isPublic bool) {
+		org := unittest.AssertExistsAndLoadBean(t, &user_model.User{ID: orgID})
+		expectedNumMembers := org.NumMembers
+		if !unittest.BeanExists(t, &organization.OrgUser{OrgID: orgID, UID: userID}) {
+			expectedNumMembers++
+		}
+		require.NoError(t, organization.AddOrgUser(db.DefaultContext, orgID, userID))
+		ou := &organization.OrgUser{OrgID: orgID, UID: userID}
+		unittest.AssertExistsAndLoadBean(t, ou)
+		assert.Equal(t, isPublic, ou.IsPublic)
+		org = unittest.AssertExistsAndLoadBean(t, &user_model.User{ID: orgID})
+		assert.Equal(t, expectedNumMembers, org.NumMembers)
+	}
+	testFailure := func(orgID, userID int64, isPublic bool) {
+		org := unittest.AssertExistsAndLoadBean(t, &user_model.User{ID: orgID})
+		expectedNumMembers := org.NumMembers
+		require.ErrorIs(t, organization.AddOrgUser(db.DefaultContext, orgID, userID), user_model.ErrUserWrongType{UID: userID})
+		ou := &organization.OrgUser{OrgID: orgID, UID: userID}
+		unittest.AssertNotExistsBean(t, ou)
+		org = unittest.AssertExistsAndLoadBean(t, &user_model.User{ID: orgID})
+		assert.Equal(t, expectedNumMembers, org.NumMembers)
+	}
+
+	setting.Service.DefaultOrgMemberVisible = false
+	testSuccess(3, 5, false)
+	testSuccess(3, 5, false)
+	testSuccess(6, 2, false)
+
+	setting.Service.DefaultOrgMemberVisible = true
+	testFailure(6, 3, true)
+
+	unittest.CheckConsistencyFor(t, &user_model.User{}, &organization.Team{})
+}
+
+func TestIsAnEligibleTeamMemberByID(t *testing.T) {
+	defer unittest.OverrideFixtures("models/user/fixtures/")()
+	require.NoError(t, unittest.PrepareTestDatabase())
+
+	for _, testCase := range []struct {
+		name     string
+		id       int64
+		eligible bool
+	}{
+		{
+			name:     "Regular user",
+			id:       1,
+			eligible: true,
+		},
+		{
+			name:     "Bot user",
+			id:       1042,
+			eligible: true,
+		},
+		{
+			name:     "Organization",
+			id:       3,
+			eligible: false,
+		},
+		{
+			name:     "F3 Remote user",
+			id:       1041,
+			eligible: true,
+		},
+	} {
+		t.Run(testCase.name, func(t *testing.T) {
+			eligible, err := organization.IsAnEligibleTeamMemberByID(t.Context(), testCase.id)
+			require.NoError(t, err)
+			assert.Equal(t, testCase.eligible, eligible)
+		})
+	}
+}

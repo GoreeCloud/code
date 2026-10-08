@@ -1,0 +1,3 @@
+{{if eq .PackageDescriptor.Package.Type "swift"}}
+	{{if .PackageDescriptor.Metadata.Metadata.Author}}<div class="item" title="{{ctx.Locale.Tr "packages.details.author"}}">{{svg "octicon-person" 16 "mr-3"}} {{.PackageDescriptor.Metadata.Metadata.Author.Name}}</div>{{end}}
+{{end}}
