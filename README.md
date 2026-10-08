@@ -6,7 +6,7 @@ GoreeCloud Code will be the first-party GoreeCloud developer and source-control 
 
 ## Working foundation
 
-- `services/api/` — loopback-only, authenticated and read-only Code API prototype with a protected Forgejo token and bounded response fields.
+- `services/api/` — loopback-only, authenticated and read-only Code API prototype with explicit repository allowlisting, four sanitized repository/collaboration read routes, and server-held Forgejo credentials.
 - `apps/web/` — static accessible Glaze-semantic interface preview, **not** Glaze V1.7 consumer acceptance.
 - `vendor/forgejo/` — verified imported Forgejo v15.0.9 LTS tracked-source snapshot and provenance manifest. The branch-bound importer is in `scripts/import-forgejo.sh`.
 - `.github/workflows/` — Code CI and source-import workflow; the initial import completed at [run 37716860233](https://github.com/GoreeCloud/code/actions/runs/37716860233).
@@ -18,7 +18,7 @@ Requires Node.js 22+; the initial service has no third-party runtime dependencie
 
 ```sh
 node --check services/api/server.mjs
-node --test services/api/server.test.mjs
+node --test services/api/*.test.mjs
 bash -n scripts/import-forgejo.sh
 node services/api/server.mjs
 ```
