@@ -1,0 +1,46 @@
+name: Build imported Forgejo source
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'vendor/forgejo/**'
+      - '.github/workflows/build-forgejo-source.yml'
+  push:
+    branches: [feat/forgejo-bootstrap]
+    paths:
+      - '.github/workflows/build-forgejo-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: forgejo-compile-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  compile:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      GOMAXPROCS: '2'
+      GOTOOLCHAIN: auto
+      CGO_ENABLED: '1'
+    steps:
+      - name: Check out exact candidate
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+      - name: Set up upstream Go toolchain
+        uses: actions/setup-go@d35c59abb061a4a6fb18e82ac0862c26744d6ab5
+        with:
+          go-version-file: vendor/forgejo/go.mod
+          cache: false
+      - name: Compile official source without packaging or deploying
+        working-directory: vendor/forgejo
+        run: |
+          go version
+          go build -trimpath -o /tmp/goreecloud-code-forgejo-smoke .
+          test -s /tmp/goreecloud-code-forgejo-smoke
+          /tmp/goreecloud-code-forgejo-smoke --version
