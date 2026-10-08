@@ -130,7 +130,7 @@ export function createCodeHandler({
         return reply(res, 502, { error: 'provider_invalid_response' });
       }
       try {
-        return reply(res, 200, projectRepository(data, match[1], match[2]));
+        return reply(res, 200, collection ? projectCollection(collection, data) : projectRepository(data, match[1], match[2]));
       } catch {
         return reply(res, 502, {error: 'provider_invalid_response'});
       }
