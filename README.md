@@ -8,8 +8,8 @@ GoreeCloud Code will be the first-party GoreeCloud developer and source-control 
 
 - `services/api/` — loopback-only, authenticated and read-only Code API prototype with a protected Forgejo token and bounded response fields.
 - `apps/web/` — static accessible Glaze-semantic interface preview, **not** Glaze V1.7 consumer acceptance.
-- `scripts/import-forgejo.sh` — constrained source importer for official Forgejo v15.0.9 LTS.
-- `.github/workflows/` — CI and controlled source-import workflows; their presence alone is not evidence that the source was imported.
+- `vendor/forgejo/` — verified imported Forgejo v15.0.9 LTS tracked-source snapshot and provenance manifest. The branch-bound importer is in `scripts/import-forgejo.sh`.
+- `.github/workflows/` — Code CI and source-import workflow; the initial import completed at [run 37716860233](https://github.com/GoreeCloud/code/actions/runs/37716860233).
 - `docs/` — requirements, architecture, security, privacy, validation, planned and implemented feature status.
 
 ## Local developer commands
@@ -27,7 +27,7 @@ The service binds to `127.0.0.1:8731` and offers a minimal `/healthz`. Repositor
 
 ## Governance and source origin
 
-The chosen Forgejo source pin is `v15.0.9` LTS; the importer archives official tracked source into `vendor/forgejo` on a development branch, with the upstream commit recorded in `UPSTREAM-SNAPSHOT.md`. Inspect the tree before claiming import succeeded. Retain Forgejo GPL-3.0-or-later licensing, notices and attribution. Source snapshots are not full-history mirrors.
+The approved source baseline is `v15.0.9` LTS. GitHub readback confirmed the imported `vendor/forgejo` tracked source, `LICENSE` and `UPSTREAM-SNAPSHOT.md`; upstream SHA: `19b9b9d216bbfb501c18514bd1a8c980246ca3f7`. Build, security and deployment acceptance remain outstanding. Retain Forgejo GPL-3.0-or-later licensing, notices and attribution. Source snapshots are not full-history mirrors.
 
 Glaze current-release authority: [GoreeCloud/glaze](https://github.com/GoreeCloud/glaze). Product integration requires exact-Stable consumer acceptance. Validate the applicable GoreeCloud Manager, Privacy Shield, Wardveil Security, Everkeep, Glaze, Mesh, Identity, Policy, and Observability contracts; no unimplemented integration should be described as functioning.
 
