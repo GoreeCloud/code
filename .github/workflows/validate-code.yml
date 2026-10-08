@@ -25,5 +25,6 @@ jobs:
           node --test services/api/*.test.mjs
           node --test apps/web/preview.test.mjs
           node --test tests/repository-consistency.test.mjs
+          node --check scripts/verify-live-read.mjs
           bash -n scripts/import-forgejo.sh
           node scripts/verify-forgejo-snapshot.mjs
