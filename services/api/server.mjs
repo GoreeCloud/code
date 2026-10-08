@@ -4,6 +4,8 @@ import { constants } from 'node:fs';
 import { createHash, timingSafeEqual } from 'node:crypto';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readRepositoryAllowlist, repositoryAuthorized } from './access-policy.mjs';
+import { projectRepository, projectCollection } from './provider-projections.mjs';
 
 const ROUTE = /^\/api\/v1\/repositories\/([A-Za-z0-9][A-Za-z0-9_.-]{0,79})\/([A-Za-z0-9][A-Za-z0-9_.-]{0,99})$/;
 const HEADERS = {
