@@ -126,14 +126,11 @@ export function createCodeHandler({
       } catch {
         return reply(res, 502, { error: 'provider_invalid_response' });
       }
-      if (typeof data?.full_name !== 'string') return reply(res, 502, { error: 'provider_invalid_response' });
-      return reply(res, 200, {
-        fullName: data.full_name,
-        description: typeof data.description === 'string' ? data.description : '',
-        private: data.private === true,
-        archived: data.archived === true,
-        defaultBranch: typeof data.default_branch === 'string' ? data.default_branch : null,
-      });
+      try {
+        return reply(res, 200, projectRepository(data, match[1], match[2]));
+      } catch {
+        return reply(res, 502, {error: 'provider_invalid_response'});
+      }
     } catch {
       // Do not leak provider URLs, credentials, stack traces or private response bodies.
       return reply(res, 503, { error: 'service_unavailable' });
