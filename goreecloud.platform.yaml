@@ -1,0 +1,117 @@
+schema_version: "2.0"
+component:
+  type: application
+  id: goreecloud-code
+  product_name: GoreeCloud Code
+  repository: GoreeCloud/code
+
+lifecycle: development
+lifecycle_metadata:
+  flags:
+    - source-imported
+    - conformance-pending
+  deployment_state: not-deployed
+  qualification_state: not-run
+  next_gate: build-and-security-review
+version: 0.1.0-dev
+
+supported_platforms:
+  - web
+
+api:
+  versions:
+    - v1-development
+  endpoints:
+    - GET /healthz
+    - GET /api/v1/repositories/{owner}/{name}
+
+platform_systems:
+  manager:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: Management integration is planned, not implemented.
+  privacy_shield:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: Privacy review and runtime acceptance have not occurred.
+  wardveil_security:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: Development bearer gate is not Wardveil authorization or audit acceptance.
+  everkeep:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: No verified backup and restore integration.
+  glaze_ui:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: Development HTML preview does not provide Glaze V1.7 consumer acceptance.
+  mesh:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: First-party capability exchange remains planned.
+    capabilities: []
+    dependencies: []
+    published_events: []
+    consumed_events: []
+  identity:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: No GoreeCloud Identity-backed session or actor attribution.
+  policy:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: No accepted central policy engine integration.
+  observability:
+    result: migration-required
+    version: null
+    evidence: []
+    notes: Development /healthz is not accepted observability.
+
+health:
+  health_endpoint: /healthz
+  readiness_endpoint: null
+
+continuity:
+  backup:
+    required: true
+    requirements:
+      - Recover Git repositories, forge metadata, credentials/configuration references, and audit evidence.
+  restore:
+    required: true
+    requirements:
+      - Validate representative restore in a separated environment.
+  export:
+    required: true
+    requirements:
+      - Preserve Git history and provider-managed collaboration metadata.
+  portability:
+    required: true
+    requirements:
+      - Keep Git standard and provider-specific integrations isolated.
+
+external_dependencies:
+  - name: Forgejo
+    version: 15.0.9
+    role: initially imported Git forge source
+    source: https://codeberg.org/forgejo/forgejo
+    license: GPL-3.0-or-later
+
+compatibility:
+  platform_contract: "2.0"
+  glaze_ui_required: "1.7.0"
+  requires:
+    - goreecloud-platform-contract==2.0
+    - glaze-stable-baseline==1.7.0
+  provides: []
+
+evidence:
+  acceptance_tests: []
