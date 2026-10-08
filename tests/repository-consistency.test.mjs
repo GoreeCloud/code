@@ -24,5 +24,5 @@ test('source attribution and Glaze acceptance boundaries stay explicit', async (
   assert.match(manifest, /v15\.0\.9/);
   assert.match(upstream, /19b9b9d216bbfb501c18514bd1a8c980246ca3f7/);
   assert.match(readme, /Development/);
-  assert.match(glide, /not.*(?:consumer conformance|consumer acceptance)/i);
+  assert.match(glide, /does not consume.*Glaze V1.7/i);
 });
