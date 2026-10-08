@@ -109,7 +109,8 @@ export function createCodeHandler({
       if (!repositoryAuthorized(allowed, match[1], match[2])) return reply(res, 403, {error: 'forbidden'});
       const origin = forgejoOrigin(env.GOREECLOUD_CODE_FORGEJO_URL);
       const providerToken = await readSecret(env.GOREECLOUD_CODE_FORGEJO_TOKEN_FILE);
-      const urlPath = '/api/v1/repos/' + encodeURIComponent(match[1]) + '/' + encodeURIComponent(match[2]);
+      const urlPath = '/api/v1/repos/' + encodeURIComponent(match[1]) + '/' + encodeURIComponent(match[2]) +
+        (collection ? '/' + collection + '?limit=20&page=1&state=open' : '');
       let upstream;
       try {
         upstream = await fetchImpl(origin + urlPath, {
