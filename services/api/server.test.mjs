@@ -134,3 +134,51 @@ test('provider repository identity must match requested authorized repository', 
     assert.deepEqual(await response.json(), { error: 'provider_invalid_response' });
   });
 });
+
+test('bounded branch list never returns arbitrary provider fields', async () => {
+  let queried;
+  await withServer(handler({ fetchImpl: async url => {
+    queried = url;
+    return new Response(JSON.stringify([
+      { name: 'main', protected: true, commit: { id: 'abc123', secret: 'hidden' }, private: 'hidden' },
+    ]));
+  } }), async base => {
+    const response = await fetch(base + '/api/v1/repositories/GoreeCloud/example/branches', {
+      headers: { authorization: 'Bearer ' + APPLICATION_SECRET },
+    });
+    assert.equal(response.status, 200);
+    assert.deepEqual(await response.json(), {
+      items: [{ name: 'main', protected: true, commitId: 'abc123' }], count: 1,
+    });
+    assert.match(queried, /\/branches\?limit=20/);
+  });
+});
+
+test('issues and pulls expose bounded read-only summary contracts', async () => {
+  for (const kind of ['issues','pulls']) {
+    await withServer(handler({ fetchImpl: async () => new Response(JSON.stringify([
+      { number: 4, title: 'Review change', state: 'open', user: { login: 'tester', token: 'hidden' },
+        draft: true, merged: false, body: 'private data', unknown: 'never' },
+    ])) }), async base => {
+      const response = await fetch(base + '/api/v1/repositories/GoreeCloud/example/' + kind, {
+        headers: { authorization: 'Bearer ' + APPLICATION_SECRET },
+      });
+      assert.equal(response.status, 200);
+      const result = await response.json();
+      assert.equal(result.count, 1);
+      assert.equal(result.items[0].title, 'Review change');
+      assert.equal('body' in result.items[0], false);
+      assert.equal('draft' in result.items[0], kind === 'pulls');
+    });
+  }
+});
+
+test('malformed collections fail closed', async () => withServer(
+  handler({ fetchImpl: async () => new Response(JSON.stringify({ unexpected: 'object' })) }),
+  async base => {
+    const response = await fetch(base + '/api/v1/repositories/GoreeCloud/example/issues', {
+      headers: { authorization: 'Bearer ' + APPLICATION_SECRET },
+    });
+    assert.equal(response.status, 502);
+  },
+));
