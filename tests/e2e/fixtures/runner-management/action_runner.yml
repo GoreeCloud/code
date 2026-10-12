@@ -1,0 +1,69 @@
+- id: 719931
+  uuid: "8f940b0b-32a2-479a-9d48-06ab8d8a0b90"
+  name: "runner-1"
+  version: "dev"
+  owner_id: 3
+  repo_id: 0
+  description: "A superb runner"
+  agent_labels: ["debian", "gpu"]
+  deleted: 0
+- id: 719932
+  uuid: "3a20ad8d-d5d6-4b7b-ba55-841ac8264c17"
+  name: "runner-2"
+  version: "11.3.1"
+  owner_id: 2
+  repo_id: 0
+  description: "An exclusive runner"
+  agent_labels: ["docker"]
+  # token: 9730f9d2c6c731f07582788d1a1fe72a6b999a17
+  token_hash: ceb24f8ebc06fa5d0bb5a8dcab6f67b9bbc1f0c2f13313aefa0b81fe961ecc1feaad182d2b7f15fe6df0da8c17b12a9b11ef
+  token_salt: 53GUbQ9nih0vBemnIxV5sU
+  deleted: 0
+- id: 719933
+  uuid: "11c9a6da-0a92-46ea-a4f1-b6c98f8c781c"
+  name: "runner-3"
+  version: "11.3.1"
+  owner_id: 17
+  repo_id: 0
+  description: "Another fine runner"
+  agent_labels: ["fedora"]
+  deleted: 0
+- id: 719934
+  uuid: "1ef59b64-93b7-4ad4-ade4-21ca13db49c0"
+  name: "runner-4"
+  version: "12.2.0"
+  owner_id: 0
+  repo_id: 0
+  description: "A runner for everyone"
+  agent_labels: ["docker"]
+  # token: 1ad04b98cafcc7461ef562b7ff07d1ade169eefb
+  token_hash: 2aafaefc1690601106c0ccca874140828eb9f98e7719e58f3d399d4c64d11b1a251bd7363ff6fd4d1dbce852558987066334
+  token_salt: 9--ISaaA6tHZbXMY6dqlqy
+  deleted: 0
+- id: 719935
+  uuid: "69d29449-1de5-4d17-845d-e3ae11a04a1b"
+  name: "runner-5"
+  version: "12.0.0"
+  owner_id: 1
+  repo_id: 0
+  description: ""
+  agent_labels: ["debian"]
+  deleted: 0
+- id: 719936
+  uuid: "9da25fbb-89a5-4520-a35a-d55fc94e4b76"
+  name: "runner-6"
+  version: "12.1.0"
+  owner_id: 0
+  repo_id: 62
+  description: ""
+  agent_labels: ["debian"]
+  deleted: 0
+- id: 719937
+  uuid: "d935307e-1d2d-4b61-8885-bc8a1c52c269"
+  name: "runner-7"
+  version: "12.1.0"
+  owner_id: 4
+  repo_id: 0
+  description: ""
+  agent_labels: ["alpine"]
+  deleted: 0

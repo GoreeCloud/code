@@ -1,0 +1,5 @@
+{{template "repo/issue/milestone/clear_milestone" dict "." . "UseHTMX" true}}
+<div id="insert-timeline" hx-swap-oob="beforebegin">
+	{{template "repo/issue/view_content/comments" .}}
+</div>
+{{template "repo/issue/milestone/selected" .}}

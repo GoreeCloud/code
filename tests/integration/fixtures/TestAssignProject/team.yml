@@ -1,0 +1,32 @@
+-
+  id: 1001
+  org_id: 3
+  lower_name: writers
+  name: Writers
+  authorize: 2 # writer
+  num_repos: 3
+  num_members: 1
+  includes_all_repositories: false
+  can_create_org_repo: true
+
+-
+  id: 1002
+  org_id: 1001
+  lower_name: writers
+  name: Writers
+  authorize: 2 # writer
+  num_repos: 1
+  num_members: 1
+  includes_all_repositories: false
+  can_create_org_repo: true
+
+-
+  id: 1003
+  org_id: 1001
+  lower_name: owners
+  name: Owners
+  authorize: 4
+  num_repos: 0
+  num_members: 1
+  includes_all_repositories: false
+  can_create_org_repo: true

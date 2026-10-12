@@ -1,0 +1,29 @@
+- id: 1001
+  user_id: 2
+  op_type: 10 # close issue
+  act_user_id: 2
+  comment_id: 1001
+  repo_id: 1 # public
+  is_private: false
+  created_unix: 1680454039
+  content: '1|This is a very long text, so lets scream together: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…'
+- id: 1002
+  user_id: 2
+  op_type: 10 # close issue
+  act_user_id: 2
+  comment_id: 1001
+  repo_id: 1 # public
+  is_private: false
+  created_unix: 1680454040
+  content: '["1","Well, this test is short | succinct | distinct."]'
+
+# a multi-commit push to validate the format of the generated compare URLs, see #10168
+- id: 1003
+  user_id: 2
+  op_type: 5 # commit repo
+  act_user_id: 2
+  comment_id: 0
+  repo_id: 1 # public
+  is_private: false
+  created_unix: 1680454041
+  content: '{"Commits":[{"Sha1":"412413fd409fc0cab446e7b59702596e1bde1816","Message":"fourth commit","AuthorEmail":"git@example.com","AuthorName":"dummy","CommitterEmail":"git@example.com","CommitterName":"dummy","Signature":null,"Verification":null,"Timestamp":"2026-01-19T22:07:22+01:00"},{"Sha1":"00a01802439eb2c0391fdfaa2c344b5e25d0b9d4","Message":"third commit","AuthorEmail":"git@example.com","AuthorName":"dummy","CommitterEmail":"git@example.com","CommitterName":"dummy","Signature":null,"Verification":null,"Timestamp":"2026-01-19T22:07:18+01:00"}],"HeadCommit":{"Sha1":"412413fd409fc0cab446e7b59702596e1bde1816","Message":"fourth commit","AuthorEmail":"git@example.com","AuthorName":"dummy","CommitterEmail":"git@example.com","CommitterName":"dummy","Signature":null,"Verification":null,"Timestamp":"2026-01-19T22:07:22+01:00"},"CompareURL":"user2/repo1/compare/ed4090ecc2d9dd16b184763cc476ea1b28afa560...412413fd409fc0cab446e7b59702596e1bde1816","Len":2}'

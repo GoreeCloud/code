@@ -1,0 +1,7 @@
+-
+  id: 1001
+  type: 29 # push
+  poster_id: 2
+  issue_id: 19 # in repo_id 58
+  content: '{"is_force_push":true,"commit_ids":["9b93963cf6de4dc33f915bb67f192d099c301f43", "ffffffffffffffffffffffffffffffffffffffff"]}'
+  created_unix: 1757622411

@@ -1,0 +1,27 @@
+Cache-Control: max-age=0, private, must-revalidate
+Cf-Cache-Status: MISS
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json
+Etag: W/"cfd6114327ec8067d5d20d5d17c3ba48"
+Gitlab-Lb: haproxy-main-40-lb-gprd
+Gitlab-Sv: api-gke-us-east1-b
+Link: <https://gitlab.com/api/v4/projects/79476606/issues?id=79476606&order_by=created_at&page=1&per_page=10&sort=desc&state=all&with_labels_details=false>; rel="first", <https://gitlab.com/api/v4/projects/79476606/issues?id=79476606&order_by=created_at&page=1&per_page=10&sort=desc&state=all&with_labels_details=false>; rel="last"
+Ratelimit-Limit: 2000
+Ratelimit-Name: throttle_authenticated_api
+Ratelimit-Observed: 32
+Ratelimit-Remaining: 1968
+Ratelimit-Reset: 1771055640
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Next-Page: 
+X-Page: 1
+X-Per-Page: 10
+X-Prev-Page: 
+X-Runtime: 0.241899
+X-Total: 1
+X-Total-Pages: 1
+
+[{"id":184077979,"iid":2,"project_id":79476606,"title":"2nd issue","description":"","state":"opened","created_at":"2026-02-13T20:30:05.549Z","updated_at":"2026-02-13T20:30:05.549Z","closed_at":null,"closed_by":null,"labels":[],"milestone":null,"assignees":[],"author":{"id":2005797,"username":"oliverpool","public_email":"","name":"oliverpool","state":"active","locked":false,"avatar_url":"https://gitlab.com/uploads/-/system/user/avatar/2005797/avatar.png","web_url":"https://gitlab.com/oliverpool"},"type":"ISSUE","assignee":null,"user_notes_count":0,"merge_requests_count":0,"upvotes":0,"downvotes":0,"start_date":null,"due_date":null,"confidential":false,"discussion_locked":null,"issue_type":"issue","web_url":"https://gitlab.com/forgejo/test_repo-skipped-numbers/-/issues/2","time_stats":{"time_estimate":0,"total_time_spent":0,"human_time_estimate":null,"human_total_time_spent":null},"task_completion_status":{"count":0,"completed_count":0},"blocking_issues_count":0,"has_tasks":true,"task_status":"","_links":{"self":"https://gitlab.com/api/v4/projects/79476606/issues/2","notes":"https://gitlab.com/api/v4/projects/79476606/issues/2/notes","award_emoji":"https://gitlab.com/api/v4/projects/79476606/issues/2/award_emoji","project":"https://gitlab.com/api/v4/projects/79476606","closed_as_duplicate_of":null},"references":{"short":"#2","relative":"#2","full":"forgejo/test_repo-skipped-numbers#2"},"severity":"UNKNOWN","moved_to_id":null,"imported":false,"imported_from":"none","service_desk_reply_to":null}]

@@ -1,0 +1,189 @@
+/* Copyright 2025 The Forgejo Authors. All rights reserved.
+ * SPDX-License-Identifier: GPL-3.0-or-later */
+
+/* This is an implementation of a dropdown menu based on details HTML tag.
+ * It is inspired by https://picocss.com/docs/dropdown.
+ *
+ * NoJS mode could be improved by forcing the same [name] onto all dropdowns, so
+ * that the browser will automatically close all but the one that was just opened
+ * using keyboard. But the code doing that will not be as clean.
+ *
+ * Note: when implementing this dropdown, please use `dropdown` as the 1st class,
+ * so it is possible to search for all dropdowns with `details class="dropdown`
+*/
+
+:root details.dropdown {
+  --dropdown-box-shadow: 0 6px 18px var(--color-shadow);
+  --dropdown-item-min-height: 34px;
+  --dropdown-padding-inline: 0.75rem;
+}
+
+@media (pointer: coarse) {
+  :root details.dropdown {
+    --dropdown-item-min-height: 40px;
+    --dropdown-padding-inline: 1rem;
+  }
+}
+
+details.dropdown {
+  position: relative;
+}
+
+/* Opener */
+details.dropdown > summary {
+  /* Optional flex+gap in case summary contains multiple elements */
+  display: flex;
+  gap: 0.25rem;
+  align-items: center;
+  justify-content: center;
+  /* Main visual properties */
+  border-radius: var(--border-radius);
+  padding: 0.5rem;
+  /* Unset unwanted default properties */
+  user-select: none;
+  list-style-type: none;
+
+  /* Display a border around opener */
+  &.border {
+    border: 1px solid var(--color-light-border);
+  }
+  /* Increase inline padding - for openers with text, like filter menus */
+  &.options {
+    padding-inline: 0.75rem;
+  }
+}
+
+/* NoJS mode: create a virtual fullscreen area which closes the dropdown when clicked on */
+.no-js details.dropdown[open] > summary::before {
+  z-index: 1;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  inset: 0;
+  background: 0 0;
+  content: "";
+  cursor: default;
+}
+
+details.dropdown > summary:hover,
+details.dropdown > .content > ul > li > :is(a, button):hover {
+  background: var(--color-hover);
+}
+
+details.dropdown[open] > summary,
+details.dropdown > .content > ul > li:focus-within > :is(a, button) {
+  background: var(--color-active);
+}
+
+details.dropdown > .content {
+  z-index: 99;
+  position: absolute;
+  min-width: max-content;
+  border-radius: var(--border-radius);
+  background: var(--color-body);
+  box-shadow: var(--dropdown-box-shadow);
+  border: 1px solid var(--color-secondary);
+  margin-top: 0.5rem;
+
+  /* ToDo: upstream to base.css, remove from normalize.css */
+  hr {
+    height: 1px;
+    margin-block: 0.25rem;
+    background-color: var(--color-secondary);
+  }
+}
+
+details.dropdown > .content > ul {
+  /* Suppress default styling of <ul> */
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+
+  /* Round first item of first list and last item of last list. Each of these
+   * selectors should only resolve to one element in any .content */
+  &:first-of-type > li:first-child {
+    border-radius: var(--border-radius) var(--border-radius) 0 0;
+  }
+  &:last-of-type > li:last-child {
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+  }
+  &:only-of-type > li:only-child {
+    border-radius: var(--border-radius);
+  }
+}
+
+/* General styling of list items */
+details.dropdown > .content > ul > li {
+  width: 100%;
+
+  > :is(a, button) {
+    min-height: var(--dropdown-item-min-height);
+    padding-block: 0;
+
+    width: 100%;
+    padding-inline: var(--dropdown-padding-inline);
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    color: var(--color-text);
+
+    /* Interactable items should be transparent by default. <button> can also have a default background set by the browser */
+    background: none;
+
+    /* Same rounding should apply to both <li> and it's items with paintable backgrounds */
+    border-radius: inherit;
+
+    /* Suppress underline - hover is indicated by background color */
+    text-decoration: none;
+
+    /* Items that are pre-selected in template or by JS */
+    &.active {
+      background: var(--color-active);
+      font-weight: var(--font-weight-medium);
+    }
+  }
+}
+
+/* Special styling for "headers" */
+/* A few dropdowns contain such headers, however, they are not semantically considered as headers */
+details.dropdown > .content > .header {
+  display: flex;
+  padding-block: 0.5rem;
+  padding-inline: var(--dropdown-padding-inline);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* Decrease bottom padding if an <hr> follows, which adds it's own vertical padding */
+details.dropdown > .content > .header:has(+ hr) {
+  padding-bottom: 0.25rem;
+}
+
+/* dir-auto option - switch the direction at a width point where most of layout changes occur */
+@media (max-width: 767.98px) {
+  details.dropdown.dir-auto > .content {
+    inset-inline: 0 auto;
+    direction: rtl;
+    > :is(span, ul) {
+      direction: ltr;
+    }
+  }
+}
+
+/* dir-rtl option - force right-to-left box direction */
+details.dropdown.dir-rtl > .content {
+  inset-inline: 0 auto;
+  direction: rtl;
+  > :is(span, ul) {
+    direction: ltr;
+  }
+}
+
+/* Note: CSS anchor positioning will be a huge help in content positioning w/o JS
+ * - https://css-tricks.com/css-anchor-positioning-guide/
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning/
+ * - https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_anchor_positioning/Using
+ * It can already be implemented if the implementation won't interfere with the
+ * normal behavior on unsupported browsers. Or it can wait until Firefox gets
+ * starts supporting it. FF145 got this feature behind a feature flag. */

@@ -1,0 +1,18 @@
+rules:
+  - id: forgejo-switch-empty-case
+    pattern-either:
+      - pattern: |-
+          switch $_ {
+            case $_:
+          }
+      - patterns:
+        - pattern: |-
+            switch {
+              case $_:
+            }
+    languages:
+      - go
+    severity: ERROR
+    message: >
+      switch has a case block with no content. This is treated as "break" by Go, but developers may confuse it for
+      "fallthrough".  To fix this error, disambiguate by using "break" or "fallthrough".

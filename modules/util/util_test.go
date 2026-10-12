@@ -1,0 +1,251 @@
+// Copyright 2018 The Gitea Authors. All rights reserved.
+// Copyright 2024 The Forgejo Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package util_test
+
+import (
+	"crypto/rand"
+	"strings"
+	"testing"
+	"testing/cryptotest"
+
+	"forgejo.org/modules/test"
+	"forgejo.org/modules/util"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestURLJoin(t *testing.T) {
+	type test struct {
+		Expected string
+		Base     string
+		Elements []string
+	}
+	newTest := func(expected, base string, elements ...string) test {
+		return test{Expected: expected, Base: base, Elements: elements}
+	}
+	for _, test := range []test{
+		newTest("https://try.gitea.io/a/b/c",
+			"https://try.gitea.io", "a/b", "c"),
+		newTest("https://try.gitea.io/a/b/c",
+			"https://try.gitea.io/", "/a/b/", "/c/"),
+		newTest("https://try.gitea.io/a/c",
+			"https://try.gitea.io/", "/a/./b/", "../c/"),
+		newTest("a/b/c",
+			"a", "b/c/"),
+		newTest("a/b/d",
+			"a/", "b/c/", "/../d/"),
+		newTest("https://try.gitea.io/a/b/c#d",
+			"https://try.gitea.io", "a/b", "c#d"),
+		newTest("/a/b/d",
+			"/a/", "b/c/", "/../d/"),
+		newTest("/a/b/c",
+			"/a", "b/c/"),
+		newTest("/a/b/c#hash",
+			"/a", "b/c#hash"),
+	} {
+		assert.Equal(t, test.Expected, util.URLJoin(test.Base, test.Elements...))
+	}
+}
+
+func TestIsEmptyString(t *testing.T) {
+	cases := []struct {
+		s        string
+		expected bool
+	}{
+		{"", true},
+		{" ", true},
+		{"   ", true},
+		{"  a", false},
+	}
+
+	for _, v := range cases {
+		assert.Equal(t, v.expected, util.IsEmptyString(v.s))
+	}
+}
+
+func Test_NormalizeEOL(t *testing.T) {
+	data1 := []string{
+		"",
+		"This text starts with empty lines",
+		"another",
+		"",
+		"",
+		"",
+		"Some other empty lines in the middle",
+		"more.",
+		"And more.",
+		"Ends with empty lines too.",
+		"",
+		"",
+		"",
+	}
+
+	data2 := []string{
+		"This text does not start with empty lines",
+		"another",
+		"",
+		"",
+		"",
+		"Some other empty lines in the middle",
+		"more.",
+		"And more.",
+		"Ends without EOLtoo.",
+	}
+
+	buildEOLData := func(data []string, eol string) []byte {
+		return []byte(strings.Join(data, eol))
+	}
+
+	dos := buildEOLData(data1, "\r\n")
+	unix := buildEOLData(data1, "\n")
+	mac := buildEOLData(data1, "\r")
+
+	assert.Equal(t, unix, util.NormalizeEOL(dos))
+	assert.Equal(t, unix, util.NormalizeEOL(mac))
+	assert.Equal(t, unix, util.NormalizeEOL(unix))
+
+	dos = buildEOLData(data2, "\r\n")
+	unix = buildEOLData(data2, "\n")
+	mac = buildEOLData(data2, "\r")
+
+	assert.Equal(t, unix, util.NormalizeEOL(dos))
+	assert.Equal(t, unix, util.NormalizeEOL(mac))
+	assert.Equal(t, unix, util.NormalizeEOL(unix))
+
+	assert.Equal(t, []byte("one liner"), util.NormalizeEOL([]byte("one liner")))
+	assert.Equal(t, []byte("\n"), util.NormalizeEOL([]byte("\n")))
+	assert.Equal(t, []byte("\ntwo liner"), util.NormalizeEOL([]byte("\ntwo liner")))
+	assert.Equal(t, []byte("two liner\n"), util.NormalizeEOL([]byte("two liner\n")))
+	assert.Equal(t, []byte{}, util.NormalizeEOL([]byte{}))
+
+	assert.Equal(t, []byte("mix\nand\nmatch\n."), util.NormalizeEOL([]byte("mix\r\nand\rmatch\n.")))
+}
+
+func Test_RandomString(t *testing.T) {
+	t.Run("Low", func(t *testing.T) {
+		str1 := util.CryptoRandomString(util.RandomStringLow)
+		assert.Regexp(t, "^[a-zA-Z0-9_-]{11}$", str1)
+
+		str2 := util.CryptoRandomString(util.RandomStringLow)
+		assert.Regexp(t, "^[a-zA-Z0-9_-]{11}$", str2)
+
+		assert.NotEqual(t, str1, str2)
+	})
+
+	t.Run("Medium", func(t *testing.T) {
+		str1 := util.CryptoRandomString(util.RandomStringMedium)
+		assert.Regexp(t, "^[a-zA-Z0-9_-]{22}$", str1)
+
+		str2 := util.CryptoRandomString(util.RandomStringMedium)
+		assert.Regexp(t, "^[a-zA-Z0-9_-]{22}$", str2)
+
+		assert.NotEqual(t, str1, str2)
+	})
+
+	t.Run("High", func(t *testing.T) {
+		str1 := util.CryptoRandomString(util.RandomStringHigh)
+		assert.Regexp(t, "^[a-zA-Z0-9_-]{43}$", str1)
+
+		str2 := util.CryptoRandomString(util.RandomStringHigh)
+		assert.Regexp(t, "^[a-zA-Z0-9_-]{43}$", str2)
+
+		assert.NotEqual(t, str1, str2)
+	})
+}
+
+func Test_RandomBytes(t *testing.T) {
+	bytes1 := util.CryptoRandomBytes(32)
+	bytes2 := util.CryptoRandomBytes(32)
+
+	assert.Len(t, bytes1, 32)
+	assert.Len(t, bytes2, 32)
+	assert.NotEqual(t, bytes1, bytes2)
+
+	bytes3 := util.CryptoRandomBytes(256)
+	bytes4 := util.CryptoRandomBytes(256)
+
+	assert.Len(t, bytes3, 256)
+	assert.Len(t, bytes4, 256)
+	assert.NotEqual(t, bytes3, bytes4)
+}
+
+// Test case for any function which accepts and returns a single string.
+type StringTest struct {
+	in, out string
+}
+
+var upperTests = []StringTest{
+	{"", ""},
+	{"ONLYUPPER", "ONLYUPPER"},
+	{"abc", "ABC"},
+	{"AbC123", "ABC123"},
+	{"azAZ09_", "AZAZ09_"},
+	{"longStrinGwitHmixofsmaLLandcAps", "LONGSTRINGWITHMIXOFSMALLANDCAPS"},
+	{"long\u0250string\u0250with\u0250nonascii\u2C6Fchars", "LONG\u0250STRING\u0250WITH\u0250NONASCII\u2C6FCHARS"},
+	{"\u0250\u0250\u0250\u0250\u0250", "\u0250\u0250\u0250\u0250\u0250"},
+	{"a\u0080\U0010FFFF", "A\u0080\U0010FFFF"},
+	{"lél", "LéL"},
+}
+
+func TestToUpperASCII(t *testing.T) {
+	for _, tc := range upperTests {
+		assert.Equal(t, util.ToUpperASCII(tc.in), tc.out)
+	}
+}
+
+func BenchmarkToUpper(b *testing.B) {
+	for _, tc := range upperTests {
+		b.Run(tc.in, func(b *testing.B) {
+			for i := 0; i < b.N; i++ {
+				util.ToUpperASCII(tc.in)
+			}
+		})
+	}
+}
+
+func TestToTitleCase(t *testing.T) {
+	assert.Equal(t, `Foo Bar Baz`, util.ToTitleCase(`foo bar baz`))
+	assert.Equal(t, `Foo Bar Baz`, util.ToTitleCase(`FOO BAR BAZ`))
+}
+
+func TestReserveLineBreakForTextarea(t *testing.T) {
+	assert.Equal(t, "test\ndata", util.ReserveLineBreakForTextarea("test\r\ndata"))
+	assert.Equal(t, "test\ndata\n", util.ReserveLineBreakForTextarea("test\r\ndata\r\n"))
+}
+
+const (
+	testPublicKey  = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHX8yEKexoMqBPPwG4pGAhhjo5CyiHLiJZ7p3jg0aJZM\n"
+	testPrivateKey = `-----BEGIN OPENSSH PRIVATE KEY-----
+b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtz
+c2gtZWQyNTUxOQAAACB1/MhCnsaDKgTz8BuKRgIYY6OQsohy4iWe6d44NGiWTAAA
+AIhNLlZvTS5WbwAAAAtzc2gtZWQyNTUxOQAAACB1/MhCnsaDKgTz8BuKRgIYY6OQ
+sohy4iWe6d44NGiWTAAAAEDZh37ObTaKrBpvQZ7GJ8drG/sfo3xBoR6kat1qSNiU
+dHX8yEKexoMqBPPwG4pGAhhjo5CyiHLiJZ7p3jg0aJZMAAAAAAECAwQF
+-----END OPENSSH PRIVATE KEY-----` + "\n"
+)
+
+func TestGeneratingEd25519Keypair(t *testing.T) {
+	defer test.MockProtect(&rand.Reader)()
+	cryptotest.SetGlobalRandom(t, 0)
+
+	publicKey, privateKey, err := util.GenerateSSHKeypair()
+	require.NoError(t, err)
+	assert.Equal(t, testPublicKey, string(publicKey))
+	assert.Equal(t, testPrivateKey, string(privateKey))
+}
+
+func TestOptionalArg(t *testing.T) {
+	foo := func(other any, optArg ...int) int {
+		return util.OptionalArg(optArg)
+	}
+	bar := func(other any, optArg ...int) int {
+		return util.OptionalArg(optArg, 42)
+	}
+	assert.Equal(t, 0, foo(nil))
+	assert.Equal(t, 100, foo(nil, 100))
+	assert.Equal(t, 42, bar(nil))
+	assert.Equal(t, 100, bar(nil, 100))
+}

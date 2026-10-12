@@ -1,0 +1,9 @@
+- id: 19401
+  run_id: 34901
+  status: 2 # ArtifactStatusUploadConfirmed
+- id: 19402
+  run_id: 34901
+  status: 1 # ArtifactStatusUploadPending
+- id: 19403
+  run_id: 34902
+  status: 2 # ArtifactStatusUploadConfirmed

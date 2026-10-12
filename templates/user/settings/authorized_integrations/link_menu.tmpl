@@ -1,0 +1,8 @@
+<div class="menu">
+	{{range .UIs}}
+		<a class="item" href="./authorized-integrations/{{.UIIdentifier}}/new">
+			{{.Icon 20}}
+			{{.Label ctx}}
+		</a>
+	{{end}}
+</div>

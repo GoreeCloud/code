@@ -1,0 +1,38 @@
+-
+  id: 6
+  uid: 2
+  name: Unrestricted Token
+  # token: 4a0c970da8bf58408a8c22264b2ac1ff47dadcce
+  token_hash: e26d1456df98b47394c9e8750023e690426e0209de1f719edd4b852651fb69fb349e15f6d42912a0899d055dc7e595be077a
+  token_salt: XKbbVcQbz-ahT8LQfXB5C_
+  token_last_eight: 47dadcce
+  created_unix: 946687980
+  updated_unix: 946687980
+  scope: write:repository
+  resource_all_repos: true
+
+-
+  id: 7
+  uid: 2
+  name: Public Resources Only Token
+  # token: 83909b5b978acc5620ae0c7b0e55b548da2e26b5
+  token_hash: 211bc49d6c48a1f553d5f4400d903f20280ec3851a06f0e300253c042beb608191a8bcd52cb5d230a9096bbb9494b9d4cabf
+  token_salt: AD89WTwe8hCHGEUF7AG8BO
+  token_last_eight: da2e26b5
+  created_unix: 946687980
+  updated_unix: 946687980
+  scope: public-only,write:repository
+  resource_all_repos: true
+
+-
+  id: 8
+  uid: 2
+  name: Specific Repos Only Token
+  # token: 46088605ec804b43ebd15cef1b3f210c31b066dd
+  token_hash: cd2739ac5894f25f0fd0e4b93e92b382d7bde82b09b791fa8aed6a514f8ffa9fda90fdb943c56f7b2eac78c9fd484ab3ecdf
+  token_salt: IhB81EQbYWHsVJGEGx587X
+  token_last_eight: 31b066dd
+  created_unix: 946687980
+  updated_unix: 946687980
+  scope: write:repository
+  resource_all_repos: false

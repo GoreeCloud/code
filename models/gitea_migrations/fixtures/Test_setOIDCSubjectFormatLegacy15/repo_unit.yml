@@ -1,0 +1,14 @@
+- id: 1
+  repo_id: 4
+  type: 10 # actions
+  # config - null
+  created_unix: 1773518296
+- id: 2
+  repo_id: 5
+  type: 10 # actions
+  config: '{"DisabledWorkflows":["renovate.yml"]}'
+  created_unix: 1773518296
+- id: 3
+  repo_id: 6
+  type: 1 # code
+  created_unix: 1773518296

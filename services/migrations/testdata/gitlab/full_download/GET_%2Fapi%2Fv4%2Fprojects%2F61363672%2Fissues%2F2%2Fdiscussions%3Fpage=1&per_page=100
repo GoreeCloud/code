@@ -1,0 +1,27 @@
+Cache-Control: max-age=0, private, must-revalidate
+Cf-Cache-Status: MISS
+Content-Security-Policy: default-src 'none'
+Content-Type: application/json
+Etag: W/"f36dea488bdfeaf39734c472f94fed6b"
+Gitlab-Lb: haproxy-main-15-lb-gprd
+Gitlab-Sv: api-gke-us-east1-d
+Link: <https://gitlab.com/api/v4/projects/61363672/issues/2/discussions?id=61363672&noteable_id=2&page=1&per_page=100>; rel="first", <https://gitlab.com/api/v4/projects/61363672/issues/2/discussions?id=61363672&noteable_id=2&page=1&per_page=100>; rel="last"
+Ratelimit-Limit: 2000
+Ratelimit-Name: throttle_authenticated_api
+Ratelimit-Observed: 16
+Ratelimit-Remaining: 1984
+Ratelimit-Reset: 1771055640
+Referrer-Policy: strict-origin-when-cross-origin
+Strict-Transport-Security: max-age=31536000
+Vary: Origin, Accept-Encoding
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-Next-Page: 
+X-Page: 1
+X-Per-Page: 100
+X-Prev-Page: 
+X-Runtime: 0.205651
+X-Total: 3
+X-Total-Pages: 1
+
+[{"id":"8d6017e7426130502cd94fff207224b8a98efabc","individual_note":true,"notes":[{"id":2087994191,"type":null,"body":"This is a comment","author":{"id":548513,"username":"mkobel","public_email":"","name":"Moritz Kobel","state":"active","locked":false,"avatar_url":"https://secure.gravatar.com/avatar/eae1be6324682816aedc885acbf5858719b40956e0278edabe5c0db7cbc95f3b?s=80\u0026d=identicon","web_url":"https://gitlab.com/mkobel"},"created_at":"2024-09-03T14:45:20.848Z","updated_at":"2024-09-03T14:45:46.592Z","system":false,"noteable_id":152568900,"noteable_type":"Issue","project_id":61363672,"resolvable":false,"confidential":false,"internal":false,"imported":false,"imported_from":"none","noteable_iid":2,"commands_changes":{}}]},{"id":"c721de2d3f2f0fe9a40005228f50d8c8d8131581","individual_note":true,"notes":[{"id":2087994632,"type":null,"body":"A second comment","author":{"id":548513,"username":"mkobel","public_email":"","name":"Moritz Kobel","state":"active","locked":false,"avatar_url":"https://secure.gravatar.com/avatar/eae1be6324682816aedc885acbf5858719b40956e0278edabe5c0db7cbc95f3b?s=80\u0026d=identicon","web_url":"https://gitlab.com/mkobel"},"created_at":"2024-09-03T14:45:30.059Z","updated_at":"2024-09-03T14:45:30.059Z","system":false,"noteable_id":152568900,"noteable_type":"Issue","project_id":61363672,"resolvable":false,"confidential":false,"internal":false,"imported":false,"imported_from":"none","noteable_iid":2,"commands_changes":{}}]},{"id":"6958a4530864f0f8c546f33e25bf09d4a11e0bd7","individual_note":true,"notes":[{"id":3083417271,"type":null,"body":"with an image ![image](/uploads/3756af8a4893bea08b99536df000e932/image.png){width=217 height=280}","author":{"id":2005797,"username":"oliverpool","public_email":"","name":"oliverpool","state":"active","locked":false,"avatar_url":"https://gitlab.com/uploads/-/system/user/avatar/2005797/avatar.png","web_url":"https://gitlab.com/oliverpool"},"created_at":"2026-02-13T20:46:11.841Z","updated_at":"2026-02-13T20:46:11.841Z","system":false,"noteable_id":152568900,"noteable_type":"Issue","project_id":61363672,"resolvable":false,"confidential":false,"internal":false,"imported":false,"imported_from":"none","noteable_iid":2,"commands_changes":{}}]}]

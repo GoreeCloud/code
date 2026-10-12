@@ -1,0 +1,6 @@
+- id: 72011
+  job_id: 48011
+  log_filename: cancel-test/72/011.log
+  log_in_storage: false
+  status: 6 # StatusRunning
+  runner_id: 1

@@ -1,0 +1,73 @@
+schema_version: '0.4'
+component:
+  type: application
+  id: goreecloud-code
+  product_name: GoreeCloud Code
+  repository: GoreeCloud/code
+lifecycle: development
+version: 0.0.0-source-baseline
+supported_platforms:
+  - linux
+api:
+  versions: []
+  endpoints: []
+platform_systems:
+  manager:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PLANNED-FEATURES.md]
+    notes: No accepted GoreeCloud Manager runtime integration.
+  privacy_shield:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PRIVACY.md]
+    notes: Privacy Shield runtime enforcement is not implemented or verified.
+  wardveil_security:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PLANNED-FEATURES.md]
+    notes: Wardveil vulnerability and action isolation integrations remain pending.
+  everkeep:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PLANNED-FEATURES.md]
+    notes: No GoreeCloud Everkeep backup or restore integration verified.
+  glaze_ui:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/BRANDING.md]
+    notes: Upstream Forgejo UI still present; approved Glaze visual acceptance pending.
+  mesh:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PLANNED-FEATURES.md]
+    notes: No accepted GoreeCloud Mesh runtime contract.
+    capabilities: []
+    dependencies: []
+    published_events: []
+    consumed_events: []
+  identity:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PLANNED-FEATURES.md]
+    notes: Forgejo authentication remains inherited; no GoreeCloud Identity integration validated.
+  policy:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PLANNED-FEATURES.md]
+    notes: No accepted GoreeCloud Policy authorization contract.
+  observability:
+    result: applicable-blocked
+    version: null
+    evidence: [docs/PLANNED-FEATURES.md]
+    notes: No accepted GoreeCloud Observability exporter or runtime.
+health:
+  health_endpoint: null
+  readiness_endpoint: null
+continuity:
+  backup:
+    required: true
+    requirements: [Protect repository data, account state, packages, configuration and keys using reviewed backup contracts.]
+  restore:
+    required: true
+    requirements: [Validate restoration and data-integrity checks before release.]

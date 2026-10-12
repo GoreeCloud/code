@@ -1,0 +1,84 @@
+-
+  id: 81000
+  repo_id: 10
+  index: 1000
+  poster_id: 4 # regular user
+  original_author_id: 0
+  name: pr1000
+  content: pull request
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: true
+  num_comments: 0
+  created_unix: 946684820
+  updated_unix: 978307180
+  is_locked: false
+
+-
+  id: 82000
+  repo_id: 11
+  index: 2000
+  poster_id: 2 # regular user
+  original_author_id: 0
+  name: pr2000
+  content: pull request
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: true
+  num_comments: 0
+  created_unix: 946684820
+  updated_unix: 978307180
+  is_locked: false
+
+-
+  id: 83000
+  repo_id: 10
+  index: 3000
+  poster_id: 1 # admin
+  original_author_id: 0
+  name: pr3000
+  content: pull request
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: true
+  num_comments: 0
+  created_unix: 946684820
+  updated_unix: 978307180
+  is_locked: false
+
+-
+  id: 84000
+  repo_id: 10
+  index: 4000
+  poster_id: 5 # regular user
+  original_author_id: 0
+  name: pr4000
+  content: pull request
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: true
+  num_comments: 0
+  created_unix: 946684820
+  updated_unix: 978307180
+  is_locked: false
+
+-
+  id: 85000
+  repo_id: 10
+  index: 5000
+  poster_id: 29 # restricted user
+  original_author_id: 0
+  name: pr5000
+  content: pull request
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: true
+  num_comments: 0
+  created_unix: 946684820
+  updated_unix: 978307180
+  is_locked: false

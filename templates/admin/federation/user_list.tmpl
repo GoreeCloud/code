@@ -1,0 +1,28 @@
+<table class="ui very basic striped table unstackable">
+	<thead>
+		<tr>
+			<th>{{ctx.Locale.Tr "admin.federation.user.id"}}</th>
+			<th>{{ctx.Locale.Tr "admin.federation.user.user_id"}}</th>
+			<th>{{ctx.Locale.Tr "admin.federation.user.external_id"}}</th>
+			<th>{{ctx.Locale.Tr "admin.federation.user.inbox_path"}}</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		{{range .Users}}
+			<tr>
+				<td>{{.ID}}</td>
+				<td>{{.UserID}}</td>
+				<td>{{.ExternalID}}</td>
+				<td>{{.InboxPath}}</td>
+				<td>
+					<div class="tw-flex tw-gap-2">
+						<a href="{{AppUrl}}admin/users/{{.UserID}}" data-tooltip-content="{{ctx.Locale.Tr "admin.federation.users.show_local_user"}}">{{svg "octicon-person"}}</a>
+					</div>
+				</td>
+			</tr>
+		{{else}}
+			<tr><td class="tw-text-center" colspan="10">{{ctx.Locale.Tr "repo.pulls.no_results"}}</td></tr>
+		{{end}}
+	</tbody>
+</table>

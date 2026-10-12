@@ -1,0 +1,18 @@
+.repository .head .ui.header .text,
+.organization .head .ui.header .text {
+  vertical-align: middle;
+  font-size: 1.6rem;
+  margin-inline-start: 15px;
+}
+
+.repository .ui.tabs.container,
+.organization .ui.tabs.container {
+  margin-top: 14px;
+  margin-bottom: 0;
+}
+
+.repository .head .ui.header .org-visibility .label,
+.organization .head .ui.header .org-visibility .label {
+  margin-inline-start: 5px;
+  margin-top: 5px;
+}

@@ -1,0 +1,36 @@
+-
+  id: 100
+  attempt: 3
+  runner_id: 12345678
+  status: 5 # StatusWaiting
+  repo_id: 4
+  owner_id: 1
+  commit_sha: c2d72f548424103f01ee1dc02889c1e2bff816b0
+  is_fork_pull_request: false
+  token_hash: a1
+  token_salt: eeeeeeee
+  token_last_eight: eeeeeeee
+  log_filename: artifact-test2/2f/47.log
+  log_in_storage: true
+  log_length: 707
+  log_size: 90179
+  log_expired: false
+  runner_request_key: 0a7e017d-4201-4b34-8cf4-de0f431893a4
+-
+  id: 101
+  attempt: 3
+  runner_id: 12345678
+  status: 5 # StatusWaiting
+  repo_id: 4
+  owner_id: 1
+  commit_sha: c2d72f548424103f01ee1dc02889c1e2bff816b0
+  is_fork_pull_request: false
+  token_hash: a2
+  token_salt: eeeeeeee
+  token_last_eight: eeeeeeee
+  log_filename: artifact-test2/2f/47.log
+  log_in_storage: true
+  log_length: 707
+  log_size: 90179
+  log_expired: false
+  runner_request_key: 0a7e017d-4201-4b34-8cf4-de0f431893a4

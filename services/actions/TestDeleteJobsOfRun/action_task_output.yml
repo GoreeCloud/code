@@ -1,0 +1,14 @@
+- id: 90041
+  task_id: 87601
+  output_key: one
+  output_value: a
+
+- id: 90042
+  task_id: 87601
+  output_key: two
+  output_value: b
+
+- id: 90043
+  task_id: 87602
+  output_key: three
+  output_value: c

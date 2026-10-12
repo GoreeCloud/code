@@ -1,0 +1,65 @@
+-
+  id: 100
+  task_id: 100
+  output_key: colors
+  output_value: '["red", "blue", "green"]'
+-
+  id: 101
+  task_id: 101
+  output_key: colors
+  output_value: '[]'
+-
+  id: 102
+  task_id: 102
+  output_key: datacenters
+  output_value: '["site-a", "site-b"]'
+-
+  id: 103
+  task_id: 102
+  output_key: node-versions
+  output_value: '["12.x", "14.x"]'
+-
+  id: 104
+  task_id: 102
+  output_key: pg_version
+  output_value: '[17, 18]'
+-
+  id: 105
+  task_id: 103
+  output_key: entire-matrix
+  output_value: '{"datacenter": ["site-a", "site-b"], "node": ["12.x", "14.x"], "pg": [17, 18]}'
+-
+  id: 106
+  task_id: 104
+  output_key: scalar-value
+  output_value: just some value
+-
+  id: 107
+  task_id: 105
+  output_key: run-on-this
+  output_value: nixos-25.11
+-
+  id: 108
+  task_id: 106
+  output_key: entire-matrix
+  output_value: '{"datacenter": ["site-a", "site-b"], "node": ["12.x", "14.x"], "pg": [17, 18]}'
+-
+  id: 109
+  task_id: 107
+  output_key: run-on-this
+  output_value: nixos-25.11
+-
+  id: 110
+  task_id: 108
+  output_key: workflow_input
+  output_value: my-workflow-input
+-
+  id: 111
+  task_id: 109
+  output_key: workflow_input
+  output_value: my-workflow-input
+-
+  id: 112
+  task_id: 110
+  output_key: empty-list
+  output_value: "[]"

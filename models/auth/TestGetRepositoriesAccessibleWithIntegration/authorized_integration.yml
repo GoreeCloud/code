@@ -1,0 +1,9 @@
+- id: 1
+  user_id: 2
+  scope: all
+  resource_all_repos: false
+  issuer: https://example.org/
+  audience: https://forgejo.example.org/-/user/integration/abcdef123
+  claim_rules: "{}"
+  created_unix: 1777153359
+  updated_unix: 1777153359

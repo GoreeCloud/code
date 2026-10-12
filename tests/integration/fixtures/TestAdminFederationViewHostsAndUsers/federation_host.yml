@@ -1,0 +1,13 @@
+- id: 1
+  host_fqdn: bob.example.com
+  host_port: 80
+  host_schema: http
+  software_name: forgejo
+  latest_activity: 2023-01-01T00:00:00Z
+
+- id: 2
+  host_fqdn: alice.example.com
+  host_port: 443
+  host_schema: https
+  software_name: gitea
+  latest_activity: 2023-01-01T00:00:00Z

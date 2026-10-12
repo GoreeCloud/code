@@ -1,0 +1,51 @@
+# team 1001 projects
+-
+  id: 1001
+  title: project1001
+  owner_id: 3
+  repo_id: 0
+  is_closed: false
+  board_type: 0
+  type: 3
+  creator_id: 5
+  created_unix: 1688973030
+  updated_unix: 1688973030
+
+# team 1002 projects
+-
+  id: 1002
+  title: project1002
+  owner_id: 0
+  repo_id: 1001
+  is_closed: false
+  board_type: 0
+  type: 2
+  creator_id: 5
+  created_unix: 1688973030
+  updated_unix: 1688973030
+
+# user 5 project
+-
+  id: 1003
+  title: project1003
+  owner_id: 5
+  repo_id: 0
+  is_closed: false
+  board_type: 0
+  type: 1
+  creator_id: 5
+  created_unix: 1688973030
+  updated_unix: 1688973030
+
+# org 1001 disabled project
+-
+  id: 1004
+  title: project1004
+  owner_id: 1001
+  repo_id: 0
+  is_closed: false
+  board_type: 0
+  type: 3
+  creator_id: 5
+  created_unix: 1688973030
+  updated_unix: 1688973030

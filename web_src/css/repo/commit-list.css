@@ -1,0 +1,104 @@
+/* Copyright 2025 The Forgejo Authors. All rights reserved.
+ * SPDX-License-Identifier: GPL-3.0-or-later */
+
+/* Modern layout for templates/repo/pulls/commits_list.tmpl using responsive grid */
+
+.commit-group {
+  margin-bottom: 1rem;
+
+  h4 {
+    font-weight: var(--font-weight-semibold);
+  }
+
+  .commits {
+    background: var(--color-box-body);
+    border: 1px solid var(--color-secondary);
+    border-radius: var(--border-radius-medium);
+  }
+
+  .commits .commit {
+    display: grid;
+    padding: 0.5rem;
+    gap: 0.5rem 1rem;
+    grid-template-columns: minmax(8ch, 15%) 1fr auto minmax(12ch, 10%) auto;
+    align-items: center;
+
+    .date {
+      max-width: 16ch;
+      white-space: nowrap;
+      justify-self: end;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .commits .commit .author {
+    display: flex;
+    column-gap: 0.5rem;
+  }
+
+  .commits .commit .author .author-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    align-self: center;
+    white-space: nowrap;
+  }
+
+  .commits .commit .sha.label {
+    /* Unwanted property of .sha.label, needs fix upstream in hashbox.css */
+    margin-inline: 0 !important;
+  }
+}
+
+@media (max-width: 440px) {
+  .commit-group .commits .commit .sha.label .signature {
+    /* Hide signature badge (lock icon) on narrow layout */
+    display: none;
+  }
+}
+
+@media (min-width: 640px) {
+  .commit-group .commits .commit {
+    details.dropdown,
+    .button-sequence button[data-clipboard-text] {
+      /* Hide additional copy button and dropdown opener that are exclusive to mobile layout */
+      display: none;
+    }
+
+    .button-sequence {
+      display: contents;
+    }
+  }
+}
+
+@media (max-width: 639.9px) {
+  .commit-group .commits .commit {
+    grid-template-columns: 1fr 1fr;
+
+    .author {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .date {
+      grid-row: 1;
+      grid-column: 2;
+    }
+
+    .message {
+      grid-row: 2;
+      grid-column: 1 / span 2;
+    }
+
+    .actions {
+      grid-column: 1 / -1;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .commit-buttons {
+      display: none;
+    }
+  }
+}

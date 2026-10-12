@@ -1,0 +1,144 @@
+<div class="runner-container">
+
+	<h4 class="ui top attached header">
+		{{ctx.Locale.Tr "actions.runners.runner_manage_panel"}} ({{ctx.Locale.Tr "admin.total" .Total}})
+		<div class="ui right">
+			<div class="ui top right pointing dropdown">
+				<button class="ui basic tiny button">
+					{{ctx.Locale.Tr "actions.runners.show_registration_token"}}
+					{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+				</button>
+				<div class="menu">
+					<div class="item">
+						<a href="https://forgejo.org/docs/next/admin/actions/#forgejo-runner">{{ctx.Locale.Tr "actions.runners.new_notice"}}</a>
+					</div>
+					<div class="divider"></div>
+					<div class="header">
+						{{ctx.Locale.Tr "actions.runners.reset_registration_token.token"}}
+					</div>
+					<div class="ui input">
+						<input type="text" value="{{.RegistrationToken}}">
+						<button class="ui basic label button" aria-label="{{ctx.Locale.Tr "copy"}}" data-clipboard-text="{{.RegistrationToken}}">
+							{{svg "octicon-copy" 14}}
+						</button>
+					</div>
+					<div class="divider"></div>
+					<div class="item">
+						<a href="{{$.Link}}/reset_registration_token">{{ctx.Locale.Tr "actions.runners.reset_registration_token.button"}}</a>
+					</div>
+				</div>
+			</div>
+			<a class="ui primary tiny button" href="{{$.Link}}/new" tabindex="0">
+				{{ctx.Locale.Tr "actions.runners.new"}}
+			</a>
+		</div>
+	</h4>
+	<div class="ui attached segment">
+		<form class="ui form ignore-dirty" id="user-list-search-form" action="{{$.Link}}">
+			{{template "shared/search/combo" dict "Value" .Keyword "Placeholder" (ctx.Locale.Tr "search.runner_kind")}}
+		</form>
+	</div>
+	<div class="ui attached table segment">
+		{{if .Runners}}
+		<table class="ui very basic striped table unstackable runner-list">
+			<thead>
+				<tr>
+					<th scope="col" data-sortt-asc="alphabetically" data-sortt-desc="reversealphabetically">
+						{{ctx.Locale.Tr "actions.runners.name"}}
+						{{SortArrow "alphabetically" "reversealphabetically" .SortType false}}
+					</th>
+					<th scope="col">
+						{{ctx.Locale.Tr "actions.runners.labels"}}
+					</th>
+					<th scope="col">
+						{{ctx.Locale.Tr "actions.runners.owner_type"}}
+					</th>
+					<th scope="col" data-sortt-asc="online" data-sortt-desc="offline">
+						{{ctx.Locale.Tr "actions.runners.status"}}
+						{{SortArrow "online" "offline" .SortType false}}
+					</th>
+					<th scope="col">
+						<span class="tw-sr-only">{{ctx.Locale.Tr "actions.runners.list_runners.edit_column"}}</span>
+					</th>
+					<th scope="col">
+						<span class="tw-sr-only">{{ctx.Locale.Tr "actions.runners.list_runners.delete_column"}}</span>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .Runners}}
+				<tr>
+					<td>
+						<div class="tw-font-medium"><a href="{{$.Link}}/{{.ID}}" class="runner-action-link" tabindex="0">{{.Name}}</a></div>
+						<div class="tw-mt-1">{{.UUID}}</div>
+					</td>
+					<td class="tw-flex tw-items-start tw-flex-wrap tw-gap-2">
+						{{if gt (len .AgentLabels) 0}}
+							{{range .AgentLabels}}
+							<div class="ui label special">{{.}}</div>
+							{{end}}
+						{{else}}
+							&mdash;
+						{{end}}
+					</td>
+					<td>
+						{{.BelongsToOwnerType.LocaleString ctx.Locale}}
+						{{if and $.PageIsAdmin .BelongsToOwnerName}}
+							<br>
+							<small>{{.BelongsToOwnerName}}</small>
+						{{end}}
+					</td>
+					<td>
+						<div class="tw-flex tw-items-center tw-gap-x-2">
+							{{if .IsActive}}
+								<div class="indicator-active">
+									<div></div>
+								</div>
+							{{else if .IsIdle}}
+								<div class="indicator-idle">
+									<div></div>
+								</div>
+							{{else}}
+								<div class="indicator-offline">
+									<div></div>
+								</div>
+							{{end}}
+							<div>
+								{{.StatusLocaleName ctx.Locale}}
+							</div>
+						</div>
+					</td>
+					<td class="tw-text-right">
+						{{if .Editable $.RunnerOwnerID $.RunnerRepoID}}
+							<a href="{{$.Link}}/{{.ID}}/edit" class="runner-action-link" tabindex="0" aria-label="{{ctx.Locale.Tr "actions.runners.list_runners.edit_button_aria" .Name}}" data-tooltip-content="{{ctx.Locale.Tr "actions.runners.list_runners.edit_button"}}">{{svg "octicon-pencil"}}</a>
+						{{end}}
+					</td>
+					<td class="tw-text-right">
+						{{if .Editable $.RunnerOwnerID $.RunnerRepoID}}
+							<button class="delete-button runner-delete-link" aria-label="{{ctx.Locale.Tr "actions.runners.list_runners.delete_button_aria" .Name}}" data-url="{{$.Link}}/{{.ID}}/delete" data-modal-id="runner-delete-modal" data-tooltip-content="{{ctx.Locale.Tr "actions.runners.list_runners.delete_button"}}">{{svg "octicon-trash"}}</button>
+						{{end}}
+					</td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+		{{else}}
+		<div class="tw-flex tw-p-4">
+			{{ctx.Locale.Tr "actions.runners.none"}}
+		</div>
+		{{end}}
+	</div>
+
+	{{template "base/paginate" .}}
+
+	<div class="ui g-modal-confirm delete modal" id="runner-delete-modal">
+		<div class="header">
+			{{svg "octicon-trash"}}
+			{{ctx.Locale.Tr "actions.runners.delete_runner.header"}}
+		</div>
+		<div class="content">
+			<p>{{ctx.Locale.Tr "actions.runners.delete_runner.notice"}}</p>
+		</div>
+		{{template "base/modal_actions_confirm" .}}
+	</div>
+</div>

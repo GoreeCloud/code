@@ -1,0 +1,25 @@
+#!/bin/bash
+
+set -ex
+
+# WARNING: Changes to the behaviour of this file should be backported to all active releases, as it is used in
+# `build-release.yml` from release branches.
+
+end_to_end=$1
+end_to_end_pr=$2
+forgejo=$3
+forgejo_ref=$4
+
+cd $end_to_end
+date >last-upgrade
+organizations=lib/ORGANIZATIONS
+if ! test -f $organizations; then
+  echo "$organizations file not found"
+  false
+fi
+#
+# Inverse the order of lookup because the goal in the release built
+# pipeline is to test the latest build, if available, instead of the
+# stable version by the same version.
+#
+echo forgejo-integration forgejo-experimental forgejo >$organizations

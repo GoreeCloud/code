@@ -1,0 +1,298 @@
+date: Wed, 30 Jul 2025 05:15:59 GMT
+server: Apache/2.4.37 (Red Hat Enterprise Linux) OpenSSL/1.1.1k mod_wsgi/4.6.4 Python/3.6
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: same-origin
+x-frame-options: ALLOW-FROM https://pagure.io/
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 18702
+content-security-policy: default-src 'self';script-src 'self' 'nonce-SA5GWMgMPH5tNiDy97SIr6jxM'; style-src 'self' 'nonce-SA5GWMgMPH5tNiDy97SIr6jxM'; object-src 'none';base-uri 'self';img-src 'self' https:;connect-src 'self' https://pagure.io:8088;frame-src https://docs.pagure.org;frame-ancestors https://pagure.io;
+set-cookie: pagure=eyJfcGVybWFuZW50Ijp0cnVlLCJjc3JmX3Rva2VuIjoiOTA1NjdkYzFjN2QyMjFhMGU3NTVmN2ZlMDYzZTgyMTQ0ZTM3NzFkNiJ9.G2s8Dw.36fFhcCc63_kPkxcJp8tz-ufC8Y; Expires=Sat, 30-Aug-2025 05:15:59 GMT; Secure; HttpOnly; Path=/
+content-type: application/json
+
+{
+  "args": {
+    "assignee": null,
+    "author": null,
+    "milestones": [],
+    "no_stones": null,
+    "order": null,
+    "priority": null,
+    "since": null,
+    "status": "all",
+    "tags": []
+  },
+  "issues": [
+    {
+      "assignee": null,
+      "blocks": [],
+      "close_status": "Baseless",
+      "closed_at": "1750832631",
+      "closed_by": {
+        "full_url": "https://pagure.io/user/t0xic0der",
+        "fullname": "Akashdeep Dhar",
+        "name": "t0xic0der",
+        "url_path": "user/t0xic0der"
+      },
+      "comments": [
+        {
+          "comment": "This is the first comment under the fourth test issue",
+          "date_created": "1700554045",
+          "edited_on": null,
+          "editor": null,
+          "id": 885231,
+          "notification": false,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "This is the second comment under the fourth test issue",
+          "date_created": "1700554054",
+          "edited_on": null,
+          "editor": null,
+          "id": 885232,
+          "notification": false,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue status updated to: Closed (was: Open)",
+          "date_created": "1700554081",
+          "edited_on": null,
+          "editor": null,
+          "id": 885233,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue set to the milestone: Milestone DDDD",
+          "date_created": "1746679846",
+          "edited_on": null,
+          "editor": null,
+          "id": 971680,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue set to the milestone: None (was: Milestone DDDD)\n- Issue status updated to: Open (was: Closed)",
+          "date_created": "1750832626",
+          "edited_on": null,
+          "editor": null,
+          "id": 976715,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue close_status updated to: Baseless\n- Issue status updated to: Closed (was: Open)",
+          "date_created": "1750832632",
+          "edited_on": null,
+          "editor": null,
+          "id": 976716,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue set to the milestone: Milestone DDDD",
+          "date_created": "1750832695",
+          "edited_on": null,
+          "editor": null,
+          "id": 976718,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue priority set to: Common",
+          "date_created": "1750832786",
+          "edited_on": null,
+          "editor": null,
+          "id": 976722,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        }
+      ],
+      "content": "This is the body of the fourth test issue",
+      "custom_fields": [],
+      "date_created": "1700554016",
+      "depends": [],
+      "full_url": "https://pagure.io/protop2g-test-srce/issue/4",
+      "id": 4,
+      "last_updated": "1750832786",
+      "milestone": "Milestone DDDD",
+      "priority": 1,
+      "private": true,
+      "related_prs": [],
+      "status": "Closed",
+      "tags": [
+        "gggg",
+        "hhhh"
+      ],
+      "title": "This is the title of the fourth test issue",
+      "user": {
+        "full_url": "https://pagure.io/user/t0xic0der",
+        "fullname": "Akashdeep Dhar",
+        "name": "t0xic0der",
+        "url_path": "user/t0xic0der"
+      }
+    },
+    {
+      "assignee": null,
+      "blocks": [],
+      "close_status": null,
+      "closed_at": null,
+      "closed_by": null,
+      "comments": [
+        {
+          "comment": "This is the first comment under the third test issue",
+          "date_created": "1700553880",
+          "edited_on": null,
+          "editor": null,
+          "id": 885229,
+          "notification": false,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "This is the second comment under the third test issue",
+          "date_created": "1700553892",
+          "edited_on": null,
+          "editor": null,
+          "id": 885230,
+          "notification": false,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue set to the milestone: Milestone CCCC",
+          "date_created": "1746679833",
+          "edited_on": null,
+          "editor": null,
+          "id": 971679,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        },
+        {
+          "comment": "**Metadata Update from @t0xic0der**:\n- Issue priority set to: Uncommon",
+          "date_created": "1750832767",
+          "edited_on": null,
+          "editor": null,
+          "id": 976721,
+          "notification": true,
+          "parent": null,
+          "reactions": {},
+          "user": {
+            "full_url": "https://pagure.io/user/t0xic0der",
+            "fullname": "Akashdeep Dhar",
+            "name": "t0xic0der",
+            "url_path": "user/t0xic0der"
+          }
+        }
+      ],
+      "content": "This is the body of the third test issue",
+      "custom_fields": [],
+      "date_created": "1700553837",
+      "depends": [],
+      "full_url": "https://pagure.io/protop2g-test-srce/issue/3",
+      "id": 3,
+      "last_updated": "1750832767",
+      "milestone": "Milestone CCCC",
+      "priority": 2,
+      "private": true,
+      "related_prs": [],
+      "status": "Open",
+      "tags": [
+        "eeee",
+        "ffff"
+      ],
+      "title": "This is the title of the third test issue",
+      "user": {
+        "full_url": "https://pagure.io/user/t0xic0der",
+        "fullname": "Akashdeep Dhar",
+        "name": "t0xic0der",
+        "url_path": "user/t0xic0der"
+      }
+    },
+  ],
+  "pagination": {
+    "first": "https://pagure.io/api/0/protop2g-test-srce/issues?per_page=20&status=all&page=1",
+    "last": "https://pagure.io/api/0/protop2g-test-srce/issues?per_page=20&status=all&page=1",
+    "next": null,
+    "page": 1,
+    "pages": 1,
+    "per_page": 20,
+    "prev": null
+  },
+  "total_issues": 2
+}

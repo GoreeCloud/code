@@ -1,0 +1,67 @@
+<div class="ui g-modal-confirm delete modal" id="delete-label">
+	<div class="header">
+		{{svg "octicon-trash"}}
+		{{ctx.Locale.Tr "repo.issues.label_deletion"}}
+	</div>
+	<div class="content">
+		<p>{{ctx.Locale.Tr "repo.issues.label_deletion_desc"}}</p>
+	</div>
+	{{template "base/modal_actions_confirm" .}}
+</div>
+
+<dialog id="add-member-modal">
+	<article>
+		<header>
+			{{if $.AddMembersByInvitations}}
+				{{ctx.Locale.Tr "members.invite_member"}}
+			{{else}}
+				{{ctx.Locale.Tr "members.add_member"}}
+			{{end}}
+		</header>
+		<form class="ui add-member form ignore-dirty" action="{{$.OrgLink}}/members/action/add" method="post">
+			<input type="hidden" name="uid" value="{{.SignedUser.ID}}">
+			<div class="content">
+				<div class="field">
+					<label>{{ctx.Locale.Tr "members.user"}}</label>
+					<div id="search-user-box" class="ui search tw-mr-2"{{if .IsEmailInviteEnabled}} data-allow-email="true" data-allow-email-description="{{ctx.Locale.Tr "org.teams.invite_team_member" $.Team.Name}}"{{end}}>
+						<div class="ui input">
+							<input class="prompt" name="uname" placeholder="{{ctx.Locale.Tr "search.user_kind"}}" autocomplete="off" required>
+						</div>
+					</div>
+				</div>
+
+				<div class="field">
+					<label>{{ctx.Locale.Tr "org.teams"}}</label>
+					<div class="ui negative message flash-message flash-error" id="no-team-selected-message" hidden>{{ctx.Locale.Tr "members.no_team_selected"}}</div>
+					<div class="team-list">
+						{{range .Teams}}
+						<div class="inline field">
+							<div class="ui checkbox">
+								<input name="team_{{.ID}}" id="add-member-team_{{.ID}}" type="checkbox">
+								<label for="add-member-team_{{.ID}}">{{.Name}}</label>
+							</div>
+						</div>
+						{{end}}
+						<div class="inline">
+							{{svg "octicon-plus"}} <a href="{{$.OrgLink}}/teams/new">{{ctx.Locale.Tr "org.create_new_team"}}</a>
+						</div>
+					</div>
+				</div>
+
+			</div>
+		</form>
+		<div class="actions">
+			<button class="secondary cancel button">
+				{{svg "octicon-x"}}
+				{{ctx.Locale.Tr "cancel"}}
+			</button>
+			<button class="primary ok button" type="submit">
+				{{if $.AddMembersByInvitations}}
+					{{ctx.Locale.Tr "members.invite_member"}}
+				{{else}}
+					{{ctx.Locale.Tr "members.add_member"}}
+				{{end}}
+			</button>
+		</div>
+	</article>
+</dialog>

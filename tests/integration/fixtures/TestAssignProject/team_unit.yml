@@ -1,0 +1,35 @@
+-
+  id: 1001
+  team_id: 1001
+  type: 8
+  access_mode: 2
+
+-
+  id: 1002
+  team_id: 1002
+  type: 8
+  access_mode: 1
+
+-
+  id: 1003
+  team_id: 1001
+  type: 2
+  access_mode: 2
+
+-
+  id: 1004
+  team_id: 1001
+  type: 3
+  access_mode: 2
+
+-
+  id: 1005
+  team_id: 1002
+  type: 2
+  access_mode: 2
+
+-
+  id: 1006
+  team_id: 1002
+  type: 3
+  access_mode: 2

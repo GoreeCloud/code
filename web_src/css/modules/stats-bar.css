@@ -1,0 +1,130 @@
+/* Copyright 2025 The Forgejo Authors. All rights reserved.
+ * SPDX-License-Identifier: GPL-3.0-or-later */
+
+:root stats-bar {
+  --stats-bar-height: 0.75rem;
+}
+
+@media (pointer: coarse) {
+  :root stats-bar {
+    --stats-bar-height: 1rem;
+  }
+}
+
+/* General properties, can be reused by different kinds of stats bars */
+stats-bar {
+  display: flex !important;
+  height: var(--stats-bar-height);
+  width: 100%;
+  border-radius: var(--border-radius);
+
+  .slice {
+    display: inline-block;
+
+    &:first-child {
+      border-radius: var(--border-radius) 0 0 var(--border-radius);
+    }
+    &:last-child {
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+    &:only-child {
+      border-radius: var(--border-radius);
+    }
+  }
+}
+
+/* Properties for stats bars with legend included via <details> */
+details.stats {
+  /* Summary and legend should be stacked vertically */
+  display: flex;
+  flex-direction: column;
+
+  /* Prevent opener marker from showing up */
+  summary {
+    display: flex;
+  }
+
+  /* Cancel unwanted <ul> properties of legend */
+  ul {
+    display: flex;
+    margin: 0;
+  }
+}
+
+/* Properties specific to the UI in storage overview */
+.size-overview .stats {
+  border-radius: var(--border-radius);
+
+  &:hover,
+  &[open] {
+    background-color: var(--color-box-body-highlight);
+    stats-bar {
+      background-color: var(--color-secondary-dark-3);
+    }
+  }
+
+  &[open] {
+    gap: 0.25rem;
+    background-color: var(--color-box-body-highlight);
+  }
+
+  summary {
+    flex-direction: column;
+    padding: 0.75rem;
+    gap: 1rem;
+
+    stats-bar {
+      /* Same as default background of `progress` */
+      background-color: var(--color-secondary-dark-1);
+    }
+  }
+
+  ul {
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    padding-top: 0;
+
+    li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  }
+}
+
+/* Properties specific to the lang stats in repo overview */
+#language-stats {
+  stats-bar {
+    gap: 2px;
+    border-radius: 0 0 var(--border-radius) var(--border-radius);
+    overflow: hidden;
+    .slice {
+      border-radius: 0;
+    }
+  }
+  &[open] stats-bar {
+    border-radius: 0;
+  }
+
+  ul {
+    min-height: 2rem;
+    padding: 0 0.5rem;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    gap: 0 1rem;
+
+    li {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.25rem 0;
+      gap: 0.25em;
+
+      span {
+        font-weight: var(--font-weight-semibold);
+        text-wrap: nowrap;
+      }
+    }
+  }
+}

@@ -1,0 +1,72 @@
+{{template "user/settings/layout_head" (dict "ctxData" . "pageClass" "user settings applications")}}
+
+<div class="user-setting-content">
+	<h4 class="ui top attached header">
+		{{ctx.Locale.Tr "settings.manage_authorized_integrations"}}
+		<div class="ui right">
+			<div class="ui jump dropdown">
+				<div class="ui primary tiny button">{{ctx.Locale.Tr "settings.authorized_integration.add"}}</div>
+				{{template "user/settings/authorized_integrations/link_menu" .}}
+			</div>
+		</div>
+	</h4>
+	<div class="ui attached segment">
+		<div class="flex-list">
+			<div class="flex-item">
+				{{ctx.Locale.Tr "settings.authorized_integration.desc"}}
+			</div>
+			{{range .AuthorizedIntegrations}}
+				<div class="flex-item">
+					<div class="flex-item-leading">
+						{{if eq .UI "forgejo-actions-local"}}
+							<span role="img" aria-label="{{ctx.Locale.Tr "settings.authorized_integration.ui.forgejo_actions_local"}}" title="{{ctx.Locale.Tr "settings.authorized_integration.ui.forgejo_actions_local"}}">
+								{{svg "gitea-forgejo" 32}}
+							</span>
+						{{else}}
+							<span role="img" aria-label="{{ctx.Locale.Tr "settings.authorized_integration.ui.generic"}}" title="{{ctx.Locale.Tr "settings.authorized_integration.ui.generic"}}">
+								{{svg "octicon-cloud" 32}}
+							</span>
+						{{end}}
+					</div>
+					<div class="flex-item-main">
+						<span class="flex-item-title">{{.Name}}</span>
+						<div class="flex-item-body">
+							<p>{{ctx.Locale.Tr "settings.added_on" (DateUtils.AbsoluteShort .CreatedUnix)}} — {{svg "octicon-info"}} {{if .HasBeenUsed}}{{ctx.Locale.Tr "settings.last_used"}} <span {{if .HasRecentActivity}}class="text green"{{end}}>{{DateUtils.AbsoluteShort .UpdatedUnix}}</span>{{else}}{{ctx.Locale.Tr "settings.no_activity"}}{{end}}</p>
+						</div>
+					</div>
+					<div class="flex-item-trailing">
+						<a class="ui primary tiny button" href="{{AppSubUrl}}/user/settings/authorized-integrations/{{.UI}}/{{.ID}}">
+							{{svg "octicon-pencil" 16 "tw-mr-1"}}
+							{{ctx.Locale.Tr "settings.authorized_integration.edit"}}
+						</a>
+						<button class="ui red tiny button delete-button" data-modal-id="delete-authorized-integration" data-url="{{$.Link}}/delete" data-id="{{.ID}}">
+							{{svg "octicon-trash" 16 "tw-mr-1"}}
+							{{ctx.Locale.Tr "settings.delete_token"}}
+						</button>
+					</div>
+				</div>
+			{{else}}
+				<div class="flex-item">
+					<div class="flex-item-main">
+						<div class="flex-item-body">
+							<p>{{ctx.Locale.Tr "settings.authorized_integration.none"}}</p>
+						</div>
+					</div>
+				</div>
+			{{end}}
+		</div>
+	</div>
+</div>
+
+<div class="ui g-modal-confirm delete modal" id="delete-authorized-integration">
+	<div class="header">
+		{{svg "octicon-trash"}}
+		{{ctx.Locale.Tr "settings.authorized_integration.delete.header"}}
+	</div>
+	<div class="content">
+		<p>{{ctx.Locale.Tr "settings.authorized_integration.delete.body"}}</p>
+	</div>
+	{{template "base/modal_actions_confirm"}}
+</div>
+
+{{template "user/settings/layout_footer" .}}

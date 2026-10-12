@@ -1,0 +1,35 @@
+{{$canReadReleases := $.Permission.CanRead $.UnitTypeReleases}}
+{{$canReadCode := $.Permission.CanRead $.UnitTypeCode}}
+
+{{if $canReadReleases}}
+	<div class="list-header tw-justify-between">
+		<div class="switch">
+			<a class="{{if and .PageIsReleaseList (not .PageIsSingleTag)}}active {{end}}item" href="{{.RepoLink}}/releases{{if .Keyword}}?q={{.Keyword}}{{end}}">{{ctx.Locale.TrPluralString .NumReleases "counters.n_releases" (ctx.Locale.PrettyNumber .NumReleases)}}</a>
+			{{if $canReadCode}}
+				<a class="{{if or .PageIsTagList .PageIsSingleTag}}active {{end}}item" href="{{.RepoLink}}/tags{{if .Keyword}}?q={{.Keyword}}{{end}}">{{ctx.Locale.TrPluralString .NumTags "counters.n_tags" (ctx.Locale.PrettyNumber .NumTags)}}</a>
+			{{end}}
+		</div>
+		{{if .ShowReleaseSearch}}
+			<form class="ignore-dirty list-header-search release-list-search" method="get">
+				{{template "shared/search/combo" dict "Value" .Keyword}}
+			</form>
+		{{end}}
+		<div class="small button-sequence release-list-buttons">
+			{{if .EnableFeed}}
+				<a class="secondary button" href="{{.RepoLink}}/{{if .PageIsTagList}}tags{{else}}releases{{end}}.rss">
+					{{svg "octicon-rss" 16}}
+					<label class="not-mobile">{{ctx.Locale.Tr "rss_feed"}}</label>
+				</a>
+			{{end}}
+			{{if and (not .PageIsTagList) .CanCreateRelease}}
+				<a class="primary button" href="{{$.RepoLink}}/releases/new">
+					{{ctx.Locale.Tr "repo.release.new_release"}}
+				</a>
+			{{end}}
+		</div>
+	</div>
+	<div class="divider"></div>
+{{else if $canReadCode}}
+	{{/* if the "repo.releases" unit is disabled, only show the "commits / branches / tags" sub menu */}}
+	{{template "repo/sub_menu" .}}
+{{end}}

@@ -1,0 +1,10 @@
+- id: 1001
+  type: 21 # code comment
+  poster_id: 10
+  issue_id: 1
+  review_id: 1001
+  content: "Some code comment that is pending to be published"
+  line: -4
+  tree_path: "README.md"
+  created_unix: 946684812
+  invalidated: false

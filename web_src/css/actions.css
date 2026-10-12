@@ -1,0 +1,217 @@
+.runner-container {
+  padding-bottom: 30px;
+}
+
+.runner-container .ui.table.segment {
+  overflow-inline: auto;
+}
+
+.runner-container .runner-ops > a {
+  margin-inline-start: 0.5em;
+}
+
+.runner-container .runner-ops-delete {
+  color: var(--color-red-light);
+}
+
+.runner-container .runner-new-text {
+  color: var(--color-white);
+}
+
+.runner-container #runner-new:hover .runner-new-text {
+  color: var(--color-white) !important;
+}
+
+.runner-container .task-status-success {
+  background-color: var(--color-green);
+  color: var(--color-white);
+}
+
+.runner-container .task-status-failure {
+  background-color: var(--color-red-light);
+  color: var(--color-white);
+}
+
+.runner-container .task-status-running {
+  background-color: var(--color-blue);
+  color: var(--color-white);
+}
+
+.runner-container .task-status-cancelled,
+.runner-container .task-status-blocked {
+  background-color: var(--color-yellow);
+  color: var(--color-white);
+}
+
+.runner-container table.runner-list thead th {
+  font-weight: var(--font-weight-medium);
+}
+
+.runner-container table.runner-list th, .runner-container table.runner-list td {
+  padding-block: 1rem !important;
+  padding-inline: 0.75rem !important;
+  vertical-align: top;
+}
+
+.indicator-offline, .indicator-idle, .indicator-active {
+  flex: none;
+  border-radius: calc(infinity * 1px);
+  padding: 0.25rem;
+}
+
+.indicator-offline {
+  color: var(--color-indicator-offline);
+  background-color: var(--color-indicator-offline-20);
+}
+
+.indicator-idle {
+  color: var(--color-indicator-idle);
+  background-color: var(--color-indicator-idle-20);
+}
+
+.indicator-active {
+  color: var(--color-indicator-active);
+  background-color: var(--color-indicator-active-20);
+}
+
+.runner-container .indicator-offline > div, .runner-container .indicator-idle > div, .runner-container .indicator-active > div {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: calc(infinity * 1px);
+  background-color: currentcolor;
+}
+
+.runner-action-link {
+  background: transparent;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.runner-action-link:hover {
+  text-decoration: underline;
+}
+
+.runner-delete-link {
+  background: transparent;
+  color: var(--color-red);
+  font-weight: var(--font-weight-semibold);
+}
+
+.runner-delete-link:hover {
+  text-decoration: underline;
+}
+
+.runner-container form .form-field {
+  margin-block: 1rem !important;
+}
+
+.runner-container pre {
+  color: var(--color-console-fg);
+  background-color: var(--color-console-bg);
+  border-color: var(--color-console-border);
+  border-width: 1px;
+  border-radius: 0.5rem;
+  border-style: dotted;
+  padding: 1rem;
+}
+
+.runner-container dl .item {
+  display: flex;
+  padding-block: 0.5rem
+}
+
+.runner-container dl dt {
+  flex: none;
+  font-weight: var(--font-weight-medium);
+  width: 12rem;
+  padding-inline-end: 1.5rem;
+}
+
+.runner-container dl dd {
+  flex-grow: 1;
+}
+
+.run-list-item-right {
+  width: 130px;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: 3px;
+  color: var(--color-text-light);
+}
+
+.run-list-item-right .run-list-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.25rem;
+  align-items: center;
+}
+
+.run-list .flex-item-trailing {
+  flex-wrap: nowrap;
+  width: 280px;
+  flex: 0 0 280px;
+}
+
+.run-list-ref {
+  display: inline-block !important;
+}
+
+@media (max-width: 767.98px) {
+  .run-list .flex-item-trailing {
+    flex-direction: column;
+    align-items: flex-end;
+    width: auto;
+    flex-basis: auto;
+  }
+  .run-list-item-right,
+  .run-list-ref {
+    max-width: 110px;
+  }
+}
+
+#workflow_dispatch_dropdown {
+  min-width: min-content;
+}
+#workflow_dispatch_dropdown > button {
+  white-space: nowrap;
+}
+#workflow_dispatch_dropdown .menu {
+  /* FIXME: max-height is ineffective without `overflow:`, but clipping overflow breaks dropdown menus */
+  max-height: 500px;
+}
+@media (max-width: 640px) or (767.98px < width < 854px) {
+  #workflow_dispatch_dropdown .menu {
+    inset-inline: auto 0;
+  }
+}
+
+.job-status-rotate {
+  animation: job-status-rotate-keyframes 1s linear infinite;
+}
+@keyframes job-status-rotate-keyframes {
+  100% {
+    transform: rotate(-360deg);
+  }
+}
+
+.ui.vertical.menu .item:not(:has(> :nth-child(1))),
+.ui.vertical.menu .item .content {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.ui.vertical.menu .item:has(.content) {
+  display: flex;
+}
+
+.ui.vertical.menu.actions-menu .item .error {
+  display: flex;
+  align-items: center;
+  margin-inline-start: 1rem;
+}
+
+.ui.vertical.menu.actions-menu .item .label {
+  flex-shrink: 0;
+}

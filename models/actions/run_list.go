@@ -1,0 +1,158 @@
+// Copyright 2022 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package actions
+
+import (
+	"context"
+	"slices"
+
+	"forgejo.org/models/db"
+	repo_model "forgejo.org/models/repo"
+	user_model "forgejo.org/models/user"
+	"forgejo.org/modules/container"
+	"forgejo.org/modules/translation"
+	webhook_module "forgejo.org/modules/webhook"
+
+	"golang.org/x/text/collate"
+	"golang.org/x/text/language"
+	"xorm.io/builder"
+)
+
+type RunList []*ActionRun
+
+// GetUserIDs returns a slice of user's id
+func (runs RunList) GetUserIDs() []int64 {
+	return container.FilterSlice(runs, func(run *ActionRun) (int64, bool) {
+		return run.TriggerUserID, true
+	})
+}
+
+func (runs RunList) GetRepoIDs() []int64 {
+	return container.FilterSlice(runs, func(run *ActionRun) (int64, bool) {
+		return run.RepoID, true
+	})
+}
+
+func (runs RunList) LoadTriggerUser(ctx context.Context) error {
+	userIDs := runs.GetUserIDs()
+	users := make(map[int64]*user_model.User, len(userIDs))
+	if err := db.GetEngine(ctx).In("id", userIDs).Find(&users); err != nil {
+		return err
+	}
+	for _, run := range runs {
+		if run.TriggerUserID == user_model.ActionsUserID {
+			run.TriggerUser = user_model.NewActionsUser()
+		} else {
+			run.TriggerUser = users[run.TriggerUserID]
+			if run.TriggerUser == nil {
+				run.TriggerUser = user_model.NewGhostUser()
+			}
+		}
+	}
+	return nil
+}
+
+func (runs RunList) LoadRepos(ctx context.Context) error {
+	repoIDs := runs.GetRepoIDs()
+	repos, err := repo_model.GetRepositoriesMapByIDs(ctx, repoIDs)
+	if err != nil {
+		return err
+	}
+	for _, run := range runs {
+		run.Repo = repos[run.RepoID]
+	}
+	return nil
+}
+
+type FindRunOptions struct {
+	db.ListOptions
+	RepoID        int64
+	OwnerID       int64
+	WorkflowID    string
+	Ref           string // the commit/tag/… that caused this workflow
+	TriggerUserID int64
+	TriggerEvent  webhook_module.HookEventType
+	Approved      bool // not util.OptionalBool, it works only when it's true
+	Status        []Status
+	Events        []string // []webhook_module.HookEventType
+	RunNumber     int64
+	CommitSHA     string
+}
+
+func (opts FindRunOptions) ToConds() builder.Cond {
+	cond := builder.NewCond()
+	if opts.RepoID > 0 {
+		cond = cond.And(builder.Eq{"repo_id": opts.RepoID})
+	}
+	if opts.OwnerID != 0 {
+		cond = cond.And(builder.Eq{"owner_id": opts.OwnerID})
+	}
+	if opts.WorkflowID != "" {
+		cond = cond.And(builder.Eq{"workflow_id": opts.WorkflowID})
+	}
+	if opts.TriggerUserID > 0 {
+		cond = cond.And(builder.Eq{"trigger_user_id": opts.TriggerUserID})
+	}
+	if opts.Approved {
+		cond = cond.And(builder.Gt{"approved_by": 0})
+	}
+	if len(opts.Status) > 0 {
+		cond = cond.And(builder.In("status", opts.Status))
+	}
+	if opts.Ref != "" {
+		cond = cond.And(builder.Eq{"ref": opts.Ref})
+	}
+	if opts.TriggerEvent != "" {
+		cond = cond.And(builder.Eq{"trigger_event": opts.TriggerEvent})
+	}
+	if len(opts.Events) > 0 {
+		cond = cond.And(builder.In("event", opts.Events))
+	}
+	if opts.RunNumber > 0 {
+		cond = cond.And(builder.Eq{"`index`": opts.RunNumber})
+	}
+	if opts.CommitSHA != "" {
+		cond = cond.And(builder.Eq{"commit_sha": opts.CommitSHA})
+	}
+	return cond
+}
+
+func (opts FindRunOptions) ToOrders() string {
+	return "`id` DESC"
+}
+
+type StatusInfo struct {
+	Status          int
+	DisplayedStatus string
+}
+
+// GetStatusInfoList returns a slice of StatusInfo
+func GetStatusInfoList(ctx context.Context, lang translation.Locale) []StatusInfo {
+	// same as those in aggregateJobStatus
+	allStatus := []Status{StatusBlocked, StatusCancelled, StatusFailure, StatusRunning, StatusSkipped, StatusSuccess, StatusWaiting}
+	statusInfoList := make([]StatusInfo, 0, 7)
+	for _, s := range allStatus {
+		statusInfoList = append(statusInfoList, StatusInfo{
+			Status:          int(s),
+			DisplayedStatus: s.LocaleString(lang),
+		})
+	}
+	collator := collate.New(language.Und, collate.IgnoreCase)
+	slices.SortFunc(statusInfoList, func(a, b StatusInfo) int {
+		return collator.CompareString(a.DisplayedStatus, b.DisplayedStatus)
+	})
+	return statusInfoList
+}
+
+// GetActors returns a slice of Actors
+func GetActors(ctx context.Context, repoID int64) ([]*user_model.User, error) {
+	actors := make([]*user_model.User, 0, 10)
+
+	return actors, db.GetEngine(ctx).Where(builder.In("id", builder.Select("`action_run`.trigger_user_id").From("`action_run`").
+		GroupBy("`action_run`.trigger_user_id").
+		Where(builder.Eq{"`action_run`.repo_id": repoID}))).
+		Cols("id", "name", "full_name", "avatar", "avatar_email", "use_custom_avatar").
+		OrderBy(user_model.GetOrderByName()).
+		Find(&actors)
+}

@@ -1,0 +1,38 @@
+<p>{{ctx.Locale.Tr "repo.settings.add_web_hook_desc" "https://sourcehut.org/" (ctx.Locale.Tr "repo.settings.web_hook_name_sourcehut_builds")}}</p>
+<form class="ui form" action="{{.BaseLink}}/{{or .Webhook.ID "sourcehut_builds/new"}}" method="post">
+	<div class="required field {{if .Err_PayloadURL}}error{{end}}">
+		<label for="payload_url">{{ctx.Locale.Tr "repo.settings.graphql_url"}}</label>
+		<input id="payload_url" name="payload_url" type="url" value="{{or .Webhook.URL "https://builds.sr.ht/query"}}" autofocus required>
+	</div>
+	<div class="required field {{if .Err_ManifestPath}}error{{end}}">
+		<label for="manifest_path">{{ctx.Locale.Tr "repo.settings.sourcehut_builds.manifest_path"}}</label>
+		<input id="manifest_path" name="manifest_path" type="text" value="{{or .HookMetadata.ManifestPath ".build.yml"}}" required>
+	</div>
+	<div class="field">
+		<label>{{ctx.Locale.Tr "repo.settings.sourcehut_builds.visibility"}}</label>
+		<div class="ui selection dropdown">
+			<input type="hidden" id="visibility" name="visibility" value="{{if .HookMetadata.Visibility}}{{.HookMetadata.Visibility}}{{else}}PRIVATE{{end}}">
+			<div class="default text"></div>
+			{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+			<div class="menu">
+				<div class="item" data-value="PUBLIC">PUBLIC</div>
+				<div class="item" data-value="UNLISTED">UNLISTED</div>
+				<div class="item" data-value="PRIVATE">PRIVATE</div>
+			</div>
+		</div>
+	</div>
+	<div class="field">
+		<div class="ui checkbox">
+			<input name="secrets" type="checkbox" {{if .HookMetadata.Secrets}}checked{{end}}>
+			<label>{{ctx.Locale.Tr "repo.settings.sourcehut_builds.secrets"}}</label>
+			<span class="help">{{ctx.Locale.Tr "repo.settings.sourcehut_builds.secrets_helper"}}</span>
+		</div>
+	</div>
+	<!-- Access Token -->
+	<div class="field required {{if .Err_AccessToken}}error{{end}}">
+		<label for="access_token">{{ctx.Locale.Tr "form.AccessToken"}}</label>
+		<input id="access_token" name="access_token" type="password" value="{{.Webhook.HeaderAuthorizationTrimPrefix "Bearer "}}" required>
+		<span class="help">{{ctx.Locale.Tr "repo.settings.sourcehut_builds.access_token_helper" "https://meta.sr.ht/oauth2/personal-token?grants=builds.sr.ht/JOBS:RW" "https://meta.sr.ht/oauth2/personal-token?grants=builds.sr.ht/JOBS:RW+builds.sr.ht/SECRETS:RO"}}</span>
+	</div>
+	{{template "webhook/shared-settings" .}}
+</form>

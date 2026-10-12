@@ -1,0 +1,15 @@
+{
+	"webauthn.error.timeout": "Termyn yn-mes hedhys kyns agas alhwedh y hyllys redys. Daskargewgh an folen ma mar pleg hag assayewgh arta.",
+	"webauthn.error.empty": "Res yw dhywgh settya hanow rag an alhwedh ma.",
+	"webauthn.error.duplicated": "Nyns yw an alhwedh sawder gesys rag an govyn ma. Mar pleg, surhewgh nyns yw an alhwedh kovskrifys seulabrys.",
+	"webauthn.error.unable_to_process": "Ny yllir an servell argerdhes agas govyn.",
+	"webauthn.error.insecure": "WebAuthn a skoodh junyans saw yn unnik. Rag ow previ dres HTTP. ty a yll devnydhya an devedhyans \"localhost\" po \"127.0.0.1\"",
+	"webauthn.error.unknown": "Yth esa error ankoth. Mar pleg assayewgh arta.",
+	"webauthn.unsupported_browser": "Ny skoodhya a-lemmyn agas peurell WebAuthn.",
+	"webauthn.error": "Ny yllir redya agas alhwedh sawder.",
+	"webauthn.use_twofa": "Devnydhyer kod dewkamm dhyworth agas klapkodh",
+	"webauthn.press_button": "Mar pleg gwaskewgh an boton war agas alhwedh sawder…",
+	"webauthn.sign_in": "Tavewgh an boton war agas alhwedh sawder. Mar nyns eus boton, gorrewgh a-bervedh arta.",
+	"webauthn.insert_key": "Gorra a-bervedh agas alhwedh sawder",
+	"home.welcome.no_activity": "Nyns eys aktivita"
+}

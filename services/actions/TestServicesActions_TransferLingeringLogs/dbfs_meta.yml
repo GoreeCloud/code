@@ -1,0 +1,22 @@
+# all entries will be used with now() == 2024-12-01
+-
+  id: 1
+  full_path: 1:actions_log/path1
+  block_size: 4096
+  file_size: 5
+  create_timestamp: 1732057200 # 2024-11-20
+  modify_timestamp: 1732057205 # a few seconds after create_timestamp
+-
+  id: 4
+  full_path: 1:actions_log/path4
+  block_size: 4096
+  file_size: 5
+  create_timestamp: 1732057200 # 2024-11-20
+  modify_timestamp: 1732057205 # a few seconds after create_timestamp
+-
+  id: 5
+  full_path: 1:actions_log/path5
+  block_size: 4096
+  file_size: 5
+  create_timestamp: 1732057200 # 2024-11-20
+  modify_timestamp: 1732057205 # a few seconds after create_timestamp

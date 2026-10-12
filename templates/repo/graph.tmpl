@@ -1,0 +1,71 @@
+{{template "base/head" .}}
+<div role="main" aria-label="{{.Title}}" class="page-content repository commits">
+	{{template "repo/header" .}}
+	<div class="ui container">
+		<div id="git-graph-container" class="ui segment{{if eq .Mode "monochrome"}} monochrome{{end}}">
+			<div id="git-graph-heading">
+				<div id="git-graph-heading-left">
+					<h2>{{ctx.Locale.Tr "repo.commit_graph"}}</h2>
+					<div class="ui multiple selection search dropdown" id="flow-select-refs-dropdown">
+						<input type="hidden" name="flow">
+						<div class="default text">{{ctx.Locale.Tr "repo.commit_graph.select"}}</div>
+						<div class="menu">
+							<div class="item" data-value="...flow-hide-pr-refs">
+								<span class="flex-text-block">
+									{{svg "octicon-eye-closed" 16 "tw-mr-1"}}<span class="gt-ellipsis" title="{{ctx.Locale.Tr "repo.commit_graph.hide_pr_refs"}}">{{ctx.Locale.Tr "repo.commit_graph.hide_pr_refs"}}</span>
+								</span>
+							</div>
+							{{range .AllRefs}}
+								{{$refGroup := .RefGroup}}
+								{{if eq $refGroup "pull"}}
+									<div class="item" data-value="{{.Name}}">
+										<span class="flex-text-block">
+											{{svg "octicon-git-pull-request" 16 "tw-mr-1"}}<span class="gt-ellipsis" title="{{.ShortName}}">#{{.ShortName}}</span>
+										</span>
+									</div>
+								{{else if eq $refGroup "tags"}}
+									<div class="item" data-value="{{.Name}}">
+										<span class="flex-text-block">
+											{{svg "octicon-tag" 16 "tw-mr-1"}}<span class="gt-ellipsis" title="{{.ShortName}}">{{.ShortName}}</span>
+										</span>
+									</div>
+								{{else if eq $refGroup "remotes"}}
+									<div class="item" data-value="{{.Name}}">
+										<span class="flex-text-block">
+											{{svg "octicon-cross-reference" 16 "tw-mr-1"}}<span class="gt-ellipsis" title="{{.ShortName}}">{{.ShortName}}</span>
+										</span>
+									</div>
+								{{else if eq $refGroup "heads"}}
+									<div class="item" data-value="{{.Name}}">
+										<span class="flex-text-block">
+											{{svg "octicon-git-branch" 16 "tw-mr-1"}}<span class="gt-ellipsis" title="{{.ShortName}}">{{.ShortName}}</span>
+										</span>
+									</div>
+								{{end}}
+							{{end}}
+						</div>
+					</div>
+				</div>
+				<div class="switch">
+					<button id="flow-color-monochrome" class="{{if eq .Mode "monochrome"}}active {{end}}item" title="{{ctx.Locale.Tr "repo.commit_graph.monochrome"}}">
+						{{svg "material-invert-colors" 16}}
+						{{ctx.Locale.Tr "repo.commit_graph.monochrome"}}
+					</button>
+					<button id="flow-color-colored" class="{{if ne .Mode "monochrome"}}active {{end}}item" title="{{ctx.Locale.Tr "repo.commit_graph.color"}}">
+						{{svg "material-palette" 16}}
+						{{ctx.Locale.Tr "repo.commit_graph.color"}}
+					</button>
+				</div>
+			</div>
+			<div id="git-graph-content">
+				<div class="is-loading tw-py-32 tw-hidden" id="loading-indicator"></div>
+				{{template "repo/graph/svgcontainer" .}}
+				{{template "repo/graph/commits" .}}
+			</div>
+		</div>
+	</div>
+</div>
+<div id="pagination">
+	{{template "base/paginate" .}}
+</div>
+{{template "base/footer" .}}

@@ -1,0 +1,8 @@
+# pack-refs with: peeled fully-peeled sorted 
+01fc2bb01605691ba1f40694c1da70501583a085 refs/heads/br1
+5493447336137e6fc28e3be3067f7049273c6909 refs/heads/br2
+3f10b1d474ee0a63d008be715494586ccbbbc9da refs/heads/br3
+83966f2fad7dfb1c567ca63bb68e9a7d38b4afc6 refs/heads/main
+bf91e6a4737da117217f8b32276998b10ee55f65 refs/tags/commit-C
+^9d36f18c8ca14ad28c4751afd14f3e3146a785dc
+0284078471ec566623807297baf4450382542dcb refs/tags/commit-D

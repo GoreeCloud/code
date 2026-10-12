@@ -1,0 +1,46 @@
+- id: 899251
+  uuid: "a3297f3a-ba5c-4a0f-878e-6cc8b8ac79ec"
+  name: "runner-1-repository"
+  version: "dev"
+  owner_id: 0
+  repo_id: 62
+  description: "A superb runner"
+  agent_labels: ["debian", "gpu"]
+  deleted: 0
+- id: 899252
+  uuid: "6d2d13ef-b19f-47a8-85ad-e82e51f606c5"
+  name: "runner-2-user"
+  version: "11.3.1"
+  owner_id: 1
+  repo_id: 0
+  description: "A splendid runner"
+  agent_labels: ["docker"]
+  deleted: 0
+- id: 899253
+  uuid: "0a7e5e05-2da4-44d5-a72a-615da120cef6"
+  name: "runner-3-repository"
+  version: "11.3.1"
+  owner_id: 0
+  repo_id: 62
+  description: "Another fine runner"
+  agent_labels: ["fedora"]
+  deleted: 0
+- id: 899254
+  uuid: "6456ac1f-70ec-4e8f-9ab7-bf117ee23d47"
+  name: "runner-4-global"
+  version: "11.3.1"
+  owner_id: 0
+  repo_id: 0
+  description: ""
+  agent_labels: []
+  deleted: 0
+- id: 899255
+  uuid: "96639646-67b2-4bcb-9142-fde1ab8498cf"
+  name: "runner-5-repository-ephemeral"
+  version: "1.0.0"
+  owner_id: 0
+  repo_id: 62
+  description: "An ephemeral runner"
+  agent_labels: ["ephemeral-label"]
+  ephemeral: true
+  deleted: 0

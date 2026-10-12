@@ -1,0 +1,33 @@
+{{template "user/settings/layout_head" (dict "ctxData" . "pageClass" "user settings applications authorized-integrations")}}
+
+<div class="user-setting-content">
+	<form id="scoped-access-form" class="ui form" action="{{.Link}}" method="post">
+
+		<h4 class="ui top attached header">
+			{{if .IsNew}}
+				{{ctx.Locale.Tr "settings.authorized_integration.create_page_title"}}
+			{{else}}
+				{{ctx.Locale.Tr "settings.authorized_integration.edit_page_title" .Form.Name}}
+			{{end}}
+		</h4>
+		<div class="ui attached bottom segment">
+			<div class="required field {{if .Err_Name}}error{{end}}">
+				<label for="name">{{ctx.Locale.Tr "settings.authorized_integration.field.name"}}</label>
+				<input id="name" name="name" value="{{.Form.Name}}" required maxlength="255">
+			</div>
+
+			<div class="field">
+				<label for="description">{{ctx.Locale.Tr "settings.authorized_integration.field.description"}}</label>
+				<textarea id="description" name="description" rows="5" placeholder="{{ctx.Locale.Tr "settings.authorized_integration.field.description.placeholder"}}">{{.Form.Description}}</textarea>
+			</div>
+
+			{{if not .IsNew}}
+				<div class="field">
+					<label for="audience">{{ctx.Locale.Tr "settings.authorized_integration.field.audience"}}</label>
+					<div class="ui fluid action input">
+						<input id="audience" name="audience" value="{{.Form.Audience}}" readonly>
+						<button class="ui small icon button" title="{{ctx.Locale.Tr "settings.authorized_integration.copy_audience"}}" aria-label="{{ctx.Locale.Tr "settings.authorized_integration.copy_audience"}}" type="button" data-clipboard-target="#audience">{{svg "octicon-copy" 16}}</button>
+					</div>
+				</div>
+			{{end}}
+		</div>

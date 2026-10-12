@@ -1,0 +1,21 @@
+-
+  id: 1
+  status: 1
+  reporter_id: 2  # @user2
+  content_type: 4 # Comment
+  content_id: 18  # user2/repo2/issues/2#issuecomment-18
+  category: 2     # Spam
+  remarks: The comment I'm reporting is pure SPAM.
+  shadow_copy_id: null
+  created_unix: 1752697980 # 2025-07-16 20:33:00
+
+-
+  id: 2
+  status: 1        # Open
+  reporter_id: 2   # @user2
+  content_type: 1  # User (users or organizations)
+  content_id: 1002 # @alexsmith
+  category: 2      # Spam
+  remarks: This user just posted a spammy comment on my issue.
+  shadow_copy_id: null
+  created_unix: 1752698010 # 2025-07-16 20:33:30

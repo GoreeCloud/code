@@ -1,0 +1,17 @@
+- token_id: 3
+  repo_id: 1
+  created_unix: 1772158384
+- token_id: 3
+  repo_id: 2
+  created_unix: 1772158384
+- token_id: 3
+  repo_id: 3
+  created_unix: 1772158384
+
+- token_id: 2
+  repo_id: 1
+  created_unix: 1772158384
+  # (no repo 2 for token 2)
+- token_id: 2
+  repo_id: 3
+  created_unix: 1772158384

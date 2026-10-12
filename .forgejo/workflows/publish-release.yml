@@ -1,0 +1,88 @@
+# SPDX-License-Identifier: MIT
+#
+# See also https://forgejo.org/docs/next/contributor/release/#stable-release-process
+#
+# TOKEN_NEXT_DIGEST is a token with write repository access to https://invisible.forgejo.org/infrastructure/next-digest issued by https://invisible.forgejo.org/forgejo-next-digest
+#
+# https://codeberg.org/forgejo-experimental/forgejo
+#
+#  Copies a release from codeberg.org/forgejo-integration to codeberg.org/forgejo-experimental
+#
+#  vars.ROLE: forgejo-experimental
+#  vars.FORGEJO: https://codeberg.org
+#  vars.FROM_OWNER: forgejo-integration
+#  vars.TO_OWNER: forgejo-experimental
+#  vars.REPO: forgejo
+#  vars.DOER: forgejo-experimental-ci
+#  secrets.TOKEN: <generated from codeberg.org/forgejo-experimental-ci>
+#
+# http://invisible.forgejo.org/forgejo/forgejo
+#
+#  Copies & sign a release from codeberg.org/forgejo-integration to codeberg.org/forgejo
+#
+#  vars.ROLE: forgejo-release
+#  vars.FORGEJO: https://codeberg.org
+#  vars.FROM_OWNER: forgejo-integration
+#  vars.TO_OWNER: forgejo
+#  vars.REPO: forgejo
+#  vars.DOER: release-team
+#  secrets.TOKEN: <generated from codeberg.org/release-team>
+#  secrets.GPG_PRIVATE_KEY: <XYZ>
+#  secrets.GPG_PASSPHRASE: <ABC>
+#
+name: Pubish release
+
+on:
+  push:
+    tags: 'v*'
+
+jobs:
+  publish:
+    runs-on: lxc-bookworm
+    if: vars.DOER != '' && vars.FORGEJO != '' && vars.TO_OWNER != '' && vars.FROM_OWNER != '' && secrets.TOKEN != ''
+    steps:
+      - uses: https://data.forgejo.org/actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+      - name: copy & sign
+        uses: https://data.forgejo.org/forgejo/forgejo-build-publish/publish@c131a10d0dab056dc39c7df7923feaf92c41609a # v5.7.1
+        with:
+          from-forgejo: ${{ vars.FORGEJO }}
+          to-forgejo: ${{ vars.FORGEJO }}
+          from-owner: ${{ vars.FROM_OWNER }}
+          to-owner: ${{ vars.TO_OWNER }}
+          repo: ${{ vars.REPO }}
+          release-notes: "See https://codeberg.org/forgejo/forgejo/src/branch/forgejo/release-notes-published/{VERSION}.md"
+          ref-name: ${{ github.ref_name }}
+          sha: ${{ github.sha }}
+          from-token: ${{ secrets.TOKEN }}
+          to-doer: ${{ vars.DOER }}
+          to-token: ${{ secrets.TOKEN }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+          verbose: ${{ vars.VERBOSE }}
+
+      - name: get trigger mirror issue
+        id: mirror
+        uses: https://data.forgejo.org/infrastructure/issue-action/get@c66839063e70625ad4306aeb038c2a5e899af840 # v1.5.0
+        with:
+          forgejo: https://code.forgejo.org
+          repository: forgejo/forgejo
+          labels: mirror-trigger
+
+      - name: trigger the mirror
+        uses: https://data.forgejo.org/infrastructure/issue-action/set@c66839063e70625ad4306aeb038c2a5e899af840 # v1.5.0
+        with:
+          forgejo: https://code.forgejo.org
+          repository: forgejo/forgejo
+          token: ${{ secrets.LABEL_ISSUE_FORGEJO_MIRROR_TOKEN }}
+          numbers: ${{ steps.mirror.outputs.numbers }}
+          label-wait-if-exists: 3600
+          label: trigger
+
+      - name: upgrade v*.next.forgejo.org
+        uses: https://data.forgejo.org/infrastructure/next-digest@e22026170bac6fd38c3034dbc33e66b52fe069d1 # v1.2.2
+        with:
+          url: https://placeholder:${{ secrets.TOKEN_NEXT_DIGEST }}@invisible.forgejo.org/infrastructure/next-digest
+          ref_name: '${{ github.ref_name }}'
+          image: 'codeberg.org/forgejo-experimental/forgejo'
+          tag_suffix: '-rootless'

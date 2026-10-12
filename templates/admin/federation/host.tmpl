@@ -1,0 +1,39 @@
+{{template "admin/layout_head" (dict "ctxData" . "pageClass" "admin config")}}
+	<div class="admin-setting-content">
+		{{if .Host}}
+		<h4 class="ui top attached header">
+			{{ctx.Locale.Tr "admin.federation.hosts.details_panel"}}
+		</h4>
+		<div class="ui attached table segment">
+			<dl class="admin-dl-horizontal">
+				<dt>{{ctx.Locale.Tr "admin.federation.host.id"}}</dt>
+				<dd>{{.Host.ID}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.federation.host.fqdn"}}</dt>
+				<dd>{{.Host.HostFqdn}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.federation.host.port"}}</dt>
+				<dd>{{.Host.HostPort}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.federation.host.schema"}}</dt>
+				<dd>{{.Host.HostSchema}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.federation.host.software_name"}}</dt>
+				<dd>{{.Host.NodeInfo.SoftwareName}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.federation.host.created"}}</dt>
+				<dd>{{DateUtils.AbsoluteShort .Host.Created}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.federation.host.updated"}}</dt>
+				<dd>{{DateUtils.AbsoluteShort .Host.Updated}}</dd>
+				<dt>{{ctx.Locale.Tr "admin.federation.host.latest_activity"}}</dt>
+				<dd>{{DateUtils.FullTime .Host.LatestActivity}}</dd>
+			</dl>
+		</div>
+		{{end}}
+		<h4 class="ui top attached header">
+			{{ctx.Locale.Tr "admin.federation.users.manage_panel"}}
+			<div class="ui right">
+				{{.UsersTotal}}
+			</div>
+		</h4>
+		<div class="ui attached table segment">
+			{{template "admin/federation/user_list" .}}
+		</div>
+		{{template "base/paginate" .}}
+	</div>
+{{template "admin/layout_footer" .}}

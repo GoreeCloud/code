@@ -1,0 +1,7 @@
+-
+  id: 5
+  token: abc
+  owner_id: 4 # scoped to user that will be deleted
+  is_active: true
+  created: 1695617751
+  updated: 1695617751

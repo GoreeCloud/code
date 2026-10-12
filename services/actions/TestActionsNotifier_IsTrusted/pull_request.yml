@@ -1,0 +1,12 @@
+-
+  id: 3000
+  type: 0 # pull request
+  status: 2 # mergeable
+  issue_id: 8000
+  index: 1000
+  head_repo_id: 11
+  base_repo_id: 10
+  head_branch: branch3000
+  base_branch: master
+  merge_base: 0abcb056019adb83
+  has_merged: false

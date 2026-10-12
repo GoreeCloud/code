@@ -1,0 +1,17 @@
+- id: 1
+  user_id: 1001
+  external_id: "1"
+  federation_host_id: 1
+  inbox_path: /api/v1/activitypub/user-id/1/inbox#bob
+
+- id: 2
+  user_id: 1002
+  external_id: "1"
+  federation_host_id: 2
+  inbox_path: /api/v1/activitypub/user-id/1/inbox#alice
+
+- id: 3
+  user_id: 1003
+  external_id: "2"
+  federation_host_id: 2
+  inbox_path: /api/v1/activitypub/user-id/2/inbox#eve

@@ -1,0 +1,14 @@
+<div id="milestone-section" hx-swap="morph" hx-target="#selected-milestone" hx-indicator="this">
+	<div class="ui {{if or (not .HasIssuesOrPullsWritePermission) .Repository.IsArchived}}disabled{{end}} floating jump select-milestone dropdown">
+		<a class="text muted flex-text-block">
+			<strong>{{ctx.Locale.Tr "repo.issues.new.milestone"}}</strong>
+			{{if and .HasIssuesOrPullsWritePermission (not .Repository.IsArchived)}}
+				{{svg "octicon-gear" 16 "tw-ml-1"}}
+			{{end}}
+		</a>
+		<div class="menu">
+			{{template "repo/issue/milestone/select_menu" .}}
+		</div>
+	</div>
+	{{template "repo/issue/milestone/selected" .}}
+</div>

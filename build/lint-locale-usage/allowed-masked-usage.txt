@@ -1,0 +1,17 @@
+# translation tooling test keys
+meta.last_line
+translation_meta.test
+
+# models/admin/task.go: instances of $TranslatableMessage.Format
+# this also gets instantiated as a Messenger once
+repo.migrate.migrating_failed.error
+
+# modules/setting/ui.go
+themes.names.
+
+# services/context/context.go
+relativetime.
+
+# templates/repo/settings/webhook/link_menu.tmpl, templates/webhook/new.tmpl: repo.settings.web_hook_name_
+# tests/integration/repo_archive_text_test.go
+repo.settings.

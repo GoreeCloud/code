@@ -1,0 +1,21 @@
+-
+  id: 1
+  token: "T3jOj8VZi-vK3LPGvav3EM"
+  inviter_id: 1
+  org_id: 3
+  team_id: 2
+  email: "user31@example.com"
+  invited_id: 31
+  created_unix: 1778862588
+  updated_unix: 1778862588
+
+-
+  id: 2
+  token: "D89db371f-uDtb824cBl9t"
+  inviter_id: 1
+  org_id: 3
+  team_id: 2
+  email: "external_user@example.com"
+  invited_id: null
+  created_unix: 1778862590
+  updated_unix: 1778862590

@@ -1,0 +1,80 @@
+# all entries will be used with now() == 2024-12-01
+-
+  id: 1000 # lingering log
+  attempt: 3
+  runner_id: 1
+  status: 3 # cancelled
+  repo_id: 4
+  owner_id: 1
+  commit_sha: "1000"
+  is_fork_pull_request: false
+  token_hash: "1000"
+  log_filename: path1
+  log_in_storage: false
+  log_expired: false
+  created: 1732575600 # date +%s --date 2024-11-26
+  updated: 1732575605 # a few seconds later
+
+-
+  id: 2000 # lingering log too new to be garbage collected
+  attempt: 3
+  runner_id: 1
+  status: 3 # cancelled
+  repo_id: 4
+  owner_id: 1
+  commit_sha: "2000"
+  is_fork_pull_request: false
+  token_hash: "2000"
+  log_filename: path2
+  log_in_storage: false
+  log_expired: false
+  created: 1732921200 # date +%s --date 2024-11-30
+  updated: 1732921205 # a few seconds later
+
+-
+  id: 3000 # log already in storage
+  attempt: 3
+  runner_id: 1
+  status: 3 # cancelled
+  repo_id: 4
+  owner_id: 1
+  commit_sha: "3000"
+  is_fork_pull_request: false
+  token_hash: "3000"
+  log_filename: path3
+  log_in_storage: true
+  log_expired: false
+  created: 1732575600 # date +%s --date 2024-11-26
+  updated: 1732575605 # a few seconds later
+
+-
+  id: 4000 # lingering log
+  attempt: 3
+  runner_id: 1
+  status: 3 # cancelled
+  repo_id: 4
+  owner_id: 1
+  commit_sha: "4000"
+  is_fork_pull_request: false
+  token_hash: "4000"
+  log_filename: path4
+  log_in_storage: false
+  log_expired: false
+  created: 1732575600 # date +%s --date 2024-11-26
+  updated: 1732575605 # a few seconds later
+
+-
+  id: 5000 # lingering log
+  attempt: 3
+  runner_id: 1
+  status: 3 # cancelled
+  repo_id: 4
+  owner_id: 1
+  commit_sha: "5000"
+  is_fork_pull_request: false
+  token_hash: "5000"
+  log_filename: path5
+  log_in_storage: false
+  log_expired: false
+  created: 1732575600 # date +%s --date 2024-11-26
+  updated: 1732575605 # a few seconds later

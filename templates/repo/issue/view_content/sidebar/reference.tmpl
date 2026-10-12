@@ -1,0 +1,17 @@
+<div class="ui form reference">
+	{{$issueReferenceLink := ""}}
+	{{if .Issue.IsPull}}
+		{{$issueReferenceLink = printf "%s!%d" .Issue.Repo.FullName .Issue.Index}}
+	{{else}}
+		{{$issueReferenceLink = printf "%s#%d" .Issue.Repo.FullName .Issue.Index}}
+	{{end}}
+	<span class="text">
+		<strong>
+			{{ctx.Locale.Tr "discussion.sidebar.reference"}}
+		</strong>
+	</span>
+	<div class="ui tw-flex tw-justify-between tw-items-end tw-mt-1" data-tooltip-content="{{$issueReferenceLink}}">
+		<span class="text column truncate">{{$issueReferenceLink}}</span>
+		<button class="ui two wide button column tw-p-2" data-tooltip-content="{{ctx.Locale.Tr "copy"}}" data-clipboard-text="{{$issueReferenceLink}}">{{svg "octicon-copy" 14}}</button>
+	</div>
+</div>

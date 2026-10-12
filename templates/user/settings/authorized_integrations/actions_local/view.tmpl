@@ -1,0 +1,123 @@
+{{template "user/settings/authorized_integrations/view_head" .}}
+
+<h4 class="ui top attached header {{if .Err_SourceRepo}}error{{end}}">
+	{{ctx.Locale.Tr "settings.authorized_integration.ui.forgejo_actions_local"}}
+</h4>
+<div class="ui attached bottom segment">
+	<p>{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.description"}}</p>
+
+	{{if eq .Form.SourceRepo ""}}
+		<div class="tw-flex tw-flex-wrap tw-gap-8">
+			<!-- left-hand side: repo list from a search -->
+			<div class="ui tab active list tw-flex-1">
+				<h5 id="action-select-repo">
+					{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.select_repository"}}
+				</h5>
+
+				<div class="ui small fluid action left icon input tw-mb-3">
+					<input type="search" name="action_repo_search" spellcheck="false" placeholder="{{ctx.Locale.Tr "search.repo_kind"}}" value="{{.Form.ActionRepoSearch}}">
+					<i class="icon">{{svg "octicon-search" 16}}</i>
+					<button class="ui small icon button" aria-label="{{ctx.Locale.Tr "search.search"}}" type="submit" name="action_set_page" value="1" formnovalidate="true" formmethod="get">
+						{{svg "octicon-search" 16}}
+					</button>
+				</div>
+
+				{{if eq (len .ActionsRepos) 0}}
+					{{ctx.Locale.Tr "settings.access_token.no_repositories_found"}}
+				{{else}}
+					<div class="tw-grid tw-items-center" style="grid-template-columns: min-content 1fr min-content;">
+						{{range .ActionsRepos}}
+							{{template "user/settings/repo_icon" .}}
+							<div class="text truncate">
+								{{.FullName}}
+							</div>
+							<button class="ui primary button tw-ml-2 tw-my-1 tiny" type="submit" aria-label="{{ctx.Locale.Tr "repo.editor.add" .FullName}}" formnovalidate="true" name="source_repo" value="{{.FullName}}" formmethod="get">
+								{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.select_repo"}}
+							</button>
+						{{end}}
+					</div>
+				{{end}}
+
+				{{/* Can't use base/paginate template include here because all the pagination links in
+				that template are simple <a href=...> links.  Here, we need to turn them into form
+				buttons so that we can submit the current form.  If a user just changed a value (eg. set
+				the token name, changed a selected permission) and then clicked a pagination button, the
+				new value that they changed needs to be submitted.  base/paginate would allow preserving
+				old values from before the change, but not new updates.  Implementing here also allows
+				the use of smaller styling. */}}
+				{{with .ActionsPage.Paginater}}
+					<input type="hidden" name="page" value="{{.Current}}">
+					<div class="center page buttons">
+						<div class="ui borderless pagination menu mini">
+							<button class="item navigation {{if .IsFirst}}disabled{{end}}" type="submit" formnovalidate="true" name="action_set_page" value="1" formmethod="get">
+								{{svg "gitea-double-chevron-left" 16 "tw-mr-1"}}
+								<span class="navigation_label">{{ctx.Locale.Tr "admin.first_page"}}</span>
+							</button>
+							<button class="item navigation {{if not .HasPrevious}}disabled{{end}}" type="submit" formnovalidate="true" name="action_set_page" value="{{.Previous}}" formmethod="get">
+								{{svg "octicon-chevron-left" 16 "tw-mr-1"}}
+								<span class="navigation_label">{{ctx.Locale.Tr "repo.issues.previous"}}</span>
+							</button>
+							{{range .Pages}}
+								{{if eq .Num -1}}
+									<a class="disabled item">...</a>
+								{{else}}
+									<button class="item navigation {{if .IsCurrent}}active{{end}}" type="submit" formnovalidate="true" name="action_set_page" value="{{.Num}}" formmethod="get">
+										{{.Num}}
+									</button>
+								{{end}}
+							{{end}}
+							<button class="item navigation {{if not .HasNext}}disabled{{end}}" type="submit" formnovalidate="true" name="action_set_page" value="{{.Next}}" formmethod="get">
+								<span class="navigation_label">{{ctx.Locale.Tr "repo.issues.next"}}</span>
+								{{svg "octicon-chevron-right" 16 "tw-ml-1"}}
+							</button>
+							<button class="item navigation {{if .IsLast}}disabled{{end}}" type="submit" formnovalidate="true" name="action_set_page" value="{{.TotalPages}}" formmethod="get">
+								<span class="navigation_label">{{ctx.Locale.Tr "admin.last_page"}}</span>
+								{{svg "gitea-double-chevron-right" 16 "tw-ml-1"}}
+							</button>
+						</div>
+					</div>
+				{{end}}
+			</div>
+		</div>
+	{{else}}
+		<div class="field tw-flex tw-items-center">
+			<div class="tw-mr-2">Source Repository:</div>
+			{{template "user/settings/repo_icon" .SourceRepo}}
+			<div class="text truncate">
+				{{.SourceRepo.FullName}}
+			</div>
+			<button class="ui primary button tw-ml-2 tw-my-1 tiny" formnovalidate="true" formmethod="get" name="source_repo" value="">
+				Change
+			</button>
+			<input type="hidden" name="source_repo" value="{{.Form.SourceRepo}}">
+		</div>
+	{{end}}
+
+	<div class="field {{if .Err_WorkflowFile}}error{{end}}">
+		<label for="workflow_file">{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.workflow_file.label"}}</label>
+		<input id="workflow_file" name="workflow_file" value="{{.Form.WorkflowFile}}">
+		<span class="help">{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.workflow_file.help" "https://pkg.go.dev/github.com/gobwas/glob#Compile" "github.com/gobwas/glob"}}</span>
+	</div>
+
+	<div class="field {{if .Err_GitRef}}error{{end}}">
+		<label for="git_ref">{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.git_ref.label"}}</label>
+		<input id="git_ref" name="git_ref" value="{{.Form.GitRef}}">
+		<span class="help">{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.git_ref.help" "https://pkg.go.dev/github.com/gobwas/glob#Compile" "github.com/gobwas/glob"}}</span>
+	</div>
+
+	<div class="field">
+		<label for="event">{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.event.label"}}</label>
+		<select id="event" name="event" multiple class="ui selection dropdown">
+			<option value="pull_request" {{if (SliceUtils.Contains .Form.Event "pull_request")}}selected{{end}}>pull_request</option>
+			<option value="push" {{if (SliceUtils.Contains .Form.Event "push")}}selected{{end}}>push</option>
+			<option value="issues" {{if (SliceUtils.Contains .Form.Event "issues")}}selected{{end}}>issues</option>
+			<option value="pull_request_target" {{if (SliceUtils.Contains .Form.Event "pull_request_target")}}selected{{end}}>pull_request_target</option>
+			<option value="release" {{if (SliceUtils.Contains .Form.Event "release")}}selected{{end}}>release</option>
+			<option value="schedule" {{if (SliceUtils.Contains .Form.Event "schedule")}}selected{{end}}>schedule</option>
+			<option value="workflow_dispatch" {{if (SliceUtils.Contains .Form.Event "workflow_dispatch")}}selected{{end}}>workflow_dispatch</option>
+		</select>
+		<span class="help">{{ctx.Locale.Tr "settings.authorized_integration.forgejo_actions_local.event.help"}}</span>
+	</div>
+</div>
+
+{{template "user/settings/authorized_integrations/view_footer" .}}

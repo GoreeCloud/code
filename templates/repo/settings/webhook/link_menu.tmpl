@@ -1,0 +1,12 @@
+{{$size := 20}}
+{{if .Size}}
+	{{$size = .Size}}
+{{end}}
+<div class="menu">
+	{{range .WebhookList}}
+		<a class="item" href="{{$.BaseLinkNew}}/{{.Type}}/new">
+			{{.Icon $size}}
+			{{ctx.Locale.Tr (print "repo.settings.web_hook_name_" .Type)}}
+		</a>
+	{{end}}
+</div>

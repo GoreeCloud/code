@@ -1,0 +1,192 @@
+# Case 600 -- on:push workflow with some secrets
+-
+  id: 600
+  run_id: 900
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+
+# Case 601 -- on: pull_request_target workflow, local PR (not fork)
+-
+  id: 601
+  run_id: 901
+  workflow_payload: |
+    "on":
+      pull_request_target:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+
+# Case 602 -- on: pull_request_target workflow, fork PR
+-
+  id: 602
+  run_id: 902
+  workflow_payload: |
+    "on":
+      pull_request_target:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+
+# Case 603 -- on: pull_request workflow, local PR (not fork)
+-
+  id: 603
+  run_id: 903
+  workflow_payload: |
+    "on":
+      pull_request:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+
+# Case 604 -- on: pull_request workflow, fork PR
+-
+  id: 604
+  run_id: 904
+  workflow_payload: |
+    "on":
+      pull_request:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+
+# Case 605 -- workflow call inner job, inherit secrets, 606 is the outer job
+-
+  id: 605
+  run_id: 905
+  workflow_payload: |
+    "on":
+      pull_request_target:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+    __metadata:
+      workflow_call_parent: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+-
+  id: 606
+  run_id: 905
+  workflow_payload: |
+    "on":
+      pull_request_target:
+    jobs:
+      invoke-reusable:
+        uses: ./.forgejo/workflows/produce.yml
+        secrets: inherit
+    __metadata:
+      workflow_call_id: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+
+# Case 607 -- workflow call two layer inner job, inherit secrets, 607->608->609
+-
+  id: 607
+  run_id: 906
+  workflow_payload: |
+    "on":
+      workflow_call:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+    __metadata:
+      workflow_call_parent: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+-
+  id: 608
+  run_id: 906
+  workflow_payload: |
+    "on":
+      workflow_call:
+    jobs:
+      invoke-reusable:
+        uses: ./.forgejo/workflows/produce-specific.yml
+        secrets: inherit
+    __metadata:
+      workflow_call_id: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+      workflow_call_parent: 1976193ec4c48a92ba58816b34116272f5b3a612b91494956e5b53ee70b8714f
+-
+  id: 609
+  run_id: 906
+  workflow_payload: |
+    "on":
+      pull_request:
+    jobs:
+      invoke-reusable:
+        uses: ./.forgejo/workflows/produce.yml
+        secrets:
+          secret_1: ${{ secrets.secret_1 }} -- but are you sure?
+    __metadata:
+      workflow_call_id: 1976193ec4c48a92ba58816b34116272f5b3a612b91494956e5b53ee70b8714f
+
+# Case 610 -- workflow call specifically defined secrets, 611 is the outer job, 612 is another job in the same workflow
+-
+  id: 610
+  run_id: 907
+  workflow_payload: |
+    "on":
+      workflow_call:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+    __metadata:
+      workflow_call_parent: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+-
+  id: 611
+  run_id: 907
+  needs: '["provide-outputs"]'
+  workflow_payload: |
+    "on":
+      workflow_dispatch:
+    jobs:
+      invoke-reusable:
+        uses: ./.forgejo/workflows/produce-specific.yml
+        secrets:
+          forgejo: context forgejo = ${{ forgejo.ref }}
+          inputs: context inputs = ${{ inputs.some_wd_input }}
+          matrix: context matrix = ${{ matrix.some-dimension }}
+          needs: context needs = ${{ needs.provide-outputs.outputs.some-output }}
+          secrets: context secrets = ${{ secrets.secret_1 }}
+          strategy: context strategy = ${{ strategy.fail-fast }}
+          vars: context vars = ${{ vars.repo_var }}
+        strategy:
+          fail-fast: false
+          matrix:
+            some-dimension:
+              - some-dimension-value
+    __metadata:
+      workflow_call_id: b5a9f46f1f2513d7777fde50b169d323a6519e349cc175484c947ac315a209ed
+-
+  id: 612
+  run_id: 907
+  job_id: provide-outputs
+  status: 1 # success
+  workflow_payload: |
+    "on":
+      workflow_dispatch:
+    jobs:
+      provide-outputs:
+        steps: []
+  task_id: 100

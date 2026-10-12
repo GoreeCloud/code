@@ -1,0 +1,29 @@
+-
+  id: 1001
+  type: 0 # Standard comment
+  poster_id: 1002 # @spammer01
+  issue_id: 1001 # contributor/first#1
+  content: And the first spammer; check SPAM-services/spammer-Tools#1
+  created_unix: 1121422990 # 2005-07-15 10:23:10
+
+-
+  id: 1002
+  type: 5 # Reference from a comment
+  poster_id: 1002 # @spammer01
+  issue_id: 1002 # SPAM-services/spammer-tools#1
+  content: ''
+  content_version: 0
+  created_unix: 1121422990
+  ref_repo_id: 1001
+  ref_issue_id: 1001
+  ref_comment_id: 1001
+  ref_action: 0
+  ref_is_pull: false
+
+-
+  id: 1003
+  type: 0 # Standard comment
+  poster_id: 9999 # Ghost user
+  issue_id: 1001 # contributor/first#1
+  content: Check my [website](https://test.net) for the best deals.
+  created_unix: 1752697810 # 2025-07-16 20:30:10

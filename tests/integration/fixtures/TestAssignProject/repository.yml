@@ -1,0 +1,30 @@
+-
+  id: 1001
+  owner_id: 1001
+  owner_name: test_assign_project_org
+  lower_name: test_assign_project_repo
+  name: test_assign_project_repo
+  default_branch: master
+  num_watches: 4
+  num_stars: 0
+  num_forks: 0
+  num_milestones: 3
+  num_closed_milestones: 1
+  num_projects: 1
+  num_closed_projects: 0
+  is_private: false
+  is_empty: false
+  is_archived: false
+  is_mirror: false
+  status: 0
+  is_fork: false
+  fork_id: 0
+  is_template: false
+  template_id: 0
+  size: 7597
+  is_fsck_enabled: true
+  close_issues_via_commit_in_any_branch: false
+  created_unix: 1731254961
+  updated_unix: 1731254961
+  topics: '[]'
+

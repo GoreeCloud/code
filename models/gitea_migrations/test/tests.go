@@ -1,0 +1,272 @@
+// Copyright 2022 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+//nolint:forbidigo
+package test
+
+import (
+	"context"
+	"database/sql"
+	"fmt"
+	"os"
+	"path"
+	"path/filepath"
+	"strings"
+	"testing"
+	"time"
+
+	"forgejo.org/models/db"
+	"forgejo.org/models/unittest"
+	"forgejo.org/modules/base"
+	"forgejo.org/modules/git"
+	"forgejo.org/modules/log"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/testlogger"
+	"forgejo.org/modules/util"
+
+	"code.forgejo.org/xorm/xorm"
+	"github.com/stretchr/testify/require"
+
+	_ "github.com/jackc/pgx/v5/stdlib" // Import pgx driver
+)
+
+// PrepareTestEnv prepares the test environment and reset the database. The skip parameter should usually be 0.
+// Provide models to be sync'd with the database - in particular any models you expect fixtures to be loaded from.
+//
+// fixtures in `models/gitea_migrations/fixtures/<TestName>` will be loaded automatically
+func PrepareTestEnv(t *testing.T, skip int, syncModels ...any) (*xorm.Engine, func()) {
+	t.Helper()
+	ourSkip := 2
+	ourSkip += skip
+	deferFn := testlogger.PrintCurrentTest(t, ourSkip)
+	require.NoError(t, os.RemoveAll(setting.RepoRootPath))
+	require.NoError(t, unittest.CopyDir(path.Join(setting.AppWorkPath, "tests/gitea-repositories-meta"), setting.RepoRootPath))
+	ownerDirs, err := os.ReadDir(setting.RepoRootPath)
+	if err != nil {
+		require.NoError(t, err, "unable to read the new repo root: %v\n", err)
+	}
+	for _, ownerDir := range ownerDirs {
+		if !ownerDir.Type().IsDir() {
+			continue
+		}
+		repoDirs, err := os.ReadDir(filepath.Join(setting.RepoRootPath, ownerDir.Name()))
+		if err != nil {
+			require.NoError(t, err, "unable to read the new repo root: %v\n", err)
+		}
+		for _, repoDir := range repoDirs {
+			_ = os.MkdirAll(filepath.Join(setting.RepoRootPath, ownerDir.Name(), repoDir.Name(), "objects", "pack"), 0o755)
+			_ = os.MkdirAll(filepath.Join(setting.RepoRootPath, ownerDir.Name(), repoDir.Name(), "objects", "info"), 0o755)
+			_ = os.MkdirAll(filepath.Join(setting.RepoRootPath, ownerDir.Name(), repoDir.Name(), "refs", "heads"), 0o755)
+			_ = os.MkdirAll(filepath.Join(setting.RepoRootPath, ownerDir.Name(), repoDir.Name(), "refs", "tag"), 0o755)
+		}
+	}
+
+	if err := deleteDB(); err != nil {
+		t.Errorf("unable to reset database: %v", err)
+		return nil, deferFn
+	}
+
+	x, err := newXORMEngine()
+	require.NoError(t, err)
+	if x != nil {
+		oldDefer := deferFn
+		deferFn = func() {
+			oldDefer()
+			if err := x.Close(); err != nil {
+				t.Errorf("error during close: %v", err)
+			}
+			if err := deleteDB(); err != nil {
+				t.Errorf("unable to reset database: %v", err)
+			}
+		}
+	}
+	if err != nil {
+		return x, deferFn
+	}
+
+	if len(syncModels) > 0 {
+		if err := x.Sync(syncModels...); err != nil {
+			t.Errorf("error during sync: %v", err)
+			return x, deferFn
+		}
+	}
+
+	fixturesDir := filepath.Join(setting.AppWorkPath, "models", "gitea_migrations", "fixtures", t.Name())
+
+	if _, err := os.Stat(fixturesDir); err == nil {
+		t.Logf("initializing fixtures from: %s", fixturesDir)
+		if err := unittest.InitFixtures(
+			unittest.FixturesOptions{
+				Dir:              fixturesDir,
+				OnlyAffectModels: syncModels,
+			}, x); err != nil {
+			t.Errorf("error whilst initializing fixtures from %s: %v", fixturesDir, err)
+			return x, deferFn
+		}
+		if err := unittest.LoadFixtures(x); err != nil {
+			t.Errorf("error whilst loading fixtures from %s: %v", fixturesDir, err)
+			return x, deferFn
+		}
+	} else if !os.IsNotExist(err) {
+		t.Errorf("unexpected error whilst checking for existence of fixtures: %v", err)
+	} else {
+		t.Logf("no fixtures found in: %s", fixturesDir)
+	}
+
+	return x, deferFn
+}
+
+func MainTest(m *testing.M) {
+	log.RegisterEventWriter("test", testlogger.NewTestLoggerWriter)
+
+	giteaRoot := base.SetupGiteaRoot()
+	if giteaRoot == "" {
+		fmt.Println("Environment variable $GITEA_ROOT not set")
+		os.Exit(1)
+	}
+	setting.AppWorkPath = giteaRoot
+	setting.AppPath = path.Join(giteaRoot, "gitea_migrations-should-not-need-a-binary") // use RunMainAppWithStdin if a binary is needed
+
+	giteaConf := os.Getenv("GITEA_CONF")
+	if giteaConf == "" {
+		giteaConf = path.Join(setting.AppWorkPath, "tests/sqlite.ini")
+		fmt.Printf("Environment variable $GITEA_CONF not set - defaulting to %s\n", giteaConf)
+	}
+
+	if !path.IsAbs(giteaConf) {
+		setting.CustomConf = path.Join(giteaRoot, giteaConf)
+	} else {
+		setting.CustomConf = giteaConf
+	}
+
+	tmpDataPath, err := os.MkdirTemp("", "data")
+	if err != nil {
+		fmt.Printf("Unable to create temporary data path %v\n", err)
+		os.Exit(1)
+	}
+
+	setting.CustomPath = filepath.Join(setting.AppWorkPath, "custom")
+	setting.AppDataPath = tmpDataPath
+
+	unittest.InitSettings()
+	if err = git.InitFull(context.Background()); err != nil {
+		fmt.Printf("Unable to InitFull: %v\n", err)
+		os.Exit(1)
+	}
+	setting.LoadDBSetting()
+	setting.InitLoggersForTest()
+
+	exitStatus := m.Run()
+
+	if err := testlogger.WriterCloser.Reset(); err != nil && exitStatus == 0 {
+		fmt.Printf("testlogger.WriterCloser.Reset: error ignored: %v\n", err)
+	}
+	if err := removeAllWithRetry(setting.RepoRootPath); err != nil {
+		fmt.Fprintf(os.Stderr, "os.RemoveAll: %v\n", err)
+	}
+	if err := removeAllWithRetry(tmpDataPath); err != nil {
+		fmt.Fprintf(os.Stderr, "os.RemoveAll: %v\n", err)
+	}
+	os.Exit(exitStatus)
+}
+
+func newXORMEngine() (*xorm.Engine, error) {
+	if err := db.InitEngine(context.Background()); err != nil {
+		return nil, err
+	}
+	x, err := unittest.GetXORMEngine()
+	if err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+func deleteDB() error {
+	switch {
+	case setting.Database.Type.IsSQLite3():
+		if err := util.Remove(setting.Database.Path); err != nil {
+			return err
+		}
+		return os.MkdirAll(path.Dir(setting.Database.Path), os.ModePerm)
+
+	case setting.Database.Type.IsMySQL():
+		db, err := sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s)/",
+			setting.Database.User, setting.Database.Passwd, setting.Database.Host))
+		if err != nil {
+			return err
+		}
+		defer db.Close()
+
+		databaseName := strings.SplitN(setting.Database.Name, "?", 2)[0]
+
+		if _, err = db.Exec(fmt.Sprintf("DROP DATABASE IF EXISTS %s", databaseName)); err != nil {
+			return err
+		}
+
+		if _, err = db.Exec(fmt.Sprintf("CREATE DATABASE IF NOT EXISTS %s", databaseName)); err != nil {
+			return err
+		}
+		return nil
+	case setting.Database.Type.IsPostgreSQL():
+		db, err := sql.Open("pgx", fmt.Sprintf("postgres://%s:%s@%s/?sslmode=%s",
+			setting.Database.User, setting.Database.Passwd, setting.Database.Host, setting.Database.SSLMode))
+		if err != nil {
+			return err
+		}
+		defer db.Close()
+
+		if _, err = db.Exec(fmt.Sprintf("DROP DATABASE IF EXISTS %s", setting.Database.Name)); err != nil {
+			return err
+		}
+
+		if _, err = db.Exec(fmt.Sprintf("CREATE DATABASE %s", setting.Database.Name)); err != nil {
+			return err
+		}
+		db.Close()
+
+		// Check if we need to setup a specific schema
+		if len(setting.Database.Schema) != 0 {
+			db, err = sql.Open("pgx", fmt.Sprintf("postgres://%s:%s@%s/%s?sslmode=%s",
+				setting.Database.User, setting.Database.Passwd, setting.Database.Host, setting.Database.Name, setting.Database.SSLMode))
+			if err != nil {
+				return err
+			}
+			defer db.Close()
+
+			schrows, err := db.Query(fmt.Sprintf("SELECT 1 FROM information_schema.schemata WHERE schema_name = '%s'", setting.Database.Schema))
+			if err != nil {
+				return err
+			}
+			defer schrows.Close()
+
+			if !schrows.Next() {
+				// Create and setup a DB schema
+				_, err = db.Exec(fmt.Sprintf("CREATE SCHEMA %s", setting.Database.Schema))
+				if err != nil {
+					return err
+				}
+			}
+
+			// Make the user's default search path the created schema; this will affect new connections
+			_, err = db.Exec(fmt.Sprintf(`ALTER USER "%s" SET search_path = %s`, setting.Database.User, setting.Database.Schema))
+			if err != nil {
+				return err
+			}
+			return nil
+		}
+	}
+
+	return nil
+}
+
+func removeAllWithRetry(dir string) error {
+	var err error
+	for range 20 {
+		err = os.RemoveAll(dir)
+		if err == nil {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	return err
+}

@@ -1,0 +1,89 @@
+{
+	"webauthn.error.timeout": "Alcanzouse o límite de tempo antes de que se puidera ler a súa clave. Volva cargar esta páxina e ténteo de novo.",
+	"webauthn.error.empty": "Debe definir un nome para esta clave.",
+	"webauthn.error.duplicated": "A clave de seguridade non está permitida para esta solicitude. Asegúrese de que a clave non estea xa rexistrada.",
+	"webauthn.error.unable_to_process": "O servidor non puido procesar a súa solicitude.",
+	"webauthn.error.insecure": "WebAuthn só admite conexións seguras. Para probar a través de HTTP, pode usar a orixe \"localhost\" ou \"127.0.0.1\"",
+	"webauthn.error.unknown": "Produciuse un erro descoñecido. Ténteo de novo.",
+	"webauthn.unsupported_browser": "O seu navegador non soporta WebAuthn actualmente.",
+	"webauthn.error": "Non se puido ler a súa clave de seguridade.",
+	"webauthn.use_twofa": "Use o Código de Dous Factores do seu Teléfono",
+	"webauthn.press_button": "Prema o botón da súa chave de seguridade…",
+	"webauthn.sign_in": "Prema o botón da súa chave de seguridade. Se a súa chave de seguridade non ten ningún botón, volva inserila.",
+	"webauthn.insert_key": "Insira a súa chave de seguridade",
+	"relativetime.now": "agora",
+	"relativetime.future": "máis adiante",
+	"repo.form.cannot_create": "Todos os espazos onde podes crear repositorios chegaron ao límite de repositorios creados.",
+	"followers.outgoing.list.self.none": "Non esas seguindo a ninguén.",
+	"followers.outgoing.list.none": "%s non está seguindo a ninguén.",
+	"relativetime.1day": "onte",
+	"relativetime.1week": "a semana pasada",
+	"relativetime.1month": "hai un mes",
+	"relativetime.1year": "hai un ano",
+	"relativetime.mins": {
+		"one": "hai %d minuto",
+		"other": "hai %d minutos"
+	},
+	"relativetime.hours": {
+		"one": "hai %d hora",
+		"other": "hai %d horas"
+	},
+	"relativetime.days": {
+		"one": "hai %d día",
+		"other": "hai %d días"
+	},
+	"relativetime.weeks": {
+		"one": "hai %d semana",
+		"other": "hai %d semanas"
+	},
+	"relativetime.months": {
+		"one": "hai %d mes",
+		"other": "hai %d meses"
+	},
+	"relativetime.years": {
+		"one": "hai %d ano",
+		"other": "hai %d anos"
+	},
+	"meta.last_line": " ",
+	"home.welcome.no_activity": "Sen actividade",
+	"home.welcome.activity_hint": "Aínda non hai nada no teu feed. Tanto as túas accións como a actividade dos repositorios seguidos aparecerán aqui.",
+	"home.explore_repos": "Explorar repositorios",
+	"home.explore_users": "Explorar usuarios",
+	"home.explore_orgs": "Explorar organizacións",
+	"fork.n_forks": {
+		"one": "%s fork",
+		"other": "%s forks"
+	},
+	"stars.list.none": "Ninguén lle dou unha estrela a este repo.",
+	"stars.n_stars": {
+		"one": "%s estrela",
+		"other": "%s estrelas"
+	},
+	"watch.list.none": "Ninguén está seguindo este repo.",
+	"watch.n_watchers": {
+		"one": "%s seguidor",
+		"other": "%s seguidores"
+	},
+	"followers.incoming.list.self.none": "Ninguén está seguindo o teu perfil.",
+	"followers.incoming.list.none": "Ninguén está seguindo este usuario.",
+	"repo.files.caption": "Arquivos do repositorio (os últimos commits primeiro)",
+	"repo.files.filename": "Nome do arquivo",
+	"repo.files.last_commit_message": "Mensaxe do último commit",
+	"repo.files.last_commit_date": "Data do último commit",
+	"repo.issues.filter_poster.hint": "Filtrar por autor",
+	"repo.issues.filter_assignee.hint": "Filtrar por usuario asignado",
+	"repo.issues.filter_reviewers.hint": "Filtrar polo usuario que revisou",
+	"repo.issues.filter_mention.hint": "Filtrar polo usuario mencionado",
+	"repo.issues.filter_modified.hint": "Filtrar pola data da última modificación",
+	"repo.issues.filter_sort.hint_with_placeholder": "Ordenar por: %s",
+	"issues.updated": "actualizado %s",
+	"issues.filters.labels.exclude": "Excluír etiqueta",
+	"issues.filters.labels.unexclude": "Limpar exclusión",
+	"repo.pulls.auto_merge.no_permission": "Non tes permisos para cancelar a mestura automática desta pull request.",
+	"repo.pulls.poster_manage_approval": "Xestionar a aprobación",
+	"repo.pulls.poster_requires_approval": "Algúns fluxos de traballo están <a href=\"%[1]s\">á espera de revisión</a>.",
+	"error.must_enable_2fa": "Esta instancia de Forgejo require que os usuarios activen a autenticación en dous pasos antes de acceder ás súas contas. Habilitaa en: %s",
+	"avatar.constraints_hint": "O avatar persoal non pode pesar máis de %s nin superar o tamaño de %dx%d píxeles",
+	"user.activitypub_feed.feed": "Fediverse Feed",
+	"user.activitypub_feed.no_activity": "Sen actividade no fediverso"
+}

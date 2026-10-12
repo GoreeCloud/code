@@ -1,0 +1,207 @@
+.organization .head .ui.header .ui.right {
+  margin-top: 5px;
+}
+
+.organization.new.org form {
+  margin: auto;
+}
+
+.organization.new.org form .ui.message {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .organization.new.org form {
+    width: 800px !important;
+  }
+  .organization.new.org form .header {
+    padding-inline-start: 280px !important;
+  }
+  .organization.new.org form .inline.field > label {
+    text-align: end;
+    width: 250px !important;
+    word-wrap: break-word;
+  }
+  .organization.new.org form .help {
+    margin-inline-start: 265px !important;
+  }
+  .organization.new.org form .optional .title {
+    margin-inline-start: 250px !important;
+  }
+  .organization.new.org form .inline.field > input,
+  .organization.new.org form .inline.field > textarea {
+    width: 50%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .organization.new.org form .optional .title {
+    margin-inline-start: 15px;
+  }
+  .organization.new.org form .inline.field > label {
+    display: block;
+  }
+}
+
+.organization.new.org form .header {
+  padding-inline-start: 0 !important;
+  text-align: center;
+}
+
+.page-content.organization #org-info {
+  overflow-wrap: anywhere;
+  flex: 1;
+}
+
+.page-content.organization #org-info .org-title {
+  display: flex;
+  column-gap: 1rem;
+  align-items: center;
+}
+
+.page-content.organization #org-info .org-title h1 {
+  margin: 0;
+  font-size: 2.5rem;
+}
+
+@media (max-width: 767.98px) {
+  .page-content.organization #org-info .org-header {
+    flex-direction: column;
+    margin-bottom: 1rem;
+  }
+  .page-content.organization #org-info .org-title {
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.page-content.organization #org-info .desc {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.page-content.organization #org-info .meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.page-content.organization .ui.top.header .ui.right {
+  margin-top: 0;
+}
+
+.page-content.organization.members .list {
+  display: grid;
+  grid-template-columns: minmax(min-content, auto) 1fr fit-content(100%) fit-content(100%);
+  color: var(--color-text-light-2);
+
+  .divider {
+    grid-column: 1 / -1;
+  }
+
+  /* Username (+display name) use header */
+  h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text);
+  }
+
+  .actions {
+    display: contents;
+  }
+
+  .link-action, .delete-button {
+    align-self: start;
+  }
+
+  a:has(img) {
+    margin-inline-end: 0.5rem;
+  }
+
+  .delete-button {
+    margin-inline-start: var(--button-spacing);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .page-content.organization.members .list {
+    /* Place both buttons in one column */
+    grid-template-columns: minmax(min-content, auto) 1fr fit-content(100%);
+
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: var(--button-spacing);
+    }
+
+    .link-action, .delete-button {
+      width: 100%;
+      margin: 0;
+    }
+  }
+}
+
+.page-content.organization .teams .item {
+  padding: 10px 15px;
+}
+
+.page-content.organization .members .ui.avatar {
+  width: 48px;
+  height: 48px;
+  margin-inline-end: 5px;
+  margin-bottom: 5px;
+}
+
+.organization.invite .invite-content {
+  max-width: 420px;
+  margin-inline: auto;
+  margin-block: 3rem;
+  text-align: center;
+}
+.organization.invite .invite-content :is(h2, p) {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+.organization.invite .invite-content h2 {
+  margin-block-end: 1rem;
+  font-size: 1.3rem;
+}
+.organization.invite h2 :is(b, strong) {
+  font-weight: var(--font-weight-bold);
+}
+
+.organization.teams .detail .item {
+  padding: 10px 15px;
+}
+
+.organization.teams .detail .item:not(:last-child) {
+  border-bottom: 1px solid var(--color-secondary);
+}
+
+.organization.teams .repositories .item,
+.organization.teams .members .item {
+  padding: 10px 19px;
+}
+
+.organization.teams .repositories .item:not(:last-child),
+.organization.teams .members .item:not(:last-child) {
+  border-bottom: 1px solid var(--color-secondary);
+}
+
+.organization.teams .repositories .item .button,
+.organization.teams .members .item .button {
+  padding: 9px 10px;
+  margin: 0;
+}
+
+.org-team-navbar .active.item {
+  background: var(--color-box-body) !important;
+}
+
+#add-member-modal .team-list {
+  max-height: 300px;
+  overflow-block: auto;
+}

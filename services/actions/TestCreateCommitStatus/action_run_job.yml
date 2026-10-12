@@ -1,0 +1,26 @@
+-
+  id: 400
+  run_id: 900
+  repo_id: 4
+  owner_id: 1
+  commit_sha: c7cd3cd144e6d23c9d6f3d07e52b2c1a956e0338
+  is_fork_pull_request: false
+  name: job_2
+  attempt: 1
+  job_id: job_2
+  task_id: 47
+  status: 7 # blocked
+  started: 1683636528
+  stopped: 1683636626
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: red

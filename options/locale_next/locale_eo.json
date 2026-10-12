@@ -1,0 +1,116 @@
+{
+	"markup.filepreview.truncated": "La superrigardo estas mallongigita",
+	"markup.filepreview.lines": "Linioj %[1]d ĝis %[2]d en %[3]s",
+	"markup.filepreview.line": "Linio %[1]d en %[2]s",
+	"actions.variables.update.success": "La variablo estas redaktita.",
+	"actions.variables.update.failed": "Ne eblas redakti la variablon.",
+	"actions.variables.creation.success": "La variablo \"%s\" estas aldonita.",
+	"webauthn.error.timeout": "Tempo elĉerpiĝis antaŭ legiĝo de via ŝlosilo. Bonvolu reenlegi la retpaĝon kaj reprovi.",
+	"webauthn.error.empty": "Vi devas agordi nomon por la ŝlosilo.",
+	"webauthn.error.duplicated": "La sekurŝlosilo ne rajtas fari tiun ĉi peton. Bonvolu certigi ke la ŝlosilo estas ne jam registrita.",
+	"webauthn.error.unable_to_process": "La servilo ne povis trakti vian peton.",
+	"webauthn.error.insecure": "La salutmaniero WebAuthn sole subtenas sekurajn konektiĝojn. Testante HTTP’e, oni uzu la retadreson «localhost» aŭ «127.0.0.1»",
+	"webauthn.error.unknown": "Eraris pro nekonata kialo. Bonvolu reprovi.",
+	"webauthn.unsupported_browser": "Via retfoliumilo ne jam subtenas la salutmanieron WebAuthn.",
+	"webauthn.error": "Ne povis legi vian sekurŝlosilon.",
+	"webauthn.use_twofa": "Uzi dumanieran salutkodon de via poŝtelefono",
+	"webauthn.press_button": "Bonvolu premi la butonon sur via sekurŝlosilo…",
+	"webauthn.sign_in": "Premu la butonon sur via sekurŝlosilo. Se mankas butono, elprenu kaj reenmetu vian sekurŝlosilon.",
+	"webauthn.insert_key": "Enmetu vian sekurŝlosilon",
+	"packages.npm.details.tag": "Etikedo",
+	"fork.n_forks": {
+		"one": "%s disbranĉigo",
+		"other": "%s disbranĉigoj"
+	},
+	"stars.n_stars": {
+		"one": "%s stelo",
+		"other": "%s steloj"
+	},
+	"search.milestone_kind": "Serĉi celojn…",
+	"home.welcome.no_activity": "Neniu aktiveco",
+	"home.explore_repos": "Esplori deponejojn",
+	"home.explore_users": "Esplori uzantojn",
+	"home.explore_orgs": "Esplori organizaĵojn",
+	"stars.list.none": "Neniu stelumis ĉi tiun deponejon.",
+	"relativetime.now": "nun",
+	"relativetime.mins": {
+		"one": "antaŭ %d minuto",
+		"other": "antaŭ %d minutoj"
+	},
+	"relativetime.hours": {
+		"one": "antaŭ %d horo",
+		"other": "antaŭ %d horoj"
+	},
+	"relativetime.days": {
+		"one": "antaŭ %d tago",
+		"other": "antaŭ %d tagoj"
+	},
+	"relativetime.weeks": {
+		"one": "antaŭ %d semajno",
+		"other": "antaŭ %d semajnoj"
+	},
+	"relativetime.months": {
+		"one": "antaŭ %d monato",
+		"other": "antaŭ %d monatoj"
+	},
+	"relativetime.years": {
+		"one": "antaŭ %d jaro",
+		"other": "antaŭ %d jaroj"
+	},
+	"relativetime.1day": "hieraŭ",
+	"relativetime.1week": "je lasta semajno",
+	"relativetime.1month": "je lasta monato",
+	"relativetime.1year": "je lasta jaro",
+	"migrate.github.description": "Migrigi datumojn el github.com aŭ Github Enterprise server.",
+	"migrate.git.description": "Migrigi nur deponejon el ajna Git servilo.",
+	"migrate.gitea.description": "Migrigi datumojn el gitea.com aŭ aliaj Gitea instancoj.",
+	"migrate.gitlab.description": "Migrigi datumojn el gitlab.com aŭ aliaj GitLab instancoj.",
+	"migrate.gogs.description": "Migrigi datumojn el notabug.org aŭ aliaj Gogs instancoj.",
+	"migrate.onedev.description": "Migrigi datumojn el code.onedev.io aŭ aliaj OneDev instancoj.",
+	"migrate.gitbucket.description": "Migrigi datumojn el GitBucket instancoj.",
+	"migrate.codebase.description": "Migrigi datumojn el codebasehq.com.",
+	"migrate.forgejo.description": "Migrigi datumojn el codeberg.org aŭ aliaj Forgejo instancoj.",
+	"migrate.items.pull_requests": "Tirpetoj",
+	"migrate.items.releases": "Eldonoj",
+	"migrate.in_progress.pulls": "Migrante tirpetojn",
+	"repo.settings.push_mirror.branch_filter.label": "Branĉa filtrilo (malnepra)",
+	"themes.names.forgejo-auto": "Forgejo (konformi kun sistema etoso)",
+	"themes.names.forgejo-light": "Forgejo hela",
+	"themes.names.forgejo-dark": "Forgejo malhela",
+	"error.not_found.title": "Paĝo ne trovita",
+	"alert.range_error": " devas esti nombro inter %[1]s kaj %[2]s.",
+	"profile.edit.link": "Redakti profilon",
+	"feed.atom.link": "Atomfluo",
+	"keys.ssh.link": "SSH ŝlosiloj",
+	"keys.gpg.link": "GPG ŝlosiloj",
+	"admin.moderation.reports": "Raportoj",
+	"admin.moderation.no_open_reports": "Ne estas malfermataj raportoj.",
+	"watch.list.none": "Neniu sekvas ĉi tiun deponejon.",
+	"followers.incoming.list.self.none": "Neniu sekvas vian profilon.",
+	"followers.incoming.list.none": "Neniu sekvas ĉi tiun uzanton.",
+	"followers.outgoing.list.self.none": "Vi sekvas neniun.",
+	"followers.outgoing.list.none": "%s ne plu sekvas vin.",
+	"relativetime.future": "estonte",
+	"repo.pulls.already_merged": "La kunfandaĵo malsukcesis: Ĉi tiu tirpeto jam estas kunfandita.",
+	"repo.pulls.merged_title_desc": {
+		"one": "kunfandis %[1]d enmeton el <code>%[2]s</code> en <code>%[3]s</code> %[4]s",
+		"other": "kunfandis %[1]d enmetojn el <code>%[2]s</code> en <code>%[3]s</code> %[4]s"
+	},
+	"repo.pulls.title_desc": {
+		"one": "volas kunfandi %[1]d enmeton el <code>%[2]s</code> en <code id=\"%[4]s\">%[3]s</code>",
+		"other": "volas kunfandi %[1]d enmetojn el <code>%[2]s</code> en <code id=\"%[4]s\">%[3]s</code>"
+	},
+	"home.welcome.activity_hint": "Nenio estas en via fluo ankoraŭ. Viaj agoj kaj aktiveco el deponejoj, kiujn vi rigardas, aperos ĉi tie.",
+	"repo.pulls.poster_manage_approval": "Administri aprobon",
+	"watch.n_watchers": {
+		"one": "%s observanto",
+		"other": "%s observantoj"
+	},
+	"repo.issues.filter_poster.hint": "Filtri laŭ la aŭtoro",
+	"repo.issues.filter_assignee.hint": "Filtri laŭ asignita uzanto",
+	"repo.issues.filter_reviewers.hint": "Filtri laŭ uzanto kiu recenzis",
+	"repo.issues.filter_mention.hint": "Filtri laŭ menciita uzanto",
+	"repo.issues.filter_modified.hint": "Filtri laŭ lasta modifdato",
+	"meta.last_line": " ",
+	"moderation.report_remarks": "Rimarkoj"
+}

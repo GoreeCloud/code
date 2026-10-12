@@ -1,0 +1,149 @@
+-
+  id: 1001
+  lower_name: contributor
+  name: contributor
+  full_name: The Contributor
+  email: contributor@example.org
+  keep_email_private: true
+  passwd: passwdSalt:password
+  passwd_hash_algo: dummy
+  type: 0
+  salt: passwdSalt
+  description: ''
+  created_unix: 1121422200 # 2005-07-15 10:10:00
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  avatar: avatar-hash-1001
+  avatar_email: contributor@example.org
+  use_custom_avatar: false
+  num_repos: 1
+
+-
+  id: 1002
+  lower_name: spammer01
+  name: spammer01
+  full_name: King of SPAM
+  email: spammer01@example.org
+  keep_email_private: false
+  passwd: passwdSalt:password
+  passwd_hash_algo: dummy
+  type: 0
+  location: '@master@smap.net'
+  website: http://spammer.xyz
+  pronouns: http://spam.me
+  salt: passwdSalt
+  description: I can help you abuse others inboxes. Updated prices on spammer.xyz/services
+  created_unix: 1121422800 # 2005-07-15 10:20:00
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  avatar: avatar-hash-1002
+  avatar_email: spammer01@example.org
+  use_custom_avatar: false
+
+-
+  id: 1003
+  lower_name: spam-services
+  name: SPAM-services
+  full_name: SPAM services
+  email: get@spamservices.co
+  keep_email_private: false
+  email_notifications_preference: ''
+  passwd: ''
+  passwd_hash_algo: ''
+  type: 1
+  location: www.spamservices.co
+  website: https://spamservices.co
+  salt: 1888c34e04642082a791b49cf147cc88
+  description: Contact us for **bulk emails** sending.
+  created_unix: 1121422860 # 2005-07-15 10:21:00
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  allow_create_organization: false
+  avatar: avatar-hash-1003
+  avatar_email: ''
+  use_custom_avatar: true
+  num_repos: 1
+
+-
+  id: 1004
+  lower_name: reporter1
+  name: reporter1
+  full_name: Reporter One
+  email: reporter1@example.org
+  keep_email_private: true
+  passwd: passwdSalt:password
+  passwd_hash_algo: dummy
+  type: 0
+  salt: passwdSalt
+  description: ''
+  created_unix: 1121423400 # 2005-07-15 10:30:00
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  avatar: avatar-hash-1004
+  avatar_email: reporter1@example.org
+  use_custom_avatar: false
+
+-
+  id: 1005
+  lower_name: reporter2
+  name: reporter2
+  full_name: Reporter Two
+  email: reporter2@example.org
+  keep_email_private: true
+  passwd: passwdSalt:password
+  passwd_hash_algo: dummy
+  type: 0
+  salt: passwdSalt
+  description: ''
+  created_unix: 1121424000 # 2005-07-15 10:40:00
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  avatar: avatar-hash-1005
+  avatar_email: reporter2@example.org
+  use_custom_avatar: false
+
+- # This is an abusive user (a spammer).
+  id: 1101
+  lower_name: frank
+  name: frank
+  full_name: Frank
+  email: frank@doubtfulshops.test
+  keep_email_private: false
+  passwd: passwdSalt:password
+  passwd_hash_algo: dummy
+  type: 0
+  salt: passwdSalt
+  website: https://doubtfulshops.test
+  description: 'We are a startup company which developed a novel cleaning product. Check out our website for latest offers. https://doubtfulshops.test/cleaning'
+  created_unix: 1752747600 # 2025-07-17 10:20:00
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  avatar: avatar-hash-1101
+  avatar_email: frank@doubtfulshops.test
+  use_custom_avatar: false
+
+- # This is an abusive user (an offender).
+  id: 1102
+  lower_name: grace
+  name: grace
+  full_name: Grace
+  email: grace@example.org
+  keep_email_private: false
+  passwd: passwdSalt:password
+  passwd_hash_algo: dummy
+  type: 0
+  salt: passwdSalt
+  description: ''
+  created_unix: 1752747630 # 2025-07-17 10:20:30
+  is_active: true
+  is_admin: false
+  is_restricted: false
+  avatar: avatar-hash-1102
+  avatar_email: grace@example.org
+  use_custom_avatar: false

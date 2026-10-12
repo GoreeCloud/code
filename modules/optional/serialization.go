@@ -1,0 +1,47 @@
+// Copyright 2024 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package optional
+
+import (
+	"forgejo.org/modules/json"
+
+	"go.yaml.in/yaml/v3"
+)
+
+func (o *Option[T]) UnmarshalJSON(data []byte) error {
+	var v *T
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+	*o = FromPtr(v)
+	return nil
+}
+
+func (o Option[T]) MarshalJSON() ([]byte, error) {
+	has, v := o.Get()
+	if !has {
+		return []byte("null"), nil
+	}
+	return json.Marshal(v)
+}
+
+func (o *Option[T]) UnmarshalYAML(value *yaml.Node) error {
+	var v *T
+	if err := value.Decode(&v); err != nil {
+		return err
+	}
+	*o = FromPtr(v)
+	return nil
+}
+
+func (o Option[T]) MarshalYAML() (any, error) {
+	has, v := o.Get()
+	if !has {
+		return nil, nil
+	}
+
+	value := new(yaml.Node)
+	err := value.Encode(v)
+	return value, err
+}

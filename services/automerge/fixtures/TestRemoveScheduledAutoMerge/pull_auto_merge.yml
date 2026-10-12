@@ -1,0 +1,8 @@
+-
+  id: 1001
+  pull_id: 1
+  doer_id: 2
+  merge_style: "merge"
+  message: "Automatically merged"
+  delete_branch_after_merge: false
+  created_unix: 1771800000

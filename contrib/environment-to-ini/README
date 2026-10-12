@@ -1,0 +1,48 @@
+Environment To Ini
+==================
+
+This tool allows defining Forgejo's entire configuration via environment
+variables, mostly geared towards usage in Docker.
+
+Forgejo needs to use an INI file for configuration because the running
+environment that starts the container may not be the same as the one used
+by the hooks. An INI file also gives a good default and means that
+users do not have to provide the entire set of environment variables.
+
+With those caveats above, this command provides a generic way of
+converting suitably structured environment variables into any ini
+value.
+
+When run, `environment-to-ini` will write the config files based on the
+environment variables provided.
+Check with the `-h` flag for several options to alter this behaviour.
+
+Environment variables of the form "FORGEJO__SECTION_NAME__KEY_NAME"
+will be mapped to the ini section "[section_name]" and the key
+"KEY_NAME" with the value as provided.
+
+Environment variables of the form "FORGEJO__SECTION_NAME__KEY_NAME__FILE"
+will be mapped to the ini section "[section_name]" and the key
+"KEY_NAME" with the value loaded from the specified file.
+
+Environment variables are usually restricted to a reduced character
+set "0-9A-Z_" - in order to allow the setting of sections with
+characters outside of that set, they should be escaped as following:
+"_0X2E_" for ".". The entire section and key names can be escaped as
+a UTF8 byte string if necessary. E.g. to configure:
+
+  """
+  ...
+  [log.console]
+  COLORIZE=false
+  STDERR=true
+  ...
+  """
+
+You would set the environment variables: "FORGEJO__LOG_0x2E_CONSOLE__COLORIZE=false"
+and "FORGEJO__LOG_0x2E_CONSOLE__STDERR=false". Other examples can be found
+on the configuration cheat sheet.
+
+To build locally, run:
+
+	go build contrib/environment-to-ini/environment-to-ini.go

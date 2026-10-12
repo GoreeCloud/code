@@ -1,0 +1,33 @@
+{{template "base/head" .}}
+
+<div role="main" class="page-content ui container">
+	<h1>Demo pages</h1>
+
+	<p>Various pages that may be helpful in development or testing</p>
+
+	<article>
+		<h2>Components</h2>
+		<ul>
+			{{range .SubNames}}
+			<li><a href="{{AppSubUrl}}/-/demo/{{.}}">{{.}}</a></li>
+			{{end}}
+		</ul>
+	</article>
+
+	<article>
+		<h2>Error pages</h2>
+		<ul>
+			<li><a href="{{AppSubUrl}}/-/demo/error/404">Not found</a></li>
+			<li><a href="{{AppSubUrl}}/-/demo/error/413">Quota exhaustion</a></li>
+			<li><a href="{{AppSubUrl}}/-/demo/error/500">Server error</a></li>
+		</ul>
+	</article>
+</div>
+
+<style>
+ul {
+	line-height: 2em;
+}
+</style>
+
+{{template "base/footer" .}}

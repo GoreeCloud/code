@@ -1,0 +1,84 @@
+date: Wed, 23 Jul 2025 06:51:21 GMT
+server: Apache/2.4.37 (Red Hat Enterprise Linux) OpenSSL/1.1.1k mod_wsgi/4.6.4 Python/3.6
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: same-origin
+x-frame-options: ALLOW-FROM https://pagure.io/
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 1464
+content-security-policy: default-src 'self';script-src 'self' 'nonce-Tr8ktNGt3XoBWQBIXrrPTeA1v'; style-src 'self' 'nonce-Tr8ktNGt3XoBWQBIXrrPTeA1v'; object-src 'none';base-uri 'self';img-src 'self' https:;connect-src 'self' https://pagure.io:8088;frame-src https://docs.pagure.org;frame-ancestors https://pagure.io;
+set-cookie: pagure=eyJfcGVybWFuZW50Ijp0cnVlLCJjc3JmX3Rva2VuIjoiYmI4NGRmYWMyY2Q2MzVlOWRkOTQwMGYwNzk2NzdlOGQxN2UxYTJlMCJ9.G2IX6Q.ETAG_sYgE1V9xYQNy_CD4HOP32Q; Expires=Sat, 23-Aug-2025 06:51:21 GMT; Secure; HttpOnly; Path=/
+content-type: application/json
+
+{
+  "access_groups": {
+    "admin": [], 
+    "collaborator": [], 
+    "commit": [], 
+    "ticket": []
+  }, 
+  "access_users": {
+    "admin": [
+      "ryanlerch"
+    ], 
+    "collaborator": [], 
+    "commit": [], 
+    "owner": [
+      "t0xic0der"
+    ], 
+    "ticket": []
+  }, 
+  "close_status": [
+    "Complete", 
+    "Baseless"
+  ], 
+  "custom_keys": [], 
+  "date_created": "1697168063", 
+  "date_modified": "1744795940", 
+  "description": "The source namespace for the Pagure Exporter project to run tests against", 
+  "full_url": "https://pagure.io/protop2g-test-srce", 
+  "fullname": "protop2g-test-srce", 
+  "id": 17042, 
+  "milestones": {
+    "Milestone AAAA": {
+      "active": true, 
+      "date": "1765497600"
+    }, 
+    "Milestone BBBB": {
+      "active": false, 
+      "date": "1765497600"
+    }, 
+    "Milestone CCCC": {
+      "active": true, 
+      "date": "1765497600"
+    }, 
+    "Milestone DDDD": {
+      "active": false, 
+      "date": "1765497600"
+    }
+  }, 
+  "name": "protop2g-test-srce", 
+  "namespace": null, 
+  "parent": null, 
+  "priorities": {
+    "": "", 
+    "1": "Common", 
+    "2": "Uncommon", 
+    "3": "Rare", 
+    "4": "Epic", 
+    "5": "Mythic"
+  }, 
+  "tags": [
+    "srce", 
+    "test", 
+    "gridhead", 
+    "protop2g"
+  ], 
+  "url_path": "protop2g-test-srce", 
+  "user": {
+    "full_url": "https://pagure.io/user/t0xic0der", 
+    "fullname": "Akashdeep Dhar", 
+    "name": "t0xic0der", 
+    "url_path": "user/t0xic0der"
+  }
+}

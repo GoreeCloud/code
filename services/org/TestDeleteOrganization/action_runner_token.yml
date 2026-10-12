@@ -1,0 +1,8 @@
+-
+  id: 5
+  token: abc
+  owner_id: 6 # scoped for an organization that will be deleted
+  repo_id: null
+  is_active: true
+  created: 1695617751
+  updated: 1695617751

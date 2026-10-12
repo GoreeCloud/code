@@ -1,0 +1,7 @@
+- id: 47301
+  run_id: 34901
+  status: 2 # StatusFailure
+
+- id: 47302
+  run_id: 34902
+  status: 5 # StatusWaiting

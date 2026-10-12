@@ -1,0 +1,28 @@
+-
+  id: 1
+  issue_id: 1
+  base_repo_id: 1
+
+# Expected to be deleted due to invalid issue foreign key
+-
+  id: 2
+  issue_id: 100
+  base_repo_id: 1
+
+# Expected to be deleted due to null issue foreign key
+-
+  id: 3
+  issue_id: null
+  base_repo_id: 1
+
+# Expected to be deleted due to invalid repository foreign key
+-
+  id: 4
+  issue_id: 1
+  base_repo_id: 100
+
+# Expected to be deleted due to null repository foreign key
+-
+  id: 5
+  issue_id: 1
+  base_repo_id: null

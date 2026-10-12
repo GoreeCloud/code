@@ -1,0 +1,16 @@
+-
+  id: 23
+  repo_id: 2
+  index: 3
+  poster_id: 2
+  original_author_id: 0
+  name: protected branch pull
+  content: pull request to a protected branch
+  milestone_id: 0
+  priority: 0
+  is_pull: true
+  is_closed: false
+  num_comments: 0
+  created_unix: 1707270422
+  updated_unix: 1707270422
+  is_locked: false

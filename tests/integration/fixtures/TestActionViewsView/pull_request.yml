@@ -1,0 +1,12 @@
+- id: 13
+  type: 0
+  status: 2 # mergeable
+  issue_id: 26
+  index: 1
+  head_repo_id: 4
+  base_repo_id: 4
+  head_branch: branch2
+  base_branch: master
+  merge_base: deadbeef
+  has_merged: false
+

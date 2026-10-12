@@ -1,0 +1,7 @@
+-
+  id: 1001
+  uid: 1001
+  email: AnotherTestUserWithUpperCaseEmail@otto.splvs.net
+  lower_email: anothertestuserwithuppercaseemail@otto.splvs.net
+  is_activated: false
+  is_primary: true

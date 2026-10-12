@@ -1,0 +1,44 @@
+<h4 class="ui top attached header">
+	{{.CustomHeaderTitle}}
+	<div class="ui right type dropdown">
+		<div class="text tw-flex tw-items-center">
+			{{.ctxData.WebhookHandler.Icon 20}}
+			{{ctx.Locale.Tr (print "repo.settings.web_hook_name_" .ctxData.HookType)}}
+		</div>
+		{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+		{{template "repo/settings/webhook/link_menu" .ctxData}}
+	</div>
+</h4>
+<div class="ui attached segment">
+	{{with .ctxData}}
+		<!-- the template argument cannot be dynamic  -->
+		{{if eq .HookType "forgejo"}}
+			{{template "webhook/new/forgejo" .}}
+		{{else if eq .HookType "gitea"}}
+			{{template "webhook/new/gitea" .}}
+		{{else if eq .HookType "gogs"}}
+			{{template "webhook/new/gogs" .}}
+		{{else if eq .HookType "slack"}}
+			{{template "webhook/new/slack" .}}
+		{{else if eq .HookType "discord"}}
+			{{template "webhook/new/discord" .}}
+		{{else if eq .HookType "dingtalk"}}
+			{{template "webhook/new/dingtalk" .}}
+		{{else if eq .HookType "telegram"}}
+			{{template "webhook/new/telegram" .}}
+		{{else if eq .HookType "msteams"}}
+			{{template "webhook/new/msteams" .}}
+		{{else if eq .HookType "feishu"}}
+			{{template "webhook/new/feishu" .}}
+		{{else if eq .HookType "matrix"}}
+			{{template "webhook/new/matrix" .}}
+		{{else if eq .HookType "wechatwork"}}
+			{{template "webhook/new/wechatwork" .}}
+		{{else if eq .HookType "packagist"}}
+			{{template "webhook/new/packagist" .}}
+		{{else if eq .HookType "sourcehut_builds"}}
+			{{template "webhook/new/sourcehut_builds" .}}
+		{{end}}
+	{{end}}
+</div>
+{{template "repo/settings/webhook/history" .ctxData}}

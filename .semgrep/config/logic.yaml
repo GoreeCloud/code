@@ -1,0 +1,11 @@
+rules:
+  - id: forgejo-logic-suspicious-OwnerID-check
+    pattern: |-
+      $X.OwnerID > 0
+    languages:
+      - go
+    severity: ERROR
+    message: >
+      Many resources like comments or runners cannot only be owned by regular users, which have positive IDs, but also
+      by predefined system users like Ghost or Forgejo Actions that have negative IDs. In those cases, ownership checks
+      should only exclude 0: `OwnerID != 0`.

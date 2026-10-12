@@ -1,0 +1,12 @@
+# Case w/ action_run_job.id = 603 -- this is the placeholder task from attempt 1
+-
+  id: 58
+  attempt: 1
+  runner_id: 1
+  status: 1 # success
+  started: 1683636528
+  stopped: 1683636626
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: false

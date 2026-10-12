@@ -1,0 +1,31 @@
+<p>{{ctx.Locale.Tr "repo.settings.add_web_hook_desc" "https://matrix.org/" (ctx.Locale.Tr "repo.settings.web_hook_name_matrix")}}</p>
+<form class="ui form" action="{{.BaseLink}}/{{or .Webhook.ID "matrix/new"}}" method="post">
+	<div class="required field {{if .Err_HomeserverURL}}error{{end}}">
+		<label for="homeserver_url">{{ctx.Locale.Tr "repo.settings.matrix.homeserver_url"}}</label>
+		<input id="homeserver_url" name="homeserver_url" type="url" value="{{.HookMetadata.HomeserverURL}}" autofocus required>
+	</div>
+	<!-- Access Token -->
+	<div class="field required {{if .Err_AccessToken}}error{{end}}">
+		<label for="access_token">{{ctx.Locale.Tr "form.AccessToken"}}</label>
+		<input id="access_token" name="access_token" type="password" value="{{.Webhook.HeaderAuthorizationTrimPrefix "Bearer "}}" required>
+		<span class="help">{{ctx.Locale.Tr "repo.settings.matrix.access_token_helper"}}</span>
+	</div>
+	<div class="required field {{if .Err_Room}}error{{end}}">
+		<label for="room_id">{{ctx.Locale.Tr "repo.settings.matrix.room_id"}}</label>
+		<input id="room_id" name="room_id" type="text" value="{{.HookMetadata.Room}}" placeholder="!opaque_id" pattern="!.+" maxlength="255" required>
+		<span class="help">{{ctx.Locale.Tr "repo.settings.matrix.room_id_helper" ("<code>!opaque_id:example.org</code>"|TrustHTML)}}</span>
+	</div>
+	<div class="field">
+		<label>{{ctx.Locale.Tr "repo.settings.matrix.message_type"}}</label>
+			<div class="ui selection dropdown">
+			<input type="hidden" id="message_type" name="message_type" value="{{if .HookMetadata.MessageType}}{{.HookMetadata.MessageType}}{{else}}1{{end}}">
+			<div class="default text"></div>
+			{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+			<div class="menu">
+				<div class="item" data-value="1">m.notice</div>
+				<div class="item" data-value="2">m.text</div>
+			</div>
+		</div>
+	</div>
+	{{template "webhook/shared-settings" .}}
+</form>

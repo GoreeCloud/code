@@ -1,0 +1,17 @@
+date: Wed, 23 Jul 2025 05:36:48 GMT
+server: Apache/2.4.37 (Red Hat Enterprise Linux) OpenSSL/1.1.1k mod_wsgi/4.6.4 Python/3.6
+x-xss-protection: 1; mode=block
+x-content-type-options: nosniff
+referrer-policy: same-origin
+x-frame-options: ALLOW-FROM https://pagure.io/
+strict-transport-security: max-age=31536000; includeSubDomains; preload
+content-length: 77
+content-security-policy: default-src 'self';script-src 'self' 'nonce-hiIOP1ZdLfgxJERlzriEOATjs'; style-src 'self' 'nonce-hiIOP1ZdLfgxJERlzriEOATjs'; object-src 'none';base-uri 'self';img-src 'self' https:;connect-src 'self' https://pagure.io:8088;frame-src https://docs.pagure.org;frame-ancestors https://pagure.io;
+set-cookie: pagure=eyJfcGVybWFuZW50Ijp0cnVlLCJjc3JmX3Rva2VuIjoiYWMyNjBhNjE5MjI0OTQ0YTU2Yzc5YjNmNzU3ZTU2MTYzZGQwMGMwNSJ9.G2IGcQ.22KbaZBjPxJkpIoTBIn1UtVzEjI; Expires=Sat, 23-Aug-2025 05:36:49 GMT; Secure; HttpOnly; Path=/
+content-type: application/json
+
+{
+  "tag": "ffff", 
+  "tag_color": "#00ff00", 
+  "tag_description": "ffff"
+}

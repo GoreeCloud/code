@@ -1,0 +1,53 @@
+{{/*
+Template Attributes:
+* CanReadUnitActions: true if the actions unit is active and readable
+* SomePullRequestRunsNeedApproval: true if there is at least one run waiting for approval
+* UserCanDelegateTrustWithPullRequest: true if the user can delegate trust in the context of pull requests
+* PullRequestPosterIsNotTrustedWithActions: true if the poster of the pull request needs to be approved to run actions
+* PullRequestPosterIsExplicitlyTrustedWithActions: true if the poster of the pull request is trusted to run actions (once or always)
+* PullRequestPosterIsImplicitlyTrustedWithActions: true if the poster of the pull request is trusted to run actions because of elevated permissions
+* Link: URL to the pull request
+*/}}
+
+{{if .CanReadUnitActions}}
+	{{if and .UserCanDelegateTrustWithPullRequest .PullRequestPosterIsExplicitlyTrustedWithActions}}
+		<div class="pull-request-trust-panel" id="pull-request-trust-panel">
+			<div class="divider"></div>
+			<div class="item item-section">
+				<div data-tooltip-content="{{ctx.Locale.Tr "repo.pulls.poster_is_trusted.tooltip"}}">
+					{{ctx.Locale.Tr "repo.pulls.poster_is_trusted" "https://forgejo.org/docs/latest/user/actions/security-pull-request/"}}
+				</div>
+				<form id="pull-request-trust-panel-revoke" method="post" action="{{.Link}}/action-user-trust">
+					<input type="hidden" name="trust" value="revoke">
+					<button class="primary button" data-tooltip-content="{{ctx.Locale.Tr "repo.pulls.poster_trust_revoke.tooltip"}}">{{ctx.Locale.Tr "repo.pulls.poster_trust_revoke"}}</button>
+				</form>
+			</div>
+		</div>
+	{{else if .SomePullRequestRunsNeedApproval}}
+		<div class="pull-request-trust-panel" id="pull-request-trust-panel">
+			<div class="divider"></div>
+			<div class="item item-section">
+				<div data-tooltip-content="{{ctx.Locale.Tr "repo.pulls.poster_requires_approval.tooltip"}}">
+					{{svg "octicon-alert" 16 "text red"}}
+					{{ctx.Locale.Tr "repo.pulls.poster_requires_approval" "https://forgejo.org/docs/latest/user/actions/security-pull-request/"}}
+				</div>
+				{{if .UserCanDelegateTrustWithPullRequest}}
+					<div class="button-sequence">
+						<form id="pull-request-trust-panel-deny" method="post" action="{{.Link}}/action-user-trust">
+							<input type="hidden" name="trust" value="deny">
+							<button class="primary button" data-tooltip-content="{{ctx.Locale.Tr "repo.pulls.poster_trust_deny.tooltip"}}">{{ctx.Locale.Tr "repo.pulls.poster_trust_deny"}}</button>
+						</form>
+						<form id="pull-request-trust-panel-once" method="post" action="{{.Link}}/action-user-trust">
+							<input type="hidden" name="trust" value="once">
+							<button class="primary button" data-tooltip-content="{{ctx.Locale.Tr "repo.pulls.poster_trust_once.tooltip"}}">{{ctx.Locale.Tr "repo.pulls.poster_trust_once"}}</button>
+						</form>
+						<form id="pull-request-trust-panel-always" method="post" action="{{.Link}}/action-user-trust">
+							<input type="hidden" name="trust" value="always">
+							<button class="primary button" data-tooltip-content="{{ctx.Locale.Tr "repo.pulls.poster_trust_always.tooltip"}}">{{ctx.Locale.Tr "repo.pulls.poster_trust_always"}}</button>
+						</form>
+					</div>
+				{{end}}
+			</div>
+		</div>
+	{{end}}
+{{end}}

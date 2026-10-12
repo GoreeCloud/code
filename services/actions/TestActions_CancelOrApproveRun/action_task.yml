@@ -1,0 +1,40 @@
+-
+  id: 710900
+  job_id: 10900
+  attempt: 0
+  runner_id: 1
+  status: 1 # success
+  started: 1683636528
+  stopped: 1683636626
+  repo_id: 63
+  owner_id: 2
+  commit_sha: c2d72f548424103f01ee1dc02889c1e2bff816b0
+  is_fork_pull_request: false
+  token_hash: 8d8ef48297195edcc8e22c70b3020eaa06c52976db67d39b4260c64a69a2cc1508825121b7b8394e48e00b1bf8718b2a867e
+  token_salt: jVuKnSPGgy
+  token_last_eight: eeb1a71a
+  log_filename: artifact-test2/2f/47.log
+  log_in_storage: true
+  log_length: 707
+  log_size: 90179
+  log_expired: false
+-
+  id: 711900
+  job_id: 11900
+  attempt: 0
+  runner_id: 1
+  status: 6 # running
+  started: 1683636528
+  stopped: 1683636626
+  repo_id: 63
+  owner_id: 2
+  commit_sha: c2d72f548424103f01ee1dc02889c1e2bff816b0
+  is_fork_pull_request: false
+  token_hash: 7d8ef48297195edcc8e22c70b3020eaa06c52976db67d39b4260c64a69a2cc1508825121b7b8394e48e00b1bf8718b2a867e
+  token_salt: jVuKnSPGgy
+  token_last_eight: eeb1a71a
+  log_filename: artifact-test2/2f/47.log
+  log_in_storage: true
+  log_length: 707
+  log_size: 90179
+  log_expired: false

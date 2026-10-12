@@ -1,0 +1,161 @@
+<!-- Label -->
+{{template "shared/label_filter" .}}
+
+{{if not .Milestone}}
+<!-- Milestone -->
+<div class="list-header-milestone ui {{if not (or .OpenMilestones .ClosedMilestones)}}disabled{{end}} dropdown jump item">
+	<span class="text">
+		{{ctx.Locale.Tr "repo.issues.filter_milestone"}}
+	</span>
+	{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+	<div class="menu">
+		<div class="ui icon search input">
+			<i class="icon">{{svg "octicon-search" 16}}</i>
+			<input type="text" placeholder="{{ctx.Locale.Tr "repo.issues.filter_milestone"}}">
+		</div>
+		<div class="divider"></div>
+		<a rel="nofollow" class="{{if not $.MilestoneID}}active selected {{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone=0&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_milestone_all"}}</a>
+		<a rel="nofollow" class="{{if $.MilestoneID}}{{if eq $.MilestoneID -1}}active selected {{end}}{{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone=-1&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_milestone_none"}}</a>
+		{{if .OpenMilestones}}
+			<div class="divider"></div>
+			<div class="header">{{ctx.Locale.Tr "repo.issues.filter_milestone_open"}}</div>
+			{{range .OpenMilestones}}
+			<a rel="nofollow" class="{{if $.MilestoneID}}{{if eq $.MilestoneID .ID}}active selected {{end}}{{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{$.SelectLabels}}&milestone={{.ID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">
+				{{svg "octicon-milestone" 16 "mr-2"}}
+				{{.Name}}
+			</a>
+			{{end}}
+		{{end}}
+		{{if .ClosedMilestones}}
+			<div class="divider"></div>
+			<div class="header">{{ctx.Locale.Tr "repo.issues.filter_milestone_closed"}}</div>
+			{{range .ClosedMilestones}}
+			<a rel="nofollow" class="{{if $.MilestoneID}}{{if eq $.MilestoneID .ID}}active selected {{end}}{{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{$.SelectLabels}}&milestone={{.ID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">
+				{{svg "octicon-milestone" 16 "mr-2"}}
+				{{.Name}}
+			</a>
+			{{end}}
+		{{end}}
+	</div>
+</div>
+{{end}}
+
+<!-- Project -->
+<div class="list-header-project ui{{if not (or .OpenProjects .ClosedProjects)}} disabled{{end}} dropdown jump item">
+	<span class="text">
+		{{ctx.Locale.Tr "repo.issues.filter_project"}}
+	</span>
+	{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+	<div class="menu">
+		<div class="ui icon search input">
+			<i class="icon">{{svg "octicon-search" 16}}</i>
+			<input type="text" placeholder="{{ctx.Locale.Tr "repo.issues.filter_project"}}">
+		</div>
+		<a rel="nofollow" class="{{if not .ProjectID}}active selected {{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project=&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_project_all"}}</a>
+		<a rel="nofollow" class="{{if eq .ProjectID -1}}active selected {{end}}item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project=-1&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_project_none"}}</a>
+		{{if .OpenProjects}}
+			<div class="divider"></div>
+			<div class="header">
+				{{ctx.Locale.Tr "repo.issues.new.open_projects"}}
+			</div>
+			{{range .OpenProjects}}
+				<a rel="nofollow" class="{{if $.ProjectID}}{{if eq $.ProjectID .ID}}active selected{{end}}{{end}} item tw-flex" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{$.SelectLabels}}&milestone={{$.MilestoneID}}&project={{.ID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">
+					{{svg .IconName 16 "tw-mr-2 tw-shrink-0"}}<span class="gt-ellipsis">{{.Title}}</span>
+				</a>
+			{{end}}
+		{{end}}
+		{{if .ClosedProjects}}
+			<div class="divider"></div>
+			<div class="header">
+				{{ctx.Locale.Tr "repo.issues.new.closed_projects"}}
+			</div>
+			{{range .ClosedProjects}}
+				<a rel="nofollow" class="{{if $.ProjectID}}{{if eq $.ProjectID .ID}}active selected{{end}}{{end}} item" href="?q={{$.Keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{$.SelectLabels}}&milestone={{$.MilestoneID}}&project={{.ID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">
+					{{svg .IconName 16 "tw-mr-2"}}{{.Title}}
+				</a>
+			{{end}}
+		{{end}}
+	</div>
+</div>
+
+<!-- Author -->
+<div class="list-header-author ui dropdown jump item user-remote-search" data-tooltip-content="{{ctx.Locale.Tr "repo.author_search_tooltip"}}"
+	data-search-url="{{if .Milestone}}{{$.RepoLink}}/issues/posters{{else}}{{$.Link}}/posters{{end}}"
+	data-selected-user-id="{{$.PosterID}}"
+	data-action-jump-url="?q={{StringUtils.RemoveAllPrefix $.Keyword "author:"}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{$.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={user_id}{{if $.ShowArchivedLabels}}&archived=true{{end}}"
+>
+	<span class="text">
+		{{ctx.Locale.Tr "repo.issues.filter_poster"}}
+	</span>
+	{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+	<div class="menu">
+		<div class="ui icon search input">
+			<i class="icon">{{svg "octicon-search" 16}}</i>
+			<input type="text" placeholder="{{ctx.Locale.Tr "repo.issues.filter_poster"}}">
+		</div>
+		<a class="item" data-value="0">{{ctx.Locale.Tr "repo.issues.filter_poster_no_select"}}</a>
+	</div>
+</div>
+
+<!-- Assignee -->
+<div class="list-header-assignee ui {{if not .Assignees}}disabled{{end}} dropdown jump item">
+	<span class="text">
+		{{ctx.Locale.Tr "repo.issues.filter_assignee"}}
+	</span>
+	{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+	<div class="menu">
+		<div class="ui icon search input">
+			<i class="icon">{{svg "octicon-search" 16}}</i>
+			<input type="text" placeholder="{{ctx.Locale.Tr "repo.issues.filter_assignee"}}">
+		</div>
+		{{$keyword := StringUtils.RemoveAllPrefix $.Keyword "assignee:"}}
+		<a rel="nofollow" class="{{if not .AssigneeID}}active selected {{end}}item" href="?q={{$keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee=&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_assginee_no_select"}}</a>
+		<a rel="nofollow" class="{{if eq .AssigneeID -1}}active selected {{end}}item" href="?q={{$keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee=-1&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_assginee_no_assignee"}}</a>
+		<div class="divider"></div>
+		{{range .Assignees}}
+			<a rel="nofollow" class="{{if eq $.AssigneeID .ID}}active selected{{end}} item tw-flex" href="?q={{$keyword}}&type={{$.ViewType}}&sort={{$.SortType}}&state={{$.State}}&labels={{$.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{.ID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">
+				{{ctx.AvatarUtils.Avatar . 20}}{{template "repo/search_name" .}}
+			</a>
+		{{end}}
+	</div>
+</div>
+
+{{if .IsSigned}}
+	<!-- Type -->
+	<div class="list-header-type ui dropdown type jump item">
+		<span class="text">
+			{{ctx.Locale.Tr "repo.issues.filter_type"}}
+		</span>
+		{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+		<div class="menu">
+			<a rel="nofollow" class="{{if eq .ViewType "all"}}active {{end}}item" href="?q={{$.Keyword}}&type=all&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{if .PageIsPullList}}{{ctx.Locale.Tr "repo.issues.filter_type.all_pull_requests"}}{{else}}{{ctx.Locale.Tr "repo.issues.filter_type.all_issues"}}{{end}}</a>
+			<a rel="nofollow" class="{{if eq .ViewType "assigned"}}active {{end}}item" href="?q={{$.Keyword}}&type=assigned&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_type.assigned_to_you"}}</a>
+			<a rel="nofollow" class="{{if eq .ViewType "created_by"}}active {{end}}item" href="?q={{$.Keyword}}&type=created_by&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_type.created_by_you"}}</a>
+			{{if .PageIsPullList}}
+				<a rel="nofollow" class="{{if eq .ViewType "review_requested"}}active {{end}}item" href="?q={{$.Keyword}}&type=review_requested&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_type.review_requested"}}</a>
+				<a rel="nofollow" class="{{if eq .ViewType "reviewed_by"}}active {{end}}item" href="?q={{$.Keyword}}&type=reviewed_by&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_type.reviewed_by_you"}}</a>
+			{{end}}
+			<a rel="nofollow" class="{{if eq .ViewType "mentioned"}}active {{end}}item" href="?q={{$.Keyword}}&type=mentioned&sort={{$.SortType}}&state={{$.State}}&labels={{.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{ctx.Locale.Tr "repo.issues.filter_type.mentioning_you"}}</a>
+		</div>
+	</div>
+{{end}}
+
+<!-- Sort -->
+<div class="list-header-sort ui dropdown downward type jump item">
+	<span class="text">
+		{{ctx.Locale.Tr "repo.issues.filter_sort"}}
+	</span>
+	{{svg "octicon-triangle-down" 14 "dropdown icon"}}
+	<div class="menu">
+		{{$keyword := StringUtils.RemoveAllPrefix $.Keyword "sort:"}}
+		{{$sortType := .SortType}}
+		{{if not .SortType}}
+			{{$sortType = "relevance"}}
+		{{end}}
+
+		{{range $opt := StringUtils.Make "relevance" "latest" "oldest" "recentupdate" "leastupdate" "mostcomment" "leastcomment" "nearduedate" "farduedate"}}
+			{{$text := ctx.Locale.Tr (printf "repo.issues.filter_sort.%s" $opt)}}
+			<a rel="nofollow" class="{{if eq $sortType $opt}}active {{end}}item" href="?q={{$keyword}}&type={{$.ViewType}}&sort={{$opt}}&state={{$.State}}&labels={{$.SelectLabels}}&milestone={{$.MilestoneID}}&project={{$.ProjectID}}&assignee={{$.AssigneeID}}&poster={{$.PosterID}}{{if $.ShowArchivedLabels}}&archived=true{{end}}">{{$text}}</a>
+		{{end}}
+	</div>
+</div>

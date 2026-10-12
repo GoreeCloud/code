@@ -1,0 +1,15 @@
+Content-Length: 77
+Content-Type: application/json
+X-Xss-Protection: 1; mode=block
+Content-Security-Policy: default-src 'self';script-src 'self' 'nonce-n8CH3n7QkxYS4ITojGCPv0Qaf'; style-src 'self' 'nonce-n8CH3n7QkxYS4ITojGCPv0Qaf'; object-src 'none';base-uri 'self';img-src 'self' https:;connect-src 'self' https://pagure.io:8088;frame-src https://docs.pagure.org;frame-ancestors https://pagure.io;
+Set-Cookie: pagure=eyJfcGVybWFuZW50Ijp0cnVlLCJjc3JmX3Rva2VuIjoiMDQyNDhlM2I3NDMzNWU3MDNkOWQ4MDk5M2FhNmYzZTk1N2M3NWFiNiJ9.G4-gsw.fIL0G11hmPPmHfKgqa3UGbhc3Wg; Expires=Fri, 26-Sep-2025 19:46:59 GMT; Secure; HttpOnly; Path=/
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+X-Frame-Options: ALLOW-FROM https://pagure.io/
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+
+{
+  "tag": "cccc", 
+  "tag_color": "#ffff00", 
+  "tag_description": "cccc"
+}

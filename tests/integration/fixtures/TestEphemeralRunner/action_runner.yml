@@ -1,0 +1,75 @@
+-
+  id: 10000008
+  name: ephemeral_runner_to_be_deleted
+  uuid: 3FF231BD-FBB7-4E4B-9602-E6F28363EF20
+  token_hash: e379fa0089b8829085497fd5231f170f4e5ab44fa3dc7c4e2b5b5ce72e01fab2930d9e2ea3a65183f2db93c00e3a3dc9cae2
+  token_salt: saltysaltsalt
+  # token: mysuuupersecrettoekn
+  ephemeral: true
+  version: "1.0.0"
+  owner_id: 0
+  repo_id: 64
+  description: "This runner is going to be deleted"
+  agent_labels: '["job_for_org_runner_scope_test"]'
+- # ephemeral org runner for scope change test
+  id: 10000010
+  name: ephemeral_org_runner_for_scope_test
+  uuid: a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d
+  token_hash: c0ff52ff7e163e2bd7ed8654858d4532b7852f767347c413b50deed646886e3255d56f232785cab6bdc1eb667707eaa1e70e
+  token_salt: saltysaltsalt
+  # token: 379fa0089b8829085497fd5231f170f4e
+  ephemeral: true
+  version: "1.0.0"
+  owner_id: 10
+  repo_id: 0
+  description: "Ephemeral org runner for testing scope change"
+  agent_labels: '["job_for_org_runner_scope_test"]'
+  created: 1716104432
+  updated: 1716104432
+  deleted: ~
+- # ephemeral runner for zombie task test
+  id: 10000011
+  name: ephemeral_runner_for_zombie_test
+  uuid: b2c3d4e5-f6a7-5b6c-9d0e-1f2a3b4c5d6e
+  token_hash: notvalid
+  token_salt: notvalid
+  ephemeral: true
+  version: "1.0.0"
+  owner_id: 0
+  repo_id: 64
+  description: "Ephemeral runner for testing zombie cleanup"
+  agent_labels: '["zombie-test"]'
+  created: 1716104432
+  updated: 1716104432
+  deleted: ~
+- # ephemeral user-scoped runner for user deletion test
+  id: 10000012
+  name: ephemeral_user_runner_for_deletion_test
+  uuid: c3d4e5f6-a7b8-6c7d-0e1f-2a3b4c5d6e7f
+  token_hash: f480ga1190c9930196508ge6342g271g5f6bc56c878458d524c61feff757f8746166e67c343896dbc7cde2fc778808fbb2f81
+  token_salt: saltysaltsalt
+  # token: userdeletiontoken123456
+  ephemeral: true
+  version: "1.0.0"
+  owner_id: 2
+  repo_id: 0
+  description: "Ephemeral user runner for testing user deletion"
+  agent_labels: '["user-deletion-test"]'
+  created: 1716104432
+  updated: 1716104432
+  deleted: ~
+- id: 10000013
+  name: ephemeral_org_runner_for_deletion_test
+  uuid: d4e5f6a7-b8c9-7d8e-1f2a-3b4c5d6e7f8a
+  token_hash: fix-the-hash-if-you-want-to-use-runner-api
+  token_salt: saltysaltsalt
+  # token: orgdeletiontoken123456
+  ephemeral: true
+  version: "1.0.0"
+  owner_id: 3
+  repo_id: 0
+  description: "Ephemeral org runner for testing org deletion"
+  agent_labels: '["org-deletion-test"]'
+  created: 1716104432
+  updated: 1716104432
+  deleted: ~

@@ -1,0 +1,15 @@
+-
+  id: 20
+  org_id: 3
+  team_id: 26
+  repo_id: 32 # org3/repo21 - public
+-
+  id: 21
+  org_id: 3
+  team_id: 26
+  repo_id: 3 # org3/repo3 - private
+-
+  id: 22
+  org_id: 3
+  team_id: 26
+  repo_id: 5 # org3/repo5 - private

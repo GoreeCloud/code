@@ -1,0 +1,19 @@
+{{template "user/settings/authorized_integrations/view_head" .}}
+
+<h4 class="ui top attached header">
+	{{ctx.Locale.Tr "settings.authorized_integration.claims.generic"}}
+</h4>
+<div class="ui attached bottom segment">
+	<div class="required field {{if .Err_Issuer}}error{{end}}">
+		<label for="issuer">{{ctx.Locale.Tr "settings.authorized_integration.field.issuer"}}</label>
+		<input id="issuer" name="issuer" value="{{.Form.Issuer}}" required maxlength="255">
+	</div>
+
+	<div class="field {{if .Err_ClaimRules}}error{{end}}">
+		<label for="claim_rules">{{ctx.Locale.Tr "settings.authorized_integration.field.claim_rules"}}</label>
+		<textarea id="claim_rules" name="claim_rules" class="tw-hidden">{{.Form.ClaimRules}}</textarea>
+		{{template "shared/codemirror_container" .}}
+	</div>
+</div>
+
+{{template "user/settings/authorized_integrations/view_footer" .}}

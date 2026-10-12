@@ -1,0 +1,218 @@
+-
+  id: 600
+  run_id: 900
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: job_1
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  started: 1683636528
+  needs: '[]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: red
+
+-
+  id: 601
+  run_id: 901
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: job_1
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: ${{ fromJSON(needs.define-matrix.outputs.colors) }}
+    incomplete_matrix: true
+    incomplete_matrix_needs:
+      job: define-matrix
+-
+  id: 602
+  run_id: 901
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 100
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 603
+  run_id: 902
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: job_1
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["define-matrix"]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts (incomplete matrix)
+        runs-on: docker
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            color: ${{ fromJSON(needs.oops-something-wrong-here.outputs.colors) }}
+    incomplete_matrix: true
+    incomplete_matrix_needs:
+      job: oops-something-wrong-here
+-
+  id: 604
+  run_id: 902
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: define-matrix
+  attempt: 0
+  job_id: define-matrix
+  task_id: 100
+  status: 1 # success
+  runs_on: '["fedora"]'
+
+-
+  id: 605
+  run_id: 903
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: job_1
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '[]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: ${{ matrix.platform-oops-wrong-dimension }}
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            os: [ nixos, ubuntu ]
+    incomplete_runs_on: true
+    incomplete_runs_on_matrix:
+      dimension: platform-oops-wrong-dimension
+
+-
+  id: 606
+  run_id: 904
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 0
+  job_id: job_1
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '[]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      produce-artifacts:
+        name: produce-artifacts
+        runs-on: ${{ matrix.platform-oops-wrong-dimension }}
+        steps:
+          - run: echo "OK!"
+        strategy:
+          matrix:
+            os: [ "${{ needs.some-job.outputs.some-output }}", ubuntu ]
+    incomplete_runs_on: true
+    incomplete_runs_on_matrix:
+      dimension: platform-oops-wrong-dimension
+    incomplete_matrix: true
+-
+  id: 607
+  run_id: 905
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_1
+  attempt: 1
+  job_id: job_1
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '[]'
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      job_1:
+        runs-on: fedora
+        steps:
+          - run: echo "OK!"
+-
+  id: 608
+  run_id: 905
+  repo_id: 63
+  owner_id: 2
+  commit_sha: 97f29ee599c373c729132a5c46a046978311e0ee
+  is_fork_pull_request: 0
+  name: job_2
+  attempt: 1
+  job_id: job_2
+  task_id: 0
+  status: 7 # blocked
+  runs_on: '["fedora"]'
+  needs: '["unknown","Job_1"]' # invalid capitalization of job_1
+  workflow_payload: |
+    "on":
+      push:
+    jobs:
+      job_2:
+        runs-on: fedora
+        steps:
+          - run: echo "OK!"

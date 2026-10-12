@@ -1,0 +1,22 @@
+X-Xss-Protection: 1; mode=block
+Content-Length: 452
+Set-Cookie: pagure=eyJfcGVybWFuZW50Ijp0cnVlLCJjc3JmX3Rva2VuIjoiZDAxNjdjNGQwYTI4ZDRiY2RlNDVmN2NmMjE4YmExOTEyZDQyMTNhMCJ9.G4-gtQ.pOTn9bI3Kb4T50pd_-8wV840Reg; Expires=Fri, 26-Sep-2025 19:47:01 GMT; Secure; HttpOnly; Path=/
+Content-Type: application/json
+X-Content-Type-Options: nosniff
+Referrer-Policy: same-origin
+X-Frame-Options: ALLOW-FROM https://pagure.io/
+Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+Content-Security-Policy: default-src 'self';script-src 'self' 'nonce-ye8eyhQR7cRy062VVRWLSeYzI'; style-src 'self' 'nonce-ye8eyhQR7cRy062VVRWLSeYzI'; object-src 'none';base-uri 'self';img-src 'self' https:;connect-src 'self' https://pagure.io:8088;frame-src https://docs.pagure.org;frame-ancestors https://pagure.io;
+
+{
+  "author": "Akashdeep Dhar", 
+  "commit_time": 1747635352, 
+  "commit_time_offset": 0, 
+  "committer": "Akashdeep Dhar", 
+  "hash": "1a6ccc212aa958a0fe76155c2907c889969a7224", 
+  "message": "Change the branch identity to `test-ffff` in the README.md file\n\nSigned-off-by: Akashdeep Dhar <akashdeep.dhar@gmail.com>\n", 
+  "parent_ids": [
+    "01b420e2964928a15f790f9b7c1a0053e7b5f0a5"
+  ], 
+  "tree_id": "0c5e64a6b912cb0c3d66e66896fa98a98da69fe4"
+}

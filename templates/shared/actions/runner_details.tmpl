@@ -1,0 +1,158 @@
+<div class="runner-container">
+	<h4 class="ui top attached header">
+		{{ctx.Locale.Tr "actions.runners.runner_title" .Runner.Name}}
+		{{if .Runner.Editable $.RunnerOwnerID $.RunnerRepoID}}
+			<div class="ui right">
+				<a class="ui primary tiny button" tabindex="0" href="{{$.Link}}/edit">
+					{{ctx.Locale.Tr "actions.runners.edit_runner_button"}}
+				</a>
+			</div>
+		{{end}}
+	</h4>
+	<div class="ui attached segment">
+		<dl aria-label="Properties of {{.Runner.Name}}">
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.uuid"}}</dt>
+				<dd>
+					{{.Runner.UUID}}
+				</dd>
+			</div>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.owner_type"}}</dt>
+				<dd>
+					{{.Runner.BelongsToOwnerType.LocaleString ctx.Locale}}
+				</dd>
+			</div>
+			{{if and $.PageIsAdmin .Runner.BelongsToOwnerName}}
+			<div class="item">
+				<dt>{{.Runner.BelongsToOwnerType.LocaleString ctx.Locale}}</dt>
+				<dd>
+					{{.Runner.BelongsToOwnerName}}
+				</dd>
+			</div>
+			{{end}}
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.labels"}}</dt>
+				<dd class="tw-flex tw-items-start tw-flex-wrap tw-gap-2">
+					{{if gt (len .Runner.AgentLabels) 0}}
+						{{range .Runner.AgentLabels}}
+							<div class="ui label">{{.}}</div>
+						{{end}}
+					{{else}}
+						&mdash;
+					{{end}}
+				</dd>
+			</div>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.last_online"}}</dt>
+				<dd>
+					<div>
+						{{if .Runner.LastOnline}}
+							{{DateUtils.TimeSince .Runner.LastOnline}}
+						{{else}}
+							{{ctx.Locale.Tr "never"}}
+						{{end}}
+					</div>
+				</dd>
+			</div>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.status"}}</dt>
+				<dd class="tw-flex tw-items-center tw-gap-x-2">
+					{{if .Runner.IsActive}}
+					<div class="indicator-active">
+						<div></div>
+					</div>
+					{{else if .Runner.IsIdle}}
+					<div class="indicator-idle">
+						<div></div>
+					</div>
+					{{else}}
+					<div class="indicator-offline">
+						<div></div>
+					</div>
+					{{end}}
+					<div>
+						{{.Runner.StatusLocaleName ctx.Locale}}
+					</div>
+				</dd>
+			</div>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.ephemeral"}}</dt>
+				<dd>
+					{{if .Runner.Ephemeral}}
+						{{ctx.Locale.Tr "actions.runners.ephemeral.yes"}}
+					{{else}}
+						{{ctx.Locale.Tr "actions.runners.ephemeral.no"}}
+					{{end}}
+				</dd>
+			</div>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.version"}}</dt>
+				<dd>
+					{{if .Runner.Version}}
+						{{.Runner.Version}}
+					{{else}}
+						&mdash;
+					{{end}}
+				</dd>
+			</div>
+			<div class="item">
+				<dt>{{ctx.Locale.Tr "actions.runners.description"}}</dt>
+				<dd>
+					{{if .Runner.Description}}
+						{{.Runner.Description}}
+					{{else}}
+						&mdash;
+					{{end}}
+				</dd>
+			</div>
+			<p class="tw-mt-8 tw-italic">{{ctx.Locale.Tr "actions.runners.runner_details.labels_note"}}</p>
+		</dl>
+	</div>
+
+	<h4 class="ui top attached header">
+		{{if .IsRepo}}
+			{{ctx.Locale.Tr "actions.runners.task_list_repo"}}
+		{{else if .IsOrg}}
+			{{ctx.Locale.Tr "actions.runners.task_list_org"}}
+		{{else if .IsAdmin}}
+			{{ctx.Locale.Tr "actions.runners.task_list_admin"}}
+		{{else if .IsUser}}
+			{{ctx.Locale.Tr "actions.runners.task_list_user"}}
+		{{end}}
+	</h4>
+	<div class="ui attached segment">
+		<table class="ui very basic striped table unstackable">
+			<thead>
+				<tr>
+					<th>{{ctx.Locale.Tr "actions.runners.task_list.run"}}</th>
+					<th>{{ctx.Locale.Tr "actions.runners.task_list.status"}}</th>
+					<th>{{ctx.Locale.Tr "actions.runners.task_list.repository"}}</th>
+					<th>{{ctx.Locale.Tr "actions.runners.task_list.commit"}}</th>
+					<th>{{ctx.Locale.Tr "actions.runners.task_list.done_at"}}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{{range .Tasks}}
+				<tr>
+					<td><a href="{{.GetRunLink}}" target="_blank">{{.ID}}</a></td>
+					<td><span class="ui label task-status-{{.Status.String}}">{{.Status.LocaleString ctx.Locale}}</span></td>
+					<td><a href="{{.GetRepoLink}}" target="_blank">{{.GetRepoName}}</a></td>
+					<td>
+						<strong><a href="{{.GetCommitLink}}" target="_blank">{{ShortSha .CommitSHA}}</a></strong>
+					</td>
+					<td>{{if .IsStopped}}
+						<span>{{DateUtils.TimeSince .Stopped}}</span>
+						{{else}}-{{end}}</td>
+				</tr>
+				{{end}}
+				{{if not .Tasks}}
+				<tr>
+					<td colspan="5">{{ctx.Locale.Tr "actions.runners.task_list.no_tasks"}}</td>
+				</tr>
+				{{end}}
+			</tbody>
+		</table>
+		{{template "base/paginate" .}}
+	</div>
+</div>

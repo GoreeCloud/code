@@ -1,0 +1,86 @@
+<div class="divider"></div>
+<details class="collapsible">
+	<summary class="tw-py-2"> {{ctx.Locale.Tr "repo.pulls.cmd_instruction_hint"}} </summary>
+	{{if .IsPullFilesConflicted}}
+		{{$titleID := printf "manual-merge-title-%d" .PullRequest.ID}}
+		{{$bodyID := printf "manual-merge-body-%d" .PullRequest.ID}}
+		{{$copySourceID := printf "manual-merge-message-%d" .PullRequest.ID}}
+		{{$fullMessage := .DefaultMergeMessage}}
+		{{if .DefaultMergeBody}}
+			{{$fullMessage = printf "%s\n\n%s" .DefaultMergeMessage .DefaultMergeBody}}
+		{{end}}
+		<div class="tw-mb-4">
+			<h3 class="tw-flex tw-items-center tw-gap-2">{{svg "octicon-info" 16}} {{ctx.Locale.Tr "pulls.manual_merge.helper"}}</h3>
+			<p class="tw-mb-2">{{ctx.Locale.Tr "pulls.manual_merge.helpder.description"}}</p>
+			<div class="ui secondary segment tw-space-y-3">
+				<div class="ui form">
+					<div class="field">
+						<label for="{{$titleID}}">{{ctx.Locale.Tr "pulls.manual_merge.commit.title"}}</label>
+						<textarea id="{{$titleID}}" readonly rows="1">{{- .DefaultMergeMessage -}}</textarea>
+					</div>
+					{{if .DefaultMergeBody}}
+					<div class="field">
+						<label for="{{$bodyID}}">{{ctx.Locale.Tr "pulls.manual_merge.commit.body"}}</label>
+						<textarea id="{{$bodyID}}" readonly rows="5">{{- .DefaultMergeBody -}}</textarea>
+					</div>
+					{{end}}
+					<textarea id="{{$copySourceID}}" class="tw-hidden" aria-hidden="true" readonly>{{- $fullMessage -}}</textarea>
+					<button class="secondary button" type="button" data-clipboard-target="#{{$copySourceID}}">{{svg "octicon-copy" 16}} {{ctx.Locale.Tr "pulls.manual_merge.copy.button"}}</button>
+				</div>
+			</div>
+		</div>
+	{{end}}
+	<div><h3>{{ctx.Locale.Tr "repo.pulls.cmd_instruction_checkout_title"}}</h3>{{ctx.Locale.Tr "repo.pulls.cmd_instruction_checkout_desc"}}</div>
+	{{$localBranch := .PullRequest.HeadBranch}}
+	{{if ne .PullRequest.HeadRepo.ID .PullRequest.BaseRepo.ID}}
+		{{$localBranch = print .PullRequest.HeadRepo.OwnerName "-" .PullRequest.HeadBranch}}
+	{{end}}
+	<div class="ui secondary segment">
+		{{if eq .PullRequest.Flow 0}}
+			<div>git fetch -u {{if ne .PullRequest.HeadRepo.ID .PullRequest.BaseRepo.ID}}<origin-url data-url="{{.PullRequest.HeadRepo.Link}}"></origin-url>{{else}}origin{{end}} {{.PullRequest.HeadBranch}}:{{$localBranch}}</div>
+		{{else}}
+			<div>git fetch -u origin +refs/pull/{{.PullRequest.Index}}/head:{{$localBranch}}</div>
+		{{end}}
+		<div>git switch {{$localBranch}}</div>
+	</div>
+	{{if .ShowMergeInstructions}}
+	<div id="merge-instructions">
+		<h3>{{ctx.Locale.Tr "repo.pulls.cmd_instruction_merge_title"}}</h3>
+		{{ctx.Locale.Tr "repo.pulls.cmd_instruction_merge_desc"}}
+		{{if not .AutodetectManualMerge}}
+			<p>{{ctx.Locale.Tr "repo.pulls.cmd_instruction_merge_warning"}}</p>
+		{{end}}
+	</div>
+	<div class="ui secondary segment">
+		<div data-pull-merge-style="merge">
+			<div>git switch {{.PullRequest.BaseBranch}}</div>
+			<div>git merge --no-ff {{$localBranch}}</div>
+		</div>
+		<div class="tw-hidden" data-pull-merge-style="rebase">
+			<div>git switch {{$localBranch}}</div>
+			<div>git rebase {{.PullRequest.BaseBranch}}</div>
+			<div>git switch {{.PullRequest.BaseBranch}}</div>
+			<div>git merge --ff-only {{$localBranch}}</div>
+		</div>
+		<div class="tw-hidden" data-pull-merge-style="rebase-merge">
+			<div>git switch {{$localBranch}}</div>
+			<div>git rebase {{.PullRequest.BaseBranch}}</div>
+			<div>git switch {{.PullRequest.BaseBranch}}</div>
+			<div>git merge --no-ff {{$localBranch}}</div>
+		</div>
+		<div class="tw-hidden" data-pull-merge-style="squash">
+			<div>git switch {{.PullRequest.BaseBranch}}</div>
+			<div>git merge --squash {{$localBranch}}</div>
+		</div>
+		<div class="tw-hidden" data-pull-merge-style="fast-forward-only">
+			<div>git switch {{.PullRequest.BaseBranch}}</div>
+			<div>git merge --ff-only {{$localBranch}}</div>
+		</div>
+		<div class="tw-hidden" data-pull-merge-style="manually-merged">
+			<div>git switch {{.PullRequest.BaseBranch}}</div>
+			<div>git merge {{$localBranch}}</div>
+		</div>
+		<div>git push origin {{.PullRequest.BaseBranch}}</div>
+	</div>
+	{{end}}
+</details>

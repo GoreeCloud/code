@@ -1,0 +1,135 @@
+# Fields that should, if changed, prevent deletion: repo_id, sha, context, state, description.  The first test sets will
+# be varying each of these fields independently to confirm they're kept.
+
+
+# Vary description:
+-
+  id: 10
+  index: 1
+  repo_id: 62
+  state: "pending"
+  sha: "01"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness
+-
+  id: 11
+  index: 2
+  repo_id: 62
+  state: "pending"
+  sha: "01"
+  description: "Almost woke up..."
+  context: deploy/awesomeness
+
+# Vary state:
+-
+  id: 12
+  index: 1
+  repo_id: 62
+  state: "pending"
+  sha: "02"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness
+-
+  id: 13
+  index: 2
+  repo_id: 62
+  state: "success"
+  sha: "02"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness
+
+# Vary context:
+-
+  id: 14
+  index: 1
+  repo_id: 62
+  state: "pending"
+  sha: "03"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+-
+  id: 15
+  index: 2
+  repo_id: 62
+  state: "pending"
+  sha: "03"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v2
+
+# Vary sha:
+-
+  id: 16
+  index: 1
+  repo_id: 62
+  state: "pending"
+  sha: "04"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+-
+  id: 17
+  index: 2
+  repo_id: 62
+  state: "pending"
+  sha: "05"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+
+# Vary Repo ID:
+-
+  id: 18
+  index: 1
+  repo_id: 62
+  state: "pending"
+  sha: "06"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+-
+  id: 19
+  index: 2
+  repo_id: 63
+  state: "pending"
+  sha: "06"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+
+# That's all the varying cases, now here's the data that should be affected by the delete:
+-
+  id: 20
+  index: 1
+  repo_id: 62
+  state: "pending"
+  sha: "07"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+- # Dupe 1
+  id: 21
+  index: 2
+  repo_id: 62
+  state: "pending"
+  sha: "07"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+- # Dupe 2
+  id: 22
+  index: 3
+  repo_id: 62
+  state: "pending"
+  sha: "07"
+  description: "Waiting for wake up"
+  context: deploy/awesomeness-v1
+- # Switched to "success", keep
+  id: 23
+  index: 4
+  repo_id: 62
+  state: "success"
+  sha: "07"
+  description: "Successful!"
+  context: deploy/awesomeness-v1
+- # Dupe reporting success again
+  id: 24
+  index: 5
+  repo_id: 62
+  state: "success"
+  sha: "07"
+  description: "Successful!"
+  context: deploy/awesomeness-v1

@@ -1,0 +1,49 @@
+# Case w/ action_run_job.id = 601
+-
+  id: 100
+  task_id: 100
+  output_key: my_output
+  output_value: 'abcdefghijklmnopqrstuvwxyz'
+
+# Case w/ action_run_job.id = 603 -- outputs from a previous attempt
+-
+  id: 101
+  task_id: 58
+  output_key: from_inner_job
+  output_value: obsolete value
+-
+  id: 102
+  task_id: 58
+  output_key: from_inner_job_result
+  output_value: obsolete value
+-
+  id: 103
+  task_id: 58
+  output_key: from_forgejo_ctx
+  output_value: obsolete value
+-
+  id: 104
+  task_id: 58
+  output_key: from_input_ctx
+  output_value: obsolete value
+-
+  id: 105
+  task_id: 58
+  output_key: from_vars_repo
+  output_value: obsolete value
+-
+  id: 106
+  task_id: 58
+  output_key: from_vars_org
+  output_value: obsolete value
+-
+  id: 107
+  task_id: 58
+  output_key: from_vars_global
+  output_value: obsolete value
+# Case w/ action_run_job.id = 603 -- input from another job...
+-
+  id: 108
+  task_id: 101
+  output_key: my_output
+  output_value: 'abcdefghijklmnopqrstuvwxyz'

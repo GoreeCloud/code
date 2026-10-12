@@ -1,0 +1,35 @@
+# all access
+-
+  id: 5
+  user_id: 2
+  scope: all
+  resource_all_repos: true
+  issuer: https://example.org/
+  audience: https://forgejo.example.org/-/user/integration/abcdef123
+  claim_rules: "{}"
+  created_unix: 1777153359
+  updated_unix: 1777153359
+
+# public-only
+-
+  id: 6
+  user_id: 2
+  scope: public-only,read:activitypub
+  resource_all_repos: true
+  issuer: https://example.org/
+  audience: https://forgejo.example.org/-/user/integration/abcdef1234
+  claim_rules: "{}"
+  created_unix: 1777153359
+  updated_unix: 1777153359
+
+# repo-specific
+-
+  id: 7
+  user_id: 2
+  scope: all
+  resource_all_repos: false
+  issuer: https://example.org/
+  audience: https://forgejo.example.org/-/user/integration/abcdef1235
+  claim_rules: "{}"
+  created_unix: 1777153359
+  updated_unix: 1777153359

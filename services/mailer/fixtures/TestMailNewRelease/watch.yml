@@ -1,0 +1,8 @@
+-
+ id: 1001
+ user_id: 11
+ repo_id: 41
+ source: false # explicit
+ watch_selection_issues: true
+ watch_selection_pull_requests: true
+ watch_selection_releases: true

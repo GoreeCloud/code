@@ -1,0 +1,221 @@
+// Copyright 2017 The Gitea Authors. All rights reserved.
+// Copyright 2026 The Forgejo Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package markup
+
+import (
+	"fmt"
+	"html"
+	"io"
+	golog "log"
+	"strconv"
+	"strings"
+	"sync"
+
+	"forgejo.org/modules/highlight"
+	"forgejo.org/modules/log"
+	"forgejo.org/modules/markup"
+	"forgejo.org/modules/setting"
+	"forgejo.org/modules/util"
+
+	"github.com/alecthomas/chroma/v2"
+	"github.com/alecthomas/chroma/v2/lexers"
+	"github.com/niklasfasching/go-org/org"
+)
+
+func init() {
+	markup.RegisterRenderer(Renderer{})
+}
+
+// Renderer implements markup.Renderer for orgmode
+type Renderer struct{}
+
+var _ markup.PostProcessRenderer = (*Renderer)(nil)
+
+// Name implements markup.Renderer
+func (Renderer) Name() string {
+	return "orgmode"
+}
+
+// NeedPostProcess implements markup.PostProcessRenderer
+func (Renderer) NeedPostProcess() bool { return true }
+
+// Extensions implements markup.Renderer
+func (Renderer) Extensions() []string {
+	return []string{".org"}
+}
+
+// SanitizerRules implements markup.Renderer
+func (Renderer) SanitizerRules() []setting.MarkupSanitizerRule {
+	return []setting.MarkupSanitizerRule{}
+}
+
+var orgConf = sync.OnceValue(func() *org.Configuration {
+	conf := org.New()
+	// Disables logging.
+	conf.Log = golog.New(io.Discard, "", 0)
+	// SECURITY: Don't allow org-mode to read any external files.
+	conf.ReadFile = func(string) ([]byte, error) {
+		return nil, nil
+	}
+	return conf
+})
+
+// Render renders orgmode rawbytes to HTML
+func Render(ctx *markup.RenderContext, input io.Reader, output io.Writer) error {
+	htmlWriter := org.NewHTMLWriter()
+	htmlWriter.HighlightCodeBlock = func(source, lang string, inline bool, params map[string]string) string {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Error("Panic in HighlightCodeBlock: %v\n%s", err, log.Stack(2))
+				panic(err)
+			}
+		}()
+		var w strings.Builder
+		if _, err := w.WriteString(`<pre>`); err != nil {
+			return ""
+		}
+
+		lexer := lexers.Get(lang)
+		if lexer == nil && lang == "" {
+			lexer = lexers.Analyse(source)
+			if lexer == nil {
+				lexer = lexers.Fallback
+			}
+			lang = strings.ToLower(lexer.Config().Name)
+		}
+
+		if lexer == nil {
+			// include language-x class as part of commonmark spec
+			if _, err := w.WriteString(`<code class="chroma language-` + lang + `">`); err != nil {
+				return ""
+			}
+			if _, err := w.WriteString(html.EscapeString(source)); err != nil {
+				return ""
+			}
+		} else {
+			// include language-x class as part of commonmark spec
+			if _, err := w.WriteString(`<code class="chroma language-` + lang + `">`); err != nil {
+				return ""
+			}
+			lexer = chroma.Coalesce(lexer)
+
+			if _, err := w.WriteString(string(highlight.CodeFromLexer(lexer, source))); err != nil {
+				return ""
+			}
+		}
+
+		if _, err := w.WriteString("</code></pre>"); err != nil {
+			return ""
+		}
+
+		return w.String()
+	}
+
+	w := &Writer{
+		HTMLWriter: htmlWriter,
+		Ctx:        ctx,
+	}
+
+	htmlWriter.ExtendingWriter = w
+
+	res, err := orgConf().Parse(input, "").Write(w)
+	if err != nil {
+		return fmt.Errorf("orgmode.Render failed: %w", err)
+	}
+	_, err = io.Copy(output, strings.NewReader(res))
+	return err
+}
+
+// RenderString renders orgmode string to HTML string
+func RenderString(ctx *markup.RenderContext, content string) (string, error) {
+	var buf strings.Builder
+	if err := Render(ctx, strings.NewReader(content), &buf); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
+}
+
+// Render renders orgmode string to HTML string
+func (Renderer) Render(ctx *markup.RenderContext, input io.Reader, output io.Writer) error {
+	return Render(ctx, input, output)
+}
+
+// Writer implements org.Writer
+type Writer struct {
+	*org.HTMLWriter
+	Ctx *markup.RenderContext
+}
+
+const mailto = "mailto:"
+
+func (r *Writer) resolveLink(node org.Node) string {
+	l, ok := node.(org.RegularLink)
+	if !ok {
+		l = org.RegularLink{URL: strings.TrimPrefix(org.String(node), "file:")}
+	}
+
+	link := html.EscapeString(l.URL)
+	if l.Protocol == "file" {
+		link = link[len("file:"):]
+	}
+	if len(link) > 0 && !markup.IsLinkStr(link) &&
+		link[0] != '#' && !strings.HasPrefix(link, mailto) {
+		var base string
+		if r.Ctx.IsWiki {
+			base = r.Ctx.Links.WikiLink()
+		} else if r.Ctx.Links.HasBranchInfo() {
+			base = r.Ctx.Links.SrcLink()
+		} else {
+			base = r.Ctx.Links.Base
+		}
+
+		switch l.Kind() {
+		case "image", "video":
+			base = r.Ctx.Links.ResolveMediaLink(r.Ctx.IsWiki)
+		case "regular":
+			// Convert line search syntax to line links
+			target, search, found := strings.Cut(link, "::")
+			if found {
+				if _, err := strconv.Atoi(search); err == nil {
+					link = target + "#L" + search
+				} else {
+					link = target
+				}
+			}
+		}
+
+		link = util.URLJoin(base, link)
+	}
+	return link
+}
+
+// WriteRegularLink renders images, links or videos
+func (r *Writer) WriteRegularLink(l org.RegularLink) {
+	link := r.resolveLink(l)
+
+	// Inspired by https://github.com/niklasfasching/go-org/blob/6eb20dbda93cb88c3503f7508dc78cbbc639378f/org/html_writer.go#L406-L427
+	switch l.Kind() {
+	case "image":
+		if l.Description == nil {
+			fmt.Fprintf(r, `<img src="%s" alt="%s" />`, link, link)
+		} else {
+			imageSrc := r.resolveLink(l.Description[0])
+			fmt.Fprintf(r, `<a href="%s"><img src="%s" alt="%s" /></a>`, link, imageSrc, imageSrc)
+		}
+	case "video":
+		if l.Description == nil {
+			fmt.Fprintf(r, `<video src="%s">%s</video>`, link, link)
+		} else {
+			videoSrc := r.resolveLink(l.Description[0])
+			fmt.Fprintf(r, `<a href="%s"><video src="%s">%s</video></a>`, link, videoSrc, videoSrc)
+		}
+	default:
+		description := link
+		if l.Description != nil {
+			description = r.WriteNodesAsString(l.Description...)
+		}
+		fmt.Fprintf(r, `<a href="%s">%s</a>`, link, description)
+	}
+}

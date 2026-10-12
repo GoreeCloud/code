@@ -1,0 +1,18 @@
+-
+  id: 1000
+  run_id: 900
+  repo_id: 4
+  owner_id: 1
+  name: "crate task - no job updated test job"
+  job_id: create_task_no_job_updated
+  task_id: 0
+  status: 5 # StatusWaiting
+  runs_on: '["ubuntu"]'
+  workflow_payload: |
+    name: test
+    on: push
+    jobs:
+      concurrent_test_job:
+        runs-on: ubuntu-latest
+        steps:
+          - run: echo hello

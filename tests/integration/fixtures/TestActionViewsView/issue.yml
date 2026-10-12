@@ -1,0 +1,15 @@
+- id: 26
+  repo_id: 4
+  index: 1
+  poster_id: 2
+  original_author_id: 0
+  name: PR
+  content: 'hello'
+  milestone_id: 0
+  priority: 0
+  is_closed: false
+  is_pull: true
+  num_comments: 0
+  created_unix: 1764879458
+  updated_unix: 1764879458
+  is_locked: false

@@ -1,0 +1,48 @@
+-
+  id: 1
+  issue_id: 1
+  project_id: 1
+  project_board_id: 1
+  sorting: 0
+
+-
+  id: 2
+  issue_id: 2
+  project_id: 1
+  project_board_id: 0 # no board assigned
+  sorting: 0
+
+-
+  id: 3
+  issue_id: 3
+  project_id: 1
+  project_board_id: 2
+  sorting: 0
+
+-
+  id: 4
+  issue_id: 5
+  project_id: 1
+  project_board_id: 3
+  sorting: 0
+
+-
+  id: 5
+  issue_id: 16
+  project_id: 4
+  project_board_id: 4
+  sorting: 0
+
+-
+  id: 6
+  issue_id: 15
+  project_id: 7
+  project_board_id: 10
+  sorting: 0
+
+-
+  id: 7
+  issue_id: 17
+  project_id: 7
+  project_board_id: 10
+  sorting: 1

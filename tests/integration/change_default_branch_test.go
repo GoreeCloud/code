@@ -1,0 +1,36 @@
+// Copyright 2017 The Gitea Authors. All rights reserved.
+// SPDX-License-Identifier: MIT
+
+package integration
+
+import (
+	"fmt"
+	"net/http"
+	"testing"
+
+	repo_model "forgejo.org/models/repo"
+	"forgejo.org/models/unittest"
+	user_model "forgejo.org/models/user"
+	"forgejo.org/tests"
+)
+
+func TestChangeDefaultBranch(t *testing.T) {
+	defer tests.PrepareTestEnv(t)()
+	repo := unittest.AssertExistsAndLoadBean(t, &repo_model.Repository{ID: 1})
+	owner := unittest.AssertExistsAndLoadBean(t, &user_model.User{ID: repo.OwnerID})
+
+	session := loginUser(t, owner.Name)
+	branchesURL := fmt.Sprintf("/%s/%s/settings/branches", owner.Name, repo.Name)
+
+	req := NewRequestWithValues(t, "POST", branchesURL, map[string]string{
+		"action": "default_branch",
+		"branch": "DefaultBranch",
+	})
+	session.MakeRequest(t, req, http.StatusSeeOther)
+
+	req = NewRequestWithValues(t, "POST", branchesURL, map[string]string{
+		"action": "default_branch",
+		"branch": "does_not_exist",
+	})
+	session.MakeRequest(t, req, http.StatusNotFound)
+}
