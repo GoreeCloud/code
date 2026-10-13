@@ -80,8 +80,7 @@ func validURL(raw string) bool {
 	u, err := url.Parse(raw)
 	return err == nil && (u.Scheme == "https" || u.Scheme == "http") &&
 		u.Hostname() != "" && u.User == nil && u.Fragment == "" &&
-		!strings.ContainsAny(raw, "
-\")
+		!strings.ContainsAny(raw, string([]byte{13, 10, 92}))
 }
 
 func validCollectionLengths(in Input) bool {
