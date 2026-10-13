@@ -93,8 +93,8 @@ func validate(in Input) error {
 	if !textOK(r.ID, 128) || !textOK(r.Owner, 128) || !textOK(r.Name, 128) ||
 		!textOK(r.DefaultBranch, 255) || !validURL(r.WebURL) ||
 		len(r.Description) > 600 || !validCollectionLengths(in) ||
-		(!in.GeneratedAt.IsZero() && in.GeneratedAt.Location() == nil) ||
-		in.GeneratedAt.IsZero() || in.GeneratedAt.After(time.Now().Add(time.Minute)) {
+		in.GeneratedAt.IsZero() || in.GeneratedAt.After(time.Now()) ||
+		time.Since(in.GeneratedAt) > 5*time.Minute {
 		return errors.New("invalid_repository_context_metadata")
 	}
 	if in.Ref != "" && !textOK(in.Ref, 255) {
