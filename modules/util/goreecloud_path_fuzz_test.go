@@ -12,6 +12,9 @@ func FuzzGoreeCloudPathJoinRelX(f *testing.F) {
 		{"repository", "../../etc/passwd"},
 		{"repo", `folder\..\file`},
 		{"", ".."},
+		{`repo\\\\archive`, `..\\\\secrets`},
+		{"repository", ".../normal"},
+		{"nested/../../root", "./data"},
 	} {
 		f.Add(pair[0], pair[1])
 	}
@@ -24,6 +27,9 @@ func FuzzGoreeCloudPathJoinRelX(f *testing.F) {
 		normalized := PathJoinRelX(strings.ReplaceAll(a, `\`, "/"), strings.ReplaceAll(b, `\`, "/"))
 		if got != normalized {
 			t.Fatalf("separator equivalence mismatch: %q, %q", got, normalized)
+		}
+		if again := PathJoinRelX(got); again != got {
+			t.Fatalf("canonical join is not stable: %q -> %q", got, again)
 		}
 	})
 }
