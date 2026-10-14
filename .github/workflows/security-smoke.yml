@@ -36,5 +36,9 @@ jobs:
         run: go test -p 2 -count=1 ./modules/charset ./modules/util ./modules/csv
       - name: Vet charset, util and CSV utilities
         run: go vet ./modules/charset ./modules/util ./modules/csv
+      - name: Verify authentication and configuration packages
+        run: go test -p 2 -count=1 ./modules/auth/... ./modules/setting/...
+      - name: Vet authentication and configuration packages
+        run: go vet ./modules/auth/... ./modules/setting/...
       - name: Verify downloaded module integrity
         run: go mod verify
