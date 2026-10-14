@@ -10,6 +10,7 @@ import (
 	"strings"
 	"time"
 	"unicode"
+	"unicode/utf8"
 )
 
 const MaxItems = 20
@@ -62,7 +63,7 @@ type Input struct {
 }
 
 func textOK(s string, limit int) bool {
-	if len(s) == 0 || len(s) > limit || strings.TrimSpace(s) != s {
+	if len(s) == 0 || len(s) > limit || !utf8.ValidString(s) || strings.TrimSpace(s) != s {
 		return false
 	}
 	for _, r := range s {
@@ -83,6 +84,20 @@ func validURL(raw string) bool {
 		!strings.ContainsAny(raw, string([]byte{13, 10, 92}))
 }
 
+// Only declared read scopes are valid evidence in the AI read-only envelope.
+// Capability labels are metadata, not authentication or authorization grants.
+func readCapabilityOK(scope string) bool {
+	switch scope {
+	case "repositories:read", "branches:read", "commits:read", "issues:read", "pullRequests:read":
+		return true
+	}
+	return false
+}
+
+func descriptionOK(s string) bool {
+	return len(s) <= 600 && utf8.ValidString(s) && !strings.ContainsFunc(s, unicode.IsControl)
+}
+
 func validCollectionLengths(in Input) bool {
 	return len(in.Branches) <= MaxItems && len(in.Commits) <= MaxItems &&
 		len(in.Issues) <= MaxItems && len(in.PullRequests) <= MaxItems
@@ -92,7 +107,7 @@ func validate(in Input) error {
 	r := in.Repository
 	if !textOK(r.ID, 128) || !textOK(r.Owner, 128) || !textOK(r.Name, 128) ||
 		!textOK(r.DefaultBranch, 255) || !validURL(r.WebURL) ||
-		len(r.Description) > 600 || !validCollectionLengths(in) ||
+		!descriptionOK(r.Description) || !validCollectionLengths(in) ||
 		in.GeneratedAt.IsZero() || in.GeneratedAt.After(time.Now()) ||
 		time.Since(in.GeneratedAt) > 5*time.Minute {
 		return errors.New("invalid_repository_context_metadata")
@@ -108,7 +123,7 @@ func validate(in Input) error {
 		return errors.New("invalid_repository_context_capabilities")
 	}
 	for _, c := range in.Capabilities {
-		if !textOK(c, 64) {
+		if !textOK(c, 64) || !readCapabilityOK(c) {
 			return errors.New("invalid_repository_context_capabilities")
 		}
 		hasRead = hasRead || c == "repositories:read"
@@ -154,13 +169,13 @@ func MarshalReadOnlySnapshot(in Input) ([]byte, error) {
 		return nil, err
 	}
 	type limits struct {
-		Branches int `json:"branches"`
-		Commits int `json:"commits"`
-		Issues int `json:"issues"`
+		Branches     int `json:"branches"`
+		Commits      int `json:"commits"`
+		Issues       int `json:"issues"`
 		PullRequests int `json:"pullRequests"`
 	}
 	scope := map[string]any{
-		"repository": map[string]string{"owner": in.Repository.Owner, "name": in.Repository.Name},
+		"repository":   map[string]string{"owner": in.Repository.Owner, "name": in.Repository.Name},
 		"repositoryId": in.Repository.ID,
 	}
 	if in.Ref != "" {
@@ -168,18 +183,18 @@ func MarshalReadOnlySnapshot(in Input) ([]byte, error) {
 	}
 	payload := map[string]any{
 		"contractVersion": "0.1.0",
-		"recordType": "repository_context",
-		"producer": map[string]any{"service": "goreecloud-code-api", "authoritative": false, "role": "provider-neutral-evidence-broker"},
-		"scope": scope,
-		"generatedAt": in.GeneratedAt.UTC().Format(time.RFC3339Nano),
-		"source": map[string]any{"provider": in.Provider, "providerHealthy": in.Healthy, "capabilities": in.Capabilities},
-		"repository": in.Repository,
-		"branches": append([]Branch{}, in.Branches...),
-		"commits": append([]Commit{}, in.Commits...),
-		"issues": append([]Issue{}, in.Issues...),
-		"pullRequests": append([]PullRequest{}, in.PullRequests...),
-		"limits": limits{MaxItems, MaxItems, MaxItems, MaxItems},
-		"evidence": map[string]any{"webUrls": []string{in.Repository.WebURL}},
+		"recordType":      "repository_context",
+		"producer":        map[string]any{"service": "goreecloud-code-api", "authoritative": false, "role": "provider-neutral-evidence-broker"},
+		"scope":           scope,
+		"generatedAt":     in.GeneratedAt.UTC().Format(time.RFC3339Nano),
+		"source":          map[string]any{"provider": in.Provider, "providerHealthy": in.Healthy, "capabilities": in.Capabilities},
+		"repository":      in.Repository,
+		"branches":        append([]Branch{}, in.Branches...),
+		"commits":         append([]Commit{}, in.Commits...),
+		"issues":          append([]Issue{}, in.Issues...),
+		"pullRequests":    append([]PullRequest{}, in.PullRequests...),
+		"limits":          limits{MaxItems, MaxItems, MaxItems, MaxItems},
+		"evidence":        map[string]any{"webUrls": []string{in.Repository.WebURL}},
 	}
 	return json.Marshal(payload)
 }

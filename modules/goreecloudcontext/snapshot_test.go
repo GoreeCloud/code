@@ -17,7 +17,7 @@ func exampleInput() Input {
 		},
 		Ref: "main", GeneratedAt: now, Provider: "forgejo", Healthy: true,
 		Capabilities: []string{"repositories:read", "issues:read", "pullRequests:read"},
-		Branches: []Branch{{Name: "main", SHA: "abc", Protected: true}},
+		Branches:     []Branch{{Name: "main", SHA: "abc", Protected: true}},
 		Commits: []Commit{{
 			SHA: "abc", Message: "Fix session",
 			AuthoredAt: now.Format(time.RFC3339), WebURL: "https://git.example.test/commit/abc",
@@ -61,18 +61,24 @@ func TestSnapshotMatchesReadOnlyContract(t *testing.T) {
 
 func TestSnapshotRejectsUnsafeInput(t *testing.T) {
 	for name, change := range map[string]func(*Input){
-		"missing identity": func(x *Input) { x.Repository.ID = "" },
-		"embedded credentials": func(x *Input) { x.Repository.WebURL = "https://user:pass@example.test/repo" },
-		"no read permission": func(x *Input) { x.Capabilities = []string{"issues:read"} },
-		"source unhealthy": func(x *Input) { x.Healthy = false },
-		"missing provider": func(x *Input) { x.Provider = "" },
-		"invalid commit URL": func(x *Input) { x.Commits[0].WebURL = "file:///etc/passwd" },
-		"invalid timestamp": func(x *Input) { x.GeneratedAt = time.Time{} },
-		"future timestamp": func(x *Input) { x.GeneratedAt = time.Now().Add(time.Second) },
-		"expired snapshot": func(x *Input) { x.GeneratedAt = time.Now().Add(-6 * time.Minute) },
-		"invalid issue": func(x *Input) { x.Issues[0].Number = -1 },
-		"invalid branch": func(x *Input) { x.Branches[0].Name = "bad\nname" },
-		"too many items": func(x *Input) { x.Issues = make([]Issue, MaxItems+1) },
+		"missing identity":              func(x *Input) { x.Repository.ID = "" },
+		"embedded credentials":          func(x *Input) { x.Repository.WebURL = "https://user:pass@example.test/repo" },
+		"no read permission":            func(x *Input) { x.Capabilities = []string{"issues:read"} },
+		"write scope alongside read":    func(x *Input) { x.Capabilities = append(x.Capabilities, "repositories:write") },
+		"admin scope alongside read":    func(x *Input) { x.Capabilities = append(x.Capabilities, "admin:read") },
+		"unknown scope alongside read":  func(x *Input) { x.Capabilities = append(x.Capabilities, "mystery:read") },
+		"description control character": func(x *Input) { x.Repository.Description = "hello\nworld" },
+		"invalid UTF-8 description":     func(x *Input) { x.Repository.Description = string([]byte{0xff}) },
+		"invalid UTF-8 branch":          func(x *Input) { x.Branches[0].Name = string([]byte{0xff}) },
+		"source unhealthy":              func(x *Input) { x.Healthy = false },
+		"missing provider":              func(x *Input) { x.Provider = "" },
+		"invalid commit URL":            func(x *Input) { x.Commits[0].WebURL = "file:///etc/passwd" },
+		"invalid timestamp":             func(x *Input) { x.GeneratedAt = time.Time{} },
+		"future timestamp":              func(x *Input) { x.GeneratedAt = time.Now().Add(time.Second) },
+		"expired snapshot":              func(x *Input) { x.GeneratedAt = time.Now().Add(-6 * time.Minute) },
+		"invalid issue":                 func(x *Input) { x.Issues[0].Number = -1 },
+		"invalid branch":                func(x *Input) { x.Branches[0].Name = "bad\nname" },
+		"too many items":                func(x *Input) { x.Issues = make([]Issue, MaxItems+1) },
 	} {
 		t.Run(name, func(t *testing.T) {
 			input := exampleInput()
